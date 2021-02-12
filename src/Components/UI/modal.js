@@ -8,6 +8,7 @@ const Modal = ({ children, show, clicked }) => {
             <Backdrop show={show} clicked={clicked}/>
             <div 
                 style={{
+                    visibility: show ? 'visible' :'hidden',
                     borderRadius: '10px',
                     position: "fixed",
                     zIndex: 500,
