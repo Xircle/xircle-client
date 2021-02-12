@@ -2,15 +2,19 @@ import React, { useState, useEffect } from 'react'
 import {Link} from 'react-router-dom';
 
 const Card = ({ profileImg, description, displayName, contents, heartCnt, tags }) => {
-    const [isHeartClicked, setHeartClicked] = useState(false);
+    const [isHeartClicked, setHeartClicked] = useState(null);
     const [heartStateCnt, setHeartCnt] = useState(heartCnt);
 
     useEffect(() => {
+        console.log('effect');
         if(isHeartClicked === true) 
             setHeartCnt(heartStateCnt + 1);
-        else 
+        else if(isHeartClicked === false) 
             setHeartCnt(heartStateCnt - 1);
+        else 
+            setHeartCnt(heartCnt)
     }, [isHeartClicked]);
+
     return (
         <article className="my-2 mx-3 relative">
                 {/* Profle */}
@@ -49,7 +53,7 @@ const Card = ({ profileImg, description, displayName, contents, heartCnt, tags }
                         </button>
                         {/* Heart count */}
                         <p className="text-center">
-                            {heartStateCnt}
+                            {heartCnt}
                         </p>
                     </div>
 

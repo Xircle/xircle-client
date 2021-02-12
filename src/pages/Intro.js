@@ -33,7 +33,13 @@ const Intro = () => {
           {/* 모달 */}
           <Modal show={isclicked} clicked={() => setClicked(false)}>
             <div className="my-5 text-2xl font-bold">
-              <div className="mb-5">🍀</div>
+              <img 
+                src="yk-logo.png"
+                alt="yk-logo"
+                width={50}
+                height={50}
+                className="mb-5 rounded-full text-center mx-auto"
+              />
               <i>계정 만들기</i>
             </div>
             <div>

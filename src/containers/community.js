@@ -1,9 +1,8 @@
 import React from 'react';
 import Card from '../components/Card';
-import { personCommunity } from '../model/personCommunity';
 import { useMediaQuery } from 'react-responsive';
 
-const Community = () => {
+const Community = ({ users }) => {
     const isIPhoneX = useMediaQuery({
         minDeviceHeight: 811     
     });
@@ -43,6 +42,7 @@ const Community = () => {
         }
     ];
 
+    // 뷰포트 크기에 따라 Scroll pannel의 height 계산
     let height = 0;
     for(let i = 0 ; i < 5; i++) {
         if(MediaQueryArr[i].Query === true){
@@ -50,13 +50,14 @@ const Community = () => {
             break;
         }
     }
+    console.log('users : ', users);
     return (
         <>
             <section 
                     style={{height: height}}
                     className="flex flex-col overflow-scroll relative"
                 >
-                    {personCommunity.map((person, id) => (
+                    {users.map((person, id) => (
                         <Card 
                             key={id}
                             profileImg={person.profileImg} 
@@ -72,4 +73,4 @@ const Community = () => {
     )
 }
 
-export default React.memo(Community);
+export default Community;
