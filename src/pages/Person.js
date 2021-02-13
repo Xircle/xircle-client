@@ -30,26 +30,22 @@ const Person = () => {
     const [isAgeClicked, setAgeClicked] = useState(false);
     const [isInterestClicked, setInterestClicked] = useState(false);
     // filtered state => Select 후 상태
-    const [Univ, setUniv] = useState('고려대학교');
+    const [Univ, setUniv] = useState("고려대학교");
     const [Gender, setGender] = useState("여자");
     const [Age, setAge] = useState([23, 26]);
-    const [Interest, setInterest] = useState("맛집 탐방");
+    const [Interest, setInterest] = useState("헬스");
 
     // filtering state Handler => Select를 할 때 발생
     const UnivHandler = useCallback((selectedOption) => {
-        console.log(selectedOption);
         setUniv(selectedOption.label);
     }, []);
     const GenderHandler = useCallback((selectedOption) => {
-        console.log(selectedOption);
         setGender(selectedOption.label);
     }, []);
     const AgeHandler = useCallback((selectedOption) => {
-        console.log(selectedOption);
         setAge(selectedOption.value);
     }, []);
     const InterestHandler = useCallback((selectedOption) => {
-        console.log(selectedOption);
         setInterest(selectedOption.value);
     }, []);
 
@@ -223,6 +219,17 @@ const Person = () => {
                     ) : (
                         <Community users={FilteredUser} />
                     )}
+
+                    {/* 작성 버튼 */}
+                    <Link to="/create-article">
+                        <img 
+                            src="add-circle.svg"
+                            alt="add-circle"
+                            width={50}
+                            height={50}
+                            className="absolute right-1 bottom-20 mr-3"
+                        />
+                    </Link>
                 </section>
                 
                 {/* footer NavBar */}
