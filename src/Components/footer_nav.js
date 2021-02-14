@@ -9,35 +9,35 @@ const Footer_nav = () => {
         >
             <NavLink to="/person">
                 <img 
-                    src={(window.location.pathname == "/person") ? "NavImage/person-add.svg" : "NavImage/person-add-outline.svg"}
+                    src={(window.location.pathname == "/person") ? "/NavImage/person-add.svg" : "/NavImage/person-add-outline.svg"}
                     width={35}
                     height={35}
                 />
             </NavLink>
             <NavLink to="/people-circle">
                 <img 
-                    src={(window.location.pathname == "/people-circle") ? "NavImage/people-circle.svg" : "NavImage/people-circle-outline.svg"}
+                    src={(window.location.pathname == "/people-circle") ? "/NavImage/people-circle.svg" : "/NavImage/people-circle-outline.svg"}
                     width={35}
                     height={35}
                 />
             </NavLink>
             <NavLink to="/globe">
                 <img 
-                    src={(window.location.pathname == "/globe") ? "NavImage/globe.svg" : "NavImage/globe-outline.svg"}
+                    src={(window.location.pathname == "/globe") ? "/NavImage/globe.svg" : "/NavImage/globe-outline.svg"}
                     width={35}
                     height={35}
                 />
             </NavLink>
             <NavLink to="love-me">
                 <img 
-                    src={(window.location.pathname == "/love-me") ? "NavImage/heart.svg" : "NavImage/heart-outline.svg"}
+                    src={(window.location.pathname == "/love-me") ? "/NavImage/heart.svg" : "/NavImage/heart-outline.svg"}
                     width={35}
                     height={35}
                 />
             </NavLink>
-            <NavLink to="/profile">
+            <NavLink to="/my-profile">
                 <img 
-                    src={(window.location.pathname == "/profile") ? "NavImage/profile.svg" : "NavImage/profile-outline.svg"}
+                    src={(window.location.pathname == "/my-profile") ? "/NavImage/profile.svg" : "/NavImage/profile-outline.svg"}
                     width={35}
                     height={35}
                 />

@@ -6,7 +6,11 @@ const Person = React.lazy(() => import('./pages/Person'));
 const People_circle = React.lazy(() => import('./pages/People-circle'));
 const Globe = React.lazy(() => import('./pages/Globe'));
 const Love_me = React.lazy(() => import('./pages/Love-me'));
+const MyProfile = React.lazy(() => import('./pages/MyProfile'));
 const Profile = React.lazy(() => import('./pages/Profile'));
+const CreateArticle = React.lazy(() => import('./pages/CreateArticle'));
+const Article = React.lazy(() => import('./pages/Article'));
+const SecureSetting = React.lazy(() => import('./pages/SecureSetting'));
 
 const App = () => {
   return (
@@ -14,11 +18,20 @@ const App = () => {
       <Suspense fallback={<p> Loading...</p>}>
         <Switch>
             <Route path="/person" component={Person} exact/>
-            <Route path="/people-circle" component={People_circle} exact/>
-            <Route path="/globe" component={Globe} exact/>
-            <Route path="/love-me" component={Love_me} exact/>
-            <Route path="/profile" component={Profile} exact/>
-            <Route path="/" component={Intro} exact/>
+            <Route path="/create-article" component={CreateArticle}/>
+            <Route path="/profile/:id" component={Profile}/>
+            <Route path="/article/:cnt" component={Article}/> 
+            <Route path="/secure-setting" component={SecureSetting}/> 
+            
+            <Route path="/people-circle" component={People_circle}/>
+
+            <Route path="/globe" component={Globe} />
+
+            <Route path="/love-me" component={Love_me}/>
+
+            <Route path="/my-profile" component={MyProfile}/>
+
+            <Route path="/" component={Intro}/>
         </Switch>
       </Suspense>
     </div>

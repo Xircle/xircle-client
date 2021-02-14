@@ -33,7 +33,7 @@ const Person = () => {
     const [Univ, setUniv] = useState("고려대학교");
     const [Gender, setGender] = useState("여자");
     const [Age, setAge] = useState([23, 26]);
-    const [Interest, setInterest] = useState("헬스");
+    const [Interest, setInterest] = useState("맛집");
 
     // filtering state Handler => Select를 할 때 발생
     const UnivHandler = useCallback((selectedOption) => {

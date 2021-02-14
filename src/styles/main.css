@@ -29135,6 +29135,10 @@ video {
   animation: bounce 1s infinite;
 }
 
+#profile {
+  filter: blur(8px);
+}
+
 @media (min-width: 640px) {
   .sm\:container {
     width: 100%;
@@ -171904,4 +171908,3 @@ video {
     animation: bounce 1s infinite;
   }
 }
-

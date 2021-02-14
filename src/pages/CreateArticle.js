@@ -36,7 +36,9 @@ const CreateArticle = () => {
                         style={{height: '250px', border: '1px solid gray'}}
                         className="my-3 px-3 py-5 w-full text-sm placeholder-gray-300">
                     </textarea>
-                    <button className=" w-full block mx-auto mt-1 border-2 rounded-3xl px-5 py-3 bg-black text-white  focus:outline-none">작성하기</button>
+                    <Link to="/person">
+                        <button onClick={() => alert('글이 작성되었습니다!')} className=" w-full block mx-auto mt-1 border-2 rounded-3xl px-5 py-3 bg-black text-white  focus:outline-none">작성하기</button>
+                    </Link>
                 </section>
 
                 

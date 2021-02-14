@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '../components/Card';
+import Card from '../components/card';
 import { useMediaQuery } from 'react-responsive';
 
 const Community = ({ users }) => {
@@ -50,24 +50,24 @@ const Community = ({ users }) => {
             break;
         }
     }
-    console.log('users : ', users);
     return (
         <>
             <section 
-                    style={{height: height}}
-                    className="flex flex-col overflow-scroll relative"
-                >
-                    {users.map((person, id) => (
-                        <Card 
-                            key={id}
-                            profileImg={person.profileImg} 
-                            description={person.description} 
-                            displayName={person.displayName} 
-                            heartCnt={person.heartCnt}
-                            contents={person.contents}
-                            tags={person.tags}
-                        />
-                    ))}                       
+                style={{height: height}}
+                className="flex flex-col overflow-scroll relative"
+            >
+                {users.map((person, key) => (
+                    <Card 
+                        key={key}
+                        id={person.id}
+                        profileImg={person.profileImg} 
+                        description={person.description} 
+                        displayName={person.displayName} 
+                        heartCnt={person.heartCnt}
+                        contents={person.contents}
+                        tags={person.tags}
+                    />
+                ))}                       
             </section>
         </>
     )
