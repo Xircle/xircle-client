@@ -1,0 +1,43 @@
+{
+  "files": {
+    "main.css": "/2donny/ykring/static/css/main.40c1d346.chunk.css",
+    "main.js": "/2donny/ykring/static/js/main.d33eb0a2.chunk.js",
+    "main.js.map": "/2donny/ykring/static/js/main.d33eb0a2.chunk.js.map",
+    "runtime-main.js": "/2donny/ykring/static/js/runtime-main.e3b4472c.js",
+    "runtime-main.js.map": "/2donny/ykring/static/js/runtime-main.e3b4472c.js.map",
+    "static/js/2.1e8c762c.chunk.js": "/2donny/ykring/static/js/2.1e8c762c.chunk.js",
+    "static/js/2.1e8c762c.chunk.js.map": "/2donny/ykring/static/js/2.1e8c762c.chunk.js.map",
+    "static/css/3.ec02d681.chunk.css": "/2donny/ykring/static/css/3.ec02d681.chunk.css",
+    "static/js/3.9eb580c0.chunk.js": "/2donny/ykring/static/js/3.9eb580c0.chunk.js",
+    "static/js/3.9eb580c0.chunk.js.map": "/2donny/ykring/static/js/3.9eb580c0.chunk.js.map",
+    "static/js/4.bc3611aa.chunk.js": "/2donny/ykring/static/js/4.bc3611aa.chunk.js",
+    "static/js/4.bc3611aa.chunk.js.map": "/2donny/ykring/static/js/4.bc3611aa.chunk.js.map",
+    "static/js/5.bb590bf6.chunk.js": "/2donny/ykring/static/js/5.bb590bf6.chunk.js",
+    "static/js/5.bb590bf6.chunk.js.map": "/2donny/ykring/static/js/5.bb590bf6.chunk.js.map",
+    "static/js/6.12d773d7.chunk.js": "/2donny/ykring/static/js/6.12d773d7.chunk.js",
+    "static/js/6.12d773d7.chunk.js.map": "/2donny/ykring/static/js/6.12d773d7.chunk.js.map",
+    "static/js/7.1409c86f.chunk.js": "/2donny/ykring/static/js/7.1409c86f.chunk.js",
+    "static/js/7.1409c86f.chunk.js.map": "/2donny/ykring/static/js/7.1409c86f.chunk.js.map",
+    "static/js/8.5e4a879d.chunk.js": "/2donny/ykring/static/js/8.5e4a879d.chunk.js",
+    "static/js/8.5e4a879d.chunk.js.map": "/2donny/ykring/static/js/8.5e4a879d.chunk.js.map",
+    "static/js/9.753c530f.chunk.js": "/2donny/ykring/static/js/9.753c530f.chunk.js",
+    "static/js/9.753c530f.chunk.js.map": "/2donny/ykring/static/js/9.753c530f.chunk.js.map",
+    "static/js/10.1eb6579e.chunk.js": "/2donny/ykring/static/js/10.1eb6579e.chunk.js",
+    "static/js/10.1eb6579e.chunk.js.map": "/2donny/ykring/static/js/10.1eb6579e.chunk.js.map",
+    "static/js/11.6cde21bf.chunk.js": "/2donny/ykring/static/js/11.6cde21bf.chunk.js",
+    "static/js/11.6cde21bf.chunk.js.map": "/2donny/ykring/static/js/11.6cde21bf.chunk.js.map",
+    "index.html": "/2donny/ykring/index.html",
+    "static/css/3.ec02d681.chunk.css.map": "/2donny/ykring/static/css/3.ec02d681.chunk.css.map",
+    "static/css/main.40c1d346.chunk.css.map": "/2donny/ykring/static/css/main.40c1d346.chunk.css.map",
+    "static/js/2.1e8c762c.chunk.js.LICENSE.txt": "/2donny/ykring/static/js/2.1e8c762c.chunk.js.LICENSE.txt",
+    "static/js/3.9eb580c0.chunk.js.LICENSE.txt": "/2donny/ykring/static/js/3.9eb580c0.chunk.js.LICENSE.txt",
+    "static/media/yk.252d2680.png": "/2donny/ykring/static/media/yk.252d2680.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e3b4472c.js",
+    "static/css/3.ec02d681.chunk.css",
+    "static/js/3.9eb580c0.chunk.js",
+    "static/css/main.40c1d346.chunk.css",
+    "static/js/main.d33eb0a2.chunk.js"
+  ]
+}
