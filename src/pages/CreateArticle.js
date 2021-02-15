@@ -7,7 +7,7 @@ import Banner from '../components/banner';
 const CreateArticle = () => {
     return (
         <div className="w-full">
-            <Layout>
+            <Layout headerNone>
                 {/* Navigation */}
                 <nav className="flex flex-row items-center px-3 py-5">
                     <Link to="/person">
@@ -41,9 +41,6 @@ const CreateArticle = () => {
                     </Link>
                 </section>
 
-                
-                {/* footer */}
-                <Footer_nav/>
             </Layout>
         </div>
     )

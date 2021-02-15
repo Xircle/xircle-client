@@ -13,7 +13,7 @@ const Profile = ({ match }) => {
 
     return (
         <div className="w-full">
-            <Layout>
+            <Layout headerNone>
                 {/* Navigation */}
                 <nav className="flex flex-row px-3 py-5"> 
                     <Link to="/person">
@@ -61,8 +61,6 @@ const Profile = ({ match }) => {
                     </Link>
                     <button onClick={() => alert('친구를 신청했습니다!')} className="border-2 rounded-full px-5 py-3 absolute bottom-28 right-3 hover:text-white hover:bg-black focus:outline-none">친구 신청</button>
                 </section>
-                {/* footer */}
-                <Footer_nav />
             </Layout>
         </div>
     )

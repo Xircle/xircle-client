@@ -18,7 +18,7 @@ const SecureSetting = () => {
     
     return (
         <div className="w-full">
-            <Layout>
+            <Layout headerNone>
                 {/* Navigation */}
                 <nav className="flex flex-row px-3 py-5"> 
                     <Link to="/person">
@@ -99,7 +99,6 @@ const SecureSetting = () => {
                         </button>
                     </Link>
                 </section>
-
             </Layout>
         </div>
     )
