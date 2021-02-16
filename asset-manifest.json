@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/ykring/static/css/main.75f7866f.chunk.css",
+    "main.css": "/ykring/static/css/main.beab4f4f.chunk.css",
     "main.js": "/ykring/static/js/main.b31eb8c7.chunk.js",
     "main.js.map": "/ykring/static/js/main.b31eb8c7.chunk.js.map",
     "runtime-main.js": "/ykring/static/js/runtime-main.e6352f0f.js",
@@ -12,7 +12,7 @@
     "service-worker.js": "/ykring/service-worker.js",
     "service-worker.js.map": "/ykring/service-worker.js.map",
     "static/css/2.ec02d681.chunk.css.map": "/ykring/static/css/2.ec02d681.chunk.css.map",
-    "static/css/main.75f7866f.chunk.css.map": "/ykring/static/css/main.75f7866f.chunk.css.map",
+    "static/css/main.beab4f4f.chunk.css.map": "/ykring/static/css/main.beab4f4f.chunk.css.map",
     "static/js/2.d7050d1f.chunk.js.LICENSE.txt": "/ykring/static/js/2.d7050d1f.chunk.js.LICENSE.txt",
     "static/media/yk.252d2680.png": "/ykring/static/media/yk.252d2680.png"
   },
@@ -20,7 +20,7 @@
     "static/js/runtime-main.e6352f0f.js",
     "static/css/2.ec02d681.chunk.css",
     "static/js/2.d7050d1f.chunk.js",
-    "static/css/main.75f7866f.chunk.css",
+    "static/css/main.beab4f4f.chunk.css",
     "static/js/main.b31eb8c7.chunk.js"
   ]
 }
