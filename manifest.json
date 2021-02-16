@@ -27,6 +27,7 @@
       "purpose": "maskable"
     }
   ],
+  "scope": "/",
   "start_url": "index.html",
   "display": "fullscreen",
   "description": "연고링 웹 페이지",
