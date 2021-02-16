@@ -8,17 +8,17 @@
       "type": "image/x-icon"
     },
     {
-      "src": "/android-chrome-192x192.png",
+      "src": "/ykring/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/android-chrome-256x256.png",
+      "src": "/ykring/android-chrome-256x256.png",
       "sizes": "256x256",
       "type": "image/png"
     },
     {
-      "src": "/android-chrome-512x512.png",
+      "src": "/ykring/android-chrome-512x512.png",
       "sizes": "256x256",
       "type": "image/png"
     }
