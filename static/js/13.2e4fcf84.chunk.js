@@ -1,0 +1,2 @@
+(this.webpackJsonpykring=this.webpackJsonpykring||[]).push([[13],{129:function(e,s,c){"use strict";c.r(s);c(1);var t=c(14),i=(c(16),c(0));s.default=function(){return Object(i.jsx)("div",{className:"w-full",children:Object(i.jsxs)(t.a,{children:[Object(i.jsx)("section",{style:{height:"30%"},className:"px-3 py-3",children:"hi"}),Object(i.jsx)("section",{style:{height:"70%"},className:"px-3 py-3",children:"hello"})]})})}}}]);
+//# sourceMappingURL=13.2e4fcf84.chunk.js.map
