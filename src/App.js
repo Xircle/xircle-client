@@ -10,7 +10,6 @@ const MyProfile = React.lazy(() => import('./pages/MyProfile'));
 const Profile = React.lazy(() => import('./pages/Profile'));
 const CreateArticle = React.lazy(() => import('./pages/CreateArticle'));
 const Article = React.lazy(() => import('./pages/Article'));
-const SecureSetting = React.lazy(() => import('./pages/SecureSetting'));
 
 const App = () => {
   return (
@@ -21,7 +20,6 @@ const App = () => {
             <Route path="/create-article" component={CreateArticle}/>
             <Route path="/profile/:id" component={Profile}/>
             <Route path="/article/:cnt" component={Article}/> 
-            <Route path="/secure-setting" component={SecureSetting}/> 
             
             <Route path="/people-circle" component={People_circle}/>
 

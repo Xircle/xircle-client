@@ -179,7 +179,7 @@ const Person = () => {
                         </Modal>
                         <img 
                             onClick={() => setFilteringUser(personCommunity)}
-                            src="refresh-outline.svg"
+                            src="https://2donny.github.io/ykring/refresh-outline.svg"
                             width={20}
                             height={20}
                             className="inline-block cursor-pointer "
@@ -203,7 +203,7 @@ const Person = () => {
                     {/* 작성 버튼 */}
                     <Link to="/create-article">
                         <img 
-                            src="add-circle.svg"
+                            src="https://2donny.github.io/ykring/add-circle.svg"
                             alt="add-circle"
                             width={50}
                             height={50}

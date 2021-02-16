@@ -9,7 +9,7 @@ const Banner = () => {
                     <p className="text-xs text-gray-400">알아보기 START!</p>
                 </div>
                 <img 
-                    src="logo192.png"
+                    src="https://2donny.github.io/ykring/logo192.png"
                     width={50}
                     height={50}
                 />

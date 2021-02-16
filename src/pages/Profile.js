@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Footer_nav from '../components/footer_nav';
 import Layout from '../components/layout';
 import { personCommunity } from '../model/person';
 
@@ -18,7 +17,7 @@ const Profile = ({ match }) => {
                 <nav className="flex flex-row px-3 py-5"> 
                     <Link to="/person">
                         <img 
-                            src="/arrow-back-outline.svg"
+                            src="https://2donny.github.io/ykring/arrow-back-outline.svg"
                             className="rounded-2xl"
                             width={25}
                             height={25}
@@ -36,14 +35,6 @@ const Profile = ({ match }) => {
 
                 {/* main */}
                 <section className="px-3 my-5 relative">
-                    <Link to="/secure-setting">
-                        <button 
-                            style={{position: 'absolute', top: '151px', left: '140px'}}
-                            className="z-50 border-2 text-sm rounded-full px-5 py-3  bg-white hover:bg-gray-300 focus:outline-none"
-                        >
-                            안전 설정하고 <br /> 선명하게 보기
-                        </button>
-                    </Link>
                     <img
                         id="profile" 
                         src={`${__User.profileImg}`}

@@ -1,7 +1,7 @@
 export const personCommunity = [
     {
         id: 0,
-        profileImg: "/UserImage/User1.png",
+        profileImg: "https://2donny.github.io/ykring/UserImage/User1.png",
         description: ["고려대학교", "ENTP", "23살", "진지충"],
         displayName: "정이든",
         heartCnt: 32,
@@ -14,7 +14,7 @@ export const personCommunity = [
     },
     {
         id: 1,
-        profileImg: "/UserImage/User2.png",
+        profileImg: "https://2donny.github.io/ykring//UserImage/User2.png",
         description: ["연세대학교", "ISFP", "26살", "수다쟁이"],
         displayName: "양지원",
         heartCnt: 2,
@@ -27,7 +27,7 @@ export const personCommunity = [
     },
     {
         id: 2,
-        profileImg: "/UserImage/User3.png",
+        profileImg: "https://2donny.github.io/ykring//UserImage/User3.png",
         description: ["서강대학교", "ENTP", "20살", "신입생"],
         displayName: "김현우",
         heartCnt: 3,
@@ -40,7 +40,7 @@ export const personCommunity = [
     },
     {
         id: 3,
-        profileImg: "/UserImage/User4.png",
+        profileImg: "https://2donny.github.io/ykring//UserImage/User4.png",
         description: ["한양대학교", "ENTP", "22살", "재수생"],
         displayName: "김소연",
         heartCnt: 15,

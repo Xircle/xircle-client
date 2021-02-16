@@ -38,14 +38,14 @@ const Card = ({ id, profileImg, description, displayName, contents, heartCnt, ta
                         <button onClick={() => setHeartClicked(!isHeartClicked)} className="px-2 py-2 focus:outline-none">
                             {isHeartClicked ? (
                                 <img 
-                                    src="/heart-red.png"
+                                    src="https://2donny.github.io/ykring//heart-red.png"
                                     height={18}
                                     width={20}
                                     alt="heart"
                                 />
                             ) : (
                                 <img 
-                                    src="/NavImage/heart-outline.svg"
+                                    src="https://2donny.github.io/ykring/NavImage/heart-outline.svg"
                                     height={20}
                                     width={20}
                                     alt="heart-outline"

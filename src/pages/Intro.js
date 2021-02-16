@@ -34,7 +34,7 @@ const Intro = () => {
           <Modal show={isclicked} clicked={() => setClicked(false)}>
             <div className="my-5 text-2xl font-bold">
               <img 
-                src="yk-logo.png"
+                src="https://2donny.github.io/ykring/yk-logo.png"
                 alt="yk-logo"
                 width={50}
                 height={50}

@@ -18,7 +18,7 @@ const Article = ({ match }) => {
                 <nav style={{height: '7%'}} className="flex flex-row justify-between px-3"> 
                     <Link to="/person">
                         <img 
-                            src="/arrow-back-outline.svg"
+                            src="https://2donny.github.io/ykring/arrow-back-outline.svg"
                             className="rounded-2xl h-full "
                             width={25}
                             height={25}
@@ -26,14 +26,14 @@ const Article = ({ match }) => {
                     </Link>
                     <div className="flex flex-row">
                         <img 
-                            src="/NavImage/heart-outline.svg"
+                            src="https://2donny.github.io/ykring/NavImage/heart-outline.svg"
                             alt="heart"
                             width={25}
                             height={25}
                             className="mx-3"
                         />
                         <img 
-                            src="/Article/ellipsis-vertical-outline.svg"
+                            src="https://2donny.github.io/ykring/Article/ellipsis-vertical-outline.svg"
                             alt="ellipsis"
                             width={25}
                             height={25}
@@ -62,7 +62,7 @@ const Article = ({ match }) => {
                         <div style={{height: '10%'}} className="flex flex-row mb-2">
                             <div className="flex flex-row mx-2">
                                 <img 
-                                    src="/Article/heart-circle-outline.svg"
+                                    src="https://2donny.github.io/ykring/Article/heart-circle-outline.svg"
                                     alt="heart"
                                     width={20}
                                     height={20}
@@ -72,7 +72,7 @@ const Article = ({ match }) => {
                             </div>
                             <div className="flex flex-row mx-2">
                                 <img 
-                                    src="/Article/chatbubble-outline.svg"
+                                    src="https://2donny.github.io/ykring/Article/chatbubble-outline.svg"
                                     alt="chat"
                                     width={15}
                                     height={15}

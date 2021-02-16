@@ -9,35 +9,35 @@ const Footer_nav = () => {
         >
             <NavLink to="/person">
                 <img 
-                    src={(window.location.pathname == "/person") ? "/NavImage/person-add.svg" : "/NavImage/person-add-outline.svg"}
+                    src={(window.location.pathname == "/person") ? "https://2donny.github.io/ykring/NavImage/person-add.svg" : "https://2donny.github.io/ykring/NavImage/person-add-outline.svg"}
                     width={35}
                     height={35}
                 />
             </NavLink>
             <NavLink to="/people-circle">
                 <img 
-                    src={(window.location.pathname == "/people-circle") ? "/NavImage/people-circle.svg" : "/NavImage/people-circle-outline.svg"}
+                    src={(window.location.pathname == "/people-circle") ? "https://2donny.github.io/ykring/NavImage/people-circle.svg" : "https://2donny.github.io/ykring/NavImage/people-circle-outline.svg"}
                     width={35}
                     height={35}
                 />
             </NavLink>
             <NavLink to="/globe">
                 <img 
-                    src={(window.location.pathname == "/globe") ? "/NavImage/globe.svg" : "/NavImage/globe-outline.svg"}
+                    src={(window.location.pathname == "/globe") ? "https://2donny.github.io/ykring/NavImage/globe.svg" : "https://2donny.github.io/ykring/NavImage/globe-outline.svg"}
                     width={35}
                     height={35}
                 />
             </NavLink>
             <NavLink to="love-me">
                 <img 
-                    src={(window.location.pathname == "/love-me") ? "/NavImage/heart.svg" : "/NavImage/heart-outline.svg"}
+                    src={(window.location.pathname == "/love-me") ? "https://2donny.github.io/ykring/NavImage/heart.svg" : "https://2donny.github.io/ykring/NavImage/heart-outline.svg"}
                     width={35}
                     height={35}
                 />
             </NavLink>
             <NavLink to="/my-profile">
                 <img 
-                    src={(window.location.pathname == "/my-profile") ? "/NavImage/profile.svg" : "/NavImage/profile-outline.svg"}
+                    src={(window.location.pathname == "/my-profile") ? "https://2donny.github.io/ykring/NavImage/profile.svg" : "https://2donny.github.io/ykring/NavImage/profile-outline.svg"}
                     width={35}
                     height={35}
                 />

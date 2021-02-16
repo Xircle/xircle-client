@@ -16,7 +16,7 @@ const Layout = ({ children, headerNone }) => {
                         <Link to="/person">
                             <img
                                 style={{width: 50, height: 50}}
-                                src="/yk-logo.png"
+                                src="https://2donny.github.io/ykring/yk-logo.png"
                                 className=" rounded-2xl"
                             />
                         </Link>

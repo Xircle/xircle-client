@@ -12,7 +12,7 @@ const CreateArticle = () => {
                 <nav className="flex flex-row items-center px-3 py-5">
                     <Link to="/person">
                         <img
-                            src="arrow-back-outline.svg"
+                            src="https://2donny.github.io/ykring/arrow-back-outline.svg"
                             className=" rounded-2xl"
                             width={25}
                             height={25}
