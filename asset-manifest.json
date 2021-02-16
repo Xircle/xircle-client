@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/ykring/static/css/main.40c1d346.chunk.css",
+    "main.css": "/ykring/static/css/main.beab4f4f.chunk.css",
     "main.js": "/ykring/static/js/main.123500b2.chunk.js",
     "main.js.map": "/ykring/static/js/main.123500b2.chunk.js.map",
     "runtime-main.js": "/ykring/static/js/runtime-main.b3c4ff86.js",
@@ -30,7 +30,7 @@
     "service-worker.js": "/ykring/service-worker.js",
     "service-worker.js.map": "/ykring/service-worker.js.map",
     "static/css/3.ec02d681.chunk.css.map": "/ykring/static/css/3.ec02d681.chunk.css.map",
-    "static/css/main.40c1d346.chunk.css.map": "/ykring/static/css/main.40c1d346.chunk.css.map",
+    "static/css/main.beab4f4f.chunk.css.map": "/ykring/static/css/main.beab4f4f.chunk.css.map",
     "static/js/2.29c8cdfd.chunk.js.LICENSE.txt": "/ykring/static/js/2.29c8cdfd.chunk.js.LICENSE.txt",
     "static/js/3.9eb580c0.chunk.js.LICENSE.txt": "/ykring/static/js/3.9eb580c0.chunk.js.LICENSE.txt",
     "static/media/yk.252d2680.png": "/ykring/static/media/yk.252d2680.png"
@@ -39,7 +39,7 @@
     "static/js/runtime-main.b3c4ff86.js",
     "static/css/3.ec02d681.chunk.css",
     "static/js/3.9eb580c0.chunk.js",
-    "static/css/main.40c1d346.chunk.css",
+    "static/css/main.beab4f4f.chunk.css",
     "static/js/main.123500b2.chunk.js"
   ]
 }
