@@ -19,7 +19,8 @@ const Article = ({ match }) => {
                     <Link to="/person">
                         <img 
                             src="https://2donny.github.io/ykring/arrow-back-outline.svg"
-                            className="rounded-2xl h-full "
+                            alt="back"
+                            className="h-full "
                             width={25}
                             height={25}
                         />

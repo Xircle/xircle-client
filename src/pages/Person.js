@@ -19,14 +19,20 @@ import {
 import { personCommunity } from '../model/person';
 
 const Person = () => {
+    // 새로운 유저가 화면 클릭시 리다이렉션.
+    const [isSettingFinished, setIsSettingFinished] = useState(false);    
+    const [unKnownUserClicked, setUnKnownUserClicked] = useState(false);
+    
     // filtering state => 필터링 시작 여부
     const [isFiltering, setFiltering] = useState(false);
     const [FilteredUser, setFilteringUser] = useState(personCommunity);
+
     // button click state => 버튼 클릭 여부
     const [isUnivClicked, setUnivClicked] = useState(false);
     const [isGenderClicked, setGenderClicked] = useState(false);
     const [isAgeClicked, setAgeClicked] = useState(false);
     const [isInterestClicked, setInterestClicked] = useState(false);
+
     // filtered state => Select 후 상태
     const [Univ, setUniv] = useState("고려대학교");
     const [Gender, setGender] = useState("여자");
@@ -92,9 +98,23 @@ const Person = () => {
     return (
         <div className="max-h-screen overflow-hidden">
             <Layout>
-
-                {/* main */}
-                <section className="px-3 my-2">
+                <section onClick={() => isSettingFinished ? null : setUnKnownUserClicked(!unKnownUserClicked)} className="px-3 my-2">
+                    
+                    {/* 프로필 설정을 안했으면, '/Iam' 으로 보내기 */}
+                    {isSettingFinished ? (
+                        null
+                    ) : (
+                        <Modal show={unKnownUserClicked}>
+                            <div className="my-5 text-md h-full">
+                                <h1>활동하시려면 먼저 가입을 해주세요! </h1>
+                            </div>
+                            <div>
+                                <Link to="/Iam">
+                                    <button className="font-sans w-full border-2 rounded-3xl px-5 py-3 mt-10 bg-black text-white hover:text-black hover:bg-white focus:outline-none">가입하기</button>
+                                </Link>
+                            </div>
+                        </Modal>
+                    )}
 
                     {/* Button Nav */}
                     <div className="my-3 flex-nowrap overflow-hidden">
@@ -125,7 +145,7 @@ const Person = () => {
                             <div>
                                 <h1 className="font-bold mb-5">성별</h1>
                                 <Select 
-                                    defaultValue={GenderOptions[1]}
+                                    defaultValue={GenderOptions[1]} 
                                     options={GendergroupedOptions}
                                     onChange={GenderHandler}
                                 />
