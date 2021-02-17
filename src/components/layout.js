@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Footer_nav from './footer_nav';
 import Banner from './banner';
 import { Link } from 'react-router-dom';
+import Modal from '../components/UI/modal';
 
-const Layout = ({ children, headerNone }) => {
+const Layout = ({ children, headerNone, footerNone }) => {
     return (
         <div 
-            style={{ minWidth: "320px", maxWidth: "414px", maxHeight: '100vh', border: "1px solid gray"}}
+            style={{ minWidth: "320px", maxWidth: "414px", maxHeight: '100vh', borderLeft: '1px solid black', borderRight: '1px solid black'}}
             className="flex flex-col mx-auto h-screen relative"
         >
             {/* Navigation */}
@@ -22,7 +23,7 @@ const Layout = ({ children, headerNone }) => {
                         </Link>
                         <div className="flex flex-row items-center">
                             <Link to="/">
-                            <h1 className="mx-2 font-bold hover:text-blue-400">돌아가기</h1>
+                                <h1 className="mx-2 font-bold hover:text-blue-400">돌아가기</h1>
                             </Link>
                             <h1 className="mx-2 cursor-pointer font-bold hover:text-red-600 hover:font-bold">신고하기</h1>
                         </div>
@@ -33,14 +34,14 @@ const Layout = ({ children, headerNone }) => {
             ) : (
                 null
             )}
-            
+
             {/*  main custom  */}
             <main className="h-screen">
                 {children}
             </main>
 
             {/* footer */}
-            <Footer_nav />
+            <Footer_nav footerNone={footerNone}/>
         </div>
     )
 }
