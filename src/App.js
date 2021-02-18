@@ -2,13 +2,13 @@ import React, { Suspense } from 'react';
 import { Route, Switch, HashRouter } from 'react-router-dom';
 // import Intro from './pages/Intro';
 import Start from './pages/Start';
-// import Login from './pages/Login';
-// import Iam from './pages/Iam';
 
 const Login = React.lazy(() => import('./pages/Login'));
-const Iam = React.lazy(() => import('./pages/Iam'));
+const Univ = React.lazy(() => import('./pages/SettingPages/Univ'));
+const SettingCotainer = React.lazy(() => import('./pages/SettingPages/SettingContainer'));
 
 const Person = React.lazy(() => import('./pages/Person'));
+const FriendPage = React.lazy(() => import('./pages/FriendPage'));
 const People_circle = React.lazy(() => import('./pages/People-circle'));
 const Globe = React.lazy(() => import('./pages/Globe'));
 const Love_me = React.lazy(() => import('./pages/Love-me'));
@@ -23,6 +23,7 @@ const App = () => {
     <div>
       <Suspense fallback={<p> Loading...</p>}>
         <Switch>
+            <Route path="/friend" component={FriendPage} exact/>
             <Route path="/person" component={Person} exact/>
             <Route path="/create-article" component={CreateArticle}/>
             <Route path="/profile/:id" component={Profile}/>
@@ -37,9 +38,10 @@ const App = () => {
             <Route path="/my-profile" component={MyProfile}/>
 
             {/* <Route path="/" component={Intro}/> */}
-            <Route path="/Iam" component={Iam}/>
+            <Route path="/setting/:questionNum" component={SettingCotainer}/>
+            <Route path="/univ" component={Univ}/>
             <Route path="/login" component={Login}/>
-            <Route path="/" component={Start}/>
+            <Route path="/" component={Start} exact/> 
         </Switch>
       </Suspense>
     </div>

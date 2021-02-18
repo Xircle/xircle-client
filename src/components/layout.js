@@ -13,10 +13,10 @@ const Layout = ({ children, headerNone, footerNone }) => {
             {/* Navigation */}
             {!headerNone ? (
                 <>
-                    <nav className="flex flex-row justify-between px-3 py-5">
-                        <Link to="/person">
+                    <nav className="flex flex-row justify-between px-3 py-2">
+                        <Link to="/friend">
                             <img
-                                style={{width: 50, height: 50}}
+                                style={{width: 40, height: 40}}
                                 src="https://2donny.github.io/ykring/yk-logo.png"
                                 className=" rounded-2xl"
                             />

@@ -97,142 +97,139 @@ const Person = () => {
 
     return (
         <div className="max-h-screen overflow-hidden">
-            <Layout>
-                <section onClick={() => isSettingFinished ? null : setUnKnownUserClicked(!unKnownUserClicked)} className="px-3 my-2">
-                    
-                    {/* 프로필 설정을 안했으면, '/Iam' 으로 보내기 */}
-                    {isSettingFinished ? (
-                        null
-                    ) : (
+            <div onClick={(e) => isSettingFinished ? null : setUnKnownUserClicked(!unKnownUserClicked) && e.preventDefault()} style={{zIndex: 999}} className="w-full h-screen bg-gray-400">
+                <Layout>
+                    <section className="px-3 my-2">
+                        {/* 프로필 설정을 안했으면, '/Iam' 으로 보내기 */}
                         <Modal show={unKnownUserClicked}>
                             <div className="my-5 text-md h-full">
                                 <h1>활동하시려면 먼저 가입을 해주세요! </h1>
                             </div>
                             <div>
-                                <Link to="/Iam">
+                                <Link to="/univ">
                                     <button className="font-sans w-full border-2 rounded-3xl px-5 py-3 mt-10 bg-black text-white hover:text-black hover:bg-white focus:outline-none">가입하기</button>
                                 </Link>
                             </div>
                         </Modal>
-                    )}
+                      
 
-                    {/* Button Nav */}
-                    <div className="my-3 flex-nowrap overflow-hidden">
-                        <button id="univ" onClick={() => setUnivClicked(true)} className="px-1 py-2 border-2 rounded-xl mx-1 text-xs focus:outline-none ">
-                            학교 <span className="text-blue-500">{Univ}</span>
-                        </button>
-                        <Modal show={isUnivClicked} clicked={() => setUnivClicked(false)}>
-                            <div>
-                                <h1 className="font-bold mb-5">대학교</h1>
-                                <Select 
-                                    defaultValue={UniversityOptions[1]}
-                                    options={UnivgroupedOptions}
-                                    onChange={UnivHandler}
-                                />
-                                <button 
-                                    onClick={() => UnivFilteringHandler()} 
-                                    className=" w-full mt-20 border-2 rounded-3xl px-5 py-3 bg-blue-400 text-white hover:text-white hover:bg-blue-500 focus:outline-none"
-                                >
-                                    확인
-                                </button>
-                            </div>
-                        </Modal>
+                        {/* Button Nav */}
+                        <div className="my-3 flex-nowrap overflow-hidden">
+                            <button id="univ" onClick={() => setUnivClicked(true)} className="px-1 py-2 border-2 rounded-xl mx-1 text-xs focus:outline-none ">
+                                학교 <span className="text-blue-500">{Univ}</span>
+                            </button>
+                            <Modal show={isUnivClicked} clicked={() => setUnivClicked(false)}>
+                                <div>
+                                    <h1 className="font-bold mb-5">대학교</h1>
+                                    <Select 
+                                        defaultValue={UniversityOptions[1]}
+                                        options={UnivgroupedOptions}
+                                        onChange={UnivHandler}
+                                    />
+                                    <button 
+                                        onClick={() => UnivFilteringHandler()} 
+                                        className=" w-full mt-20 border-2 rounded-3xl px-5 py-3 bg-blue-400 text-white hover:text-white hover:bg-blue-500 focus:outline-none"
+                                    >
+                                        확인
+                                    </button>
+                                </div>
+                            </Modal>
 
-                        <button id="gender" onClick={() => setGenderClicked(true)} className="px-1 py-2 border-2 rounded-xl mx-1 text-xs focus:outline-none ">
-                            성별 <span className="text-blue-500">{Gender}</span>
-                        </button>
-                        <Modal show={isGenderClicked} clicked={() => setGenderClicked(false)}>
-                            <div>
-                                <h1 className="font-bold mb-5">성별</h1>
-                                <Select 
-                                    defaultValue={GenderOptions[1]} 
-                                    options={GendergroupedOptions}
-                                    onChange={GenderHandler}
-                                />
-                                <button 
-                                    onClick={() => GenderFilteringHandler()} 
-                                    className=" w-full mt-20 border-2 rounded-3xl px-5 py-3 bg-blue-400 text-white hover:text-white hover:bg-blue-500 focus:outline-none"
-                                >
-                                    확인
-                                </button>
-                            </div>
-                        </Modal>
+                            <button id="gender" onClick={() => setGenderClicked(true)} className="px-1 py-2 border-2 rounded-xl mx-1 text-xs focus:outline-none ">
+                                성별 <span className="text-blue-500">{Gender}</span>
+                            </button>
+                            <Modal show={isGenderClicked} clicked={() => setGenderClicked(false)}>
+                                <div>
+                                    <h1 className="font-bold mb-5">성별</h1>
+                                    <Select 
+                                        defaultValue={GenderOptions[1]} 
+                                        options={GendergroupedOptions}
+                                        onChange={GenderHandler}
+                                    />
+                                    <button 
+                                        onClick={() => GenderFilteringHandler()} 
+                                        className=" w-full mt-20 border-2 rounded-3xl px-5 py-3 bg-blue-400 text-white hover:text-white hover:bg-blue-500 focus:outline-none"
+                                    >
+                                        확인
+                                    </button>
+                                </div>
+                            </Modal>
 
-                        <button id="age" onClick={() => setAgeClicked(true)} className="px-1 py-2 border-2 rounded-xl mx-1 text-xs focus:outline-none ">
-                            나이 <span className="text-blue-400">{Age.join('~')}살</span>
-                        </button>
-                        <Modal show={isAgeClicked} clicked={() => setAgeClicked(false)}>
-                            <div>
-                                <h1 className="font-bold mb-5">나이</h1>
-                                <Select 
-                                    defaultValue={AgeOptions[1]}
-                                    options={AgegroupedOptions}
-                                    onChange={AgeHandler}
-                                />
-                                <button 
-                                    onClick={() => AgeFilteringHandler()} 
-                                    className=" w-full mt-20 border-2 rounded-3xl px-5 py-3 bg-blue-400 text-white hover:text-white hover:bg-blue-500 focus:outline-none"
-                                >
-                                    확인
-                                </button>
-                            </div>
-                        </Modal>
+                            <button id="age" onClick={() => setAgeClicked(true)} className="px-1 py-2 border-2 rounded-xl mx-1 text-xs focus:outline-none ">
+                                나이 <span className="text-blue-400">{Age.join('~')}살</span>
+                            </button>
+                            <Modal show={isAgeClicked} clicked={() => setAgeClicked(false)}>
+                                <div>
+                                    <h1 className="font-bold mb-5">나이</h1>
+                                    <Select 
+                                        defaultValue={AgeOptions[1]}
+                                        options={AgegroupedOptions}
+                                        onChange={AgeHandler}
+                                    />
+                                    <button 
+                                        onClick={() => AgeFilteringHandler()} 
+                                        className=" w-full mt-20 border-2 rounded-3xl px-5 py-3 bg-blue-400 text-white hover:text-white hover:bg-blue-500 focus:outline-none"
+                                    >
+                                        확인
+                                    </button>
+                                </div>
+                            </Modal>
 
-                        <button id="interest" onClick={() => setInterestClicked(true)} className="px-1 py-2 mt-2 mr-2 border-2 rounded-xl mx-1 text-xs focus:outline-none ">
-                            관심사 <span className="text-blue-400">{Interest}</span>
-                        </button>
-                        <Modal show={isInterestClicked} clicked={() => setInterestClicked(false)}>
-                            <div>
-                                <h1 className="font-bold mb-5">{Interest}</h1>
-                                <Select 
-                                    defaultValue={InterestOptions[0]}
-                                    options={InterestgroupedOptions}
-                                    onChange={InterestHandler}
-                                />
-                                <button 
-                                    onClick={() => InterestFilteringHandler()} 
-                                    className=" w-full mt-20 border-2 rounded-3xl px-5 py-3 bg-blue-400 text-white hover:text-white hover:bg-blue-500 focus:outline-none"
-                                >
-                                    확인
-                                </button>
-                            </div>
-                        </Modal>
-                        <img 
-                            onClick={() => setFilteringUser(personCommunity)}
-                            src="https://2donny.github.io/ykring/refresh-outline.svg"
-                            width={20}
-                            height={20}
-                            className="inline-block cursor-pointer "
-                        />
-                    </div>
-
-                    {/* 커뮤니티 컨테이너 */}
-                    {isFiltering ? (
-                        <StyleRoot
-                            className="flex flex-row justify-center mt-5"
-                        >
-                            <LoadingIndicator 
-                                color={{red: 0, green: 0, blue: 200, alpha: .5}}
-                                segmentWidth={5}
+                            <button id="interest" onClick={() => setInterestClicked(true)} className="px-1 py-2 mt-2 mr-2 border-2 rounded-xl mx-1 text-xs focus:outline-none ">
+                                관심사 <span className="text-blue-400">{Interest}</span>
+                            </button>
+                            <Modal show={isInterestClicked} clicked={() => setInterestClicked(false)}>
+                                <div>
+                                    <h1 className="font-bold mb-5">{Interest}</h1>
+                                    <Select 
+                                        defaultValue={InterestOptions[0]}
+                                        options={InterestgroupedOptions}
+                                        onChange={InterestHandler}
+                                    />
+                                    <button 
+                                        onClick={() => InterestFilteringHandler()} 
+                                        className=" w-full mt-20 border-2 rounded-3xl px-5 py-3 bg-blue-400 text-white hover:text-white hover:bg-blue-500 focus:outline-none"
+                                    >
+                                        확인
+                                    </button>
+                                </div>
+                            </Modal>
+                            <img 
+                                onClick={() => setFilteringUser(personCommunity)}
+                                src="https://2donny.github.io/ykring/refresh-outline.svg"
+                                width={20}
+                                height={20}
+                                className="inline-block cursor-pointer "
                             />
-                        </StyleRoot>    
-                    ) : (
-                        <Community users={FilteredUser} />
-                    )}
+                        </div>
 
-                    {/* 작성 버튼 */}
-                    <Link to="/create-article">
-                        <img 
-                            src="https://2donny.github.io/ykring/add-circle.svg"
-                            alt="add-circle"
-                            width={50}
-                            height={50}
-                            className="absolute right-1 bottom-20 mr-3"
-                        />
-                    </Link>
-                </section>
-                
-            </Layout>
+                        {/* 커뮤니티 컨테이너 */}
+                        {isFiltering ? (
+                            <StyleRoot
+                                className="flex flex-row justify-center mt-5"
+                            >
+                                <LoadingIndicator 
+                                    color={{red: 0, green: 0, blue: 200, alpha: .5}}
+                                    segmentWidth={5}
+                                />
+                            </StyleRoot>    
+                        ) : (
+                            <Community users={FilteredUser} />
+                        )}
+
+                        {/* 작성 버튼 */}
+                        <Link to="/create-article">
+                            <img 
+                                src="https://2donny.github.io/ykring/add-circle.svg"
+                                alt="add-circle"
+                                width={50}
+                                height={50}
+                                className="absolute right-1 bottom-20 mr-3"
+                            />
+                        </Link>
+                    </section>
+                </Layout>
+            </div>
         </div>
     )
 }
