@@ -1,2 +1,0 @@
-(this.webpackJsonpykring=this.webpackJsonpykring||[]).push([[14],{126:function(s,c,e){"use strict";e.r(c);e(1),e(15);var n=e(14),t=(e(16),e(0));c.default=function(){return Object(t.jsx)("div",{className:"w-full",children:Object(t.jsx)(n.a,{children:Object(t.jsx)("section",{className:"px-3"})})})}}}]);
-//# sourceMappingURL=14.7be01e1f.chunk.js.map
