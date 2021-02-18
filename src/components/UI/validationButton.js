@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiTextField-root': {
@@ -25,7 +25,7 @@ export default function ValidationTextFields({ history }) {
     if(email.match(emailRegex)) {
       // Go to '/pereson' 
       event.preventDefault();
-      history.push('/person');
+      history.push('/univ');
     }else {
       event.preventDefault();
       alert('올바른 메일로 입력해주세요.');
