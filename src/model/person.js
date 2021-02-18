@@ -117,3 +117,55 @@ export const InterestgroupedOptions = [
       options: InterestOptions,
     },
 ];
+
+export const AgeSettingOptions = [
+    { label: 20, value: 20 },
+    { label: 21, value: 21 },
+    { label: 22, value: 22 },
+    { label: 23, value: 23 },
+    { label: 24, value: 24 },
+    { label: 25, value: 25 },
+    { label: 26, value: 26 },
+    { label: 27, value: 27 },
+    { label: 28, value: 28 },
+    { label: 29, value: 29 },
+    { label: 30, value: 30 },
+    { label: 31, value: 31 },
+    { label: 32, value: 32 },
+    { label: 33, value: 33 },
+    { label: 34, value: 34 },
+    { label: 35, value: 35 },
+];
+
+export const jobs = [
+    { label: "대학생", value: "대학생" },
+    { label: "신입생", value: "신입생" },
+    { label: "개발자", value: "개발자" },
+    { label: "기획자", value: "기획자" },
+    { label: "마케터", value: "마케터" },
+    { label: "대표", value: "대표" },
+    { label: "편집자", value: "편집자" },
+    { label: "생산원", value: "생산원" },
+    { label: "선생님", value: "선생님" },
+    { label: "마술사", value: "마술사" },
+    { label: "사업가", value: "사업가" },
+    { label: "프리랜서", value: "프리랜서" },
+    { label: "알바생", value: "알바생" },
+    { label: "서비스원", value: "서비스원" },
+    { label: "생산원", value: "생산원" },
+    { label: "기술자", value: "기술자" },
+]
+
+export const adjectives = [
+    { label: "심심한", value: "심심한" },
+    { label: "배부른", value: "배부른" },
+    { label: "똑똑한", value: "똑똑한" },
+    { label: "열정이 넘치는", value: "열정이 넘치는" },
+    { label: "독특한", value: "독특한" },
+    { label: "매력있는", value: "매력있는" },
+    { label: "배고픈", value: "배고픈" },
+    { label: "헤롱헤롱한", value: "헤롱헤롱한" },
+    { label: "디자이너가 되고싶은", value: "디자이너가 되고싶은" },
+    { label: "개발자가 되고싶은", value: "개발자가 되고싶은" },
+    
+]
