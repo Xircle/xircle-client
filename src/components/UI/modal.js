@@ -1,34 +1,37 @@
 import React from 'react';
 import Backdrop from './backdrop';
+
 let memoizedModal = null;
 
 const Modal = ({ children, show, clicked }) => {
     return (
-        <>
+        <div className="w-full">
             <Backdrop show={show} clicked={clicked}/>
-            <div 
-                style={{
-                    visibility: show ? 'visible' :'hidden',
-                    borderRadius: '10px',
-                    position: "fixed",
-                    zIndex: 500,
-                    width: '440px',
-                    textAlign: 'center',
-                    border: '1px solid #ccc',
-                    boxShadow: '1px 1px 1px black',
-                    backgroundColor: 'white',
-                    padding: '36px',
-                    left: 'calc(50% - 220px)',
-                    top: '20%',
-                    boxSizing: 'border-box',
-                    transition: 'all .3s ease-out',
-                    transform: show ? 'scale(1)' : 'scale(0.5)',
-                    opacity: show ? '1' : '0'
-                }}
+            <div className="w-full">
+                <div 
+                    style={{
+                        visibility: show ? 'visible' :'hidden',
+                        borderRadius: '10px',
+                        position: "fixed",
+                        zIndex: 500,
+                        width: "340px",
+                        textAlign: 'center',
+                        border: '1px solid #ccc',
+                        boxShadow: '1px 1px 1px black',
+                        backgroundColor: 'white',
+                        padding: '36px',
+                        left: 'calc(50% - 170px)',
+                        top: '20%',
+                        boxSizing: 'border-box',
+                        transition: 'all .3s ease-out',
+                        transform: show ? 'scale(1)' : 'scale(0.5)',
+                        opacity: show ? '1' : '0'
+                    }}
                 >
-                {children}
+                    {children}
+                </div>
             </div>
-        </>
+        </div>
     )
 }
 
