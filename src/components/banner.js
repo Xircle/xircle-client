@@ -10,8 +10,8 @@ const Banner = () => {
                 </div>
                 <img 
                     src="https://2donny.github.io/ykring/logo192.png"
-                    width={50}
-                    height={50}
+                    width={40}
+                    height={40}
                 />
                 </div>
         </section>
