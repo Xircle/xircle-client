@@ -24,7 +24,7 @@ function SettingProgress({questionNum}) {
     } else if (questionNum === '10') {
         ProgressPercent = '96%';
     } else if (questionNum === '11') {
-        ProgressPercent = '110%';
+        ProgressPercent = '100%';
     }
 
 
@@ -34,7 +34,7 @@ function SettingProgress({questionNum}) {
                 width: `${ProgressPercent}`, 
                 transition: 'all .3s ease-in', 
                 border: '10px solid black',  
-                borderTopRightRadius: '10px', 
+                borderTopRightRadius: `10px`, 
                 borderBottomRightRadius: '10px'
             }}
         >
