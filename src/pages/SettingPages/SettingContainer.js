@@ -6,7 +6,7 @@ import Layout from '../../components/layout';
 const SettingContainer = ({ history, match }) => {
     const num = match.params.questionNum;
     return (
-        <div className="w-full">
+        <div className="w-full overflow-x-hidden">
             <Layout headerNone footerNone>
                 {num === '12' ? null : (
                     <>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import Modal from '../../../components/UI/modal';
 import Select from 'react-select';
 import { AgeSettingOptions } from '../../../model/person';
@@ -15,6 +15,7 @@ const SettingContents = ({ history, questionNum }) => {
     const [file, setFile] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
     const [displayName, setDisplayName] = useState('');
+    const displayRef = useRef();
     const [introText, setIntroText] = useState('');
     const [profileImgSrc, setProfileImgSrc] = useState('');
     const [profileImgFile, setProfileImgFile] = useState('');
@@ -22,6 +23,7 @@ const SettingContents = ({ history, questionNum }) => {
 
     const [genderClicked, setGenderClicked] = useState(false);
 
+    
 
     const WomanBtnClickedHandler = useCallback((event) => {
         setGenderClicked(true);
@@ -96,12 +98,17 @@ const SettingContents = ({ history, questionNum }) => {
     // /setting/7
     const displayNameChangeHandler = useCallback((event) => {
         event.preventDefault();
-        setDisplayName(event.target.value);
     }, []);
     
-    const displayNameSubmitHandler = useCallback((event) => {
-        event.preventDefault();
-        history.push('/setting/8')
+    const displayNameSubmitHandler = useCallback((e) => {
+        e.preventDefault();
+        const displayNameRegex = /^@/;
+        if(displayRef.current.value.match(displayNameRegex)) {
+            setDisplayName(displayRef.current.value);
+            history.push('/setting/8')
+        }
+        else
+            alert("닉네임은 @을 포함해야합니다.")
     }, []);
 
     // /setting/8
@@ -175,6 +182,7 @@ const SettingContents = ({ history, questionNum }) => {
                         <span style={{ fontSize: '14px', color: '#5c5c5c'}}>걱정마세요! 나이는 20대 초, 중, 후반으로 표시됩니다.</span>
                     </div>
                     <Select 
+                        isSearchable={false}
                         blurInputOnSelect
                         placeholder="나이를 선택해주세요."
                         options={AgeSettingOptions}
@@ -191,7 +199,7 @@ const SettingContents = ({ history, questionNum }) => {
             <section className="text-center px-3 mt-3">
                 <p style={{textAlign: 'left'}} className="text-2xl text-left">회원님을 설명해주세요.</p>
                 <Search
-                    className="text-left w-full"
+                    className="text-left"
                 />
                 <section style={{maxHeight: '400px'}} className="mt-3 px-2 overflow-y-scroll">
                     {jobs.map((job, id) => (
@@ -208,7 +216,8 @@ const SettingContents = ({ history, questionNum }) => {
                 <p style={{textAlign: 'left'}} className="text-2xl text-left">회원님을 설명해주세요.</p>
                 <div className="flex flex-row items-center">
                     <Search
-                        className="text-left"
+                        size="big"
+                        className="text-left w-1/4"
                     />
                     <h1 className="ml-3 text-xl my-auto font-medium">{job}</h1>
                 </div>
@@ -225,7 +234,7 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="h-1/4 text-center px-3 mt-3">
                 <div className="h-full flex flex-row justify-center items-center pt-20">
-                    <p style={{marginBottom: 0}} className="text-lg mr-5">나는</p>
+                    <p style={{marginBottom: 0}} className="mr-5">나는</p>
                     <TextFieldUI 
                         submitted={(e) => locationBtnHandler(e)} 
                         changeHandler={(e) => locationTextChangeHandler(e)}
@@ -240,14 +249,13 @@ const SettingContents = ({ history, questionNum }) => {
     }else if(questionNumber === 5) {
         contents = (
             <section className=" h-1/6 text-center px-3 mt-3">
-                <div className="h-full flex flex-row justify-center items-center pt-10">
+                <div className="mt-3">
                     <h3 className="text-left text-3xl font-light">친구들에게 공유하고싶은 자신의 일상을 한가지만 사진과함께 적어보세요! ex.오늘 입은 옷ㅎㅎ</h3>
-                    
                 </div>
                 
-                <section className="mt-3">
+                <section className="mt-7 px-5">
                     <img 
-                        style={{margin: '0 auto 10px', width: '300px', height: "300px", objectFit: 'contain'}} 
+                        style={{margin: '0 auto 10px', width: '350px', height: "350px", objectFit: 'contain'}} 
                         src={imgSrc ? imgSrc : null} 
                     />
                     <input
@@ -256,14 +264,14 @@ const SettingContents = ({ history, questionNum }) => {
                         onChange={(e) => uploadPhoto(e)}
                     />
                     <button onClick={(e) => uploadBtnHandler(e)} className="mt-5 w-1/3 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
-                        업로드 하기
+                        <p style={{wordBreak: "keep-all"}}>업로드 하기</p>
                     </button>
                 </section>
             </section>
         )
     }else if(questionNumber === 6) {
         contents = (
-            <section className=" h-1/6 text-center px-3 mt-10">
+            <section className=" h-1/6 text-center px-5 mt-10">
                 
                 <h3 className="text-2xl">[연고링 이벤트]</h3> <p> <strong className="text-xl">Airpod 2</strong>  절대 놓치지 마세요!!!</p>
                 <textarea 
@@ -281,15 +289,19 @@ const SettingContents = ({ history, questionNum }) => {
             <section className=" h-1/6 text-center px-3 mt-10">
                 <h3 className="text-left text-3xl font-light">닉네임을 설정해주세요.</h3>
                 <h5 className="text-left font-normal mb-10">새 계정에 사용할 사용자 이름을 선택하세요. 나중에 언제든지 변경할 수 있습니다.</h5>
-                <input 
-                    type="text"
-                    className="w-3/4 bg-gray-200 px-5 py-5 rounded-xl"
-                    autoFocus
-                    onChange={(e) => displayNameChangeHandler(e)}
-                />
-                <button onClick={(e) => displayNameSubmitHandler(e)} className="mt-5 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
-                    다음
-                </button>
+                <form onSubmit={(e) => displayNameSubmitHandler(e)} autoComplete="off" noValidate>
+                    <input 
+                        type="text"
+                        defaultValue="@"
+                        className="w-3/4 bg-gray-200 px-5 py-5 rounded-xl mr-3"
+                        autoFocus
+                        ref={displayRef}
+                        onChange={(e) => displayNameChangeHandler(e)}
+                    />
+                    <button onClick={(e) => displayNameSubmitHandler(e)} className="mt-5 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
+                        다음
+                    </button>
+                </form>
             </section>
         )
     }else if(questionNumber === 8) {
@@ -305,7 +317,7 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 9) {
         contents = (
-            <section className=" h-1/6 text-center px-3 mt-10">
+            <section className=" h-1/6 text-center px-5 mt-10">
                 <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님 <br />친구들에게 보여질 자신의 한줄소개를  간단히 적어주세요! </h3>
                 <h5 className="text-left font-normal mb-10">새 계정에 사용할 사용자 이름을 선택하세요. 나중에 언제든지 변경할 수 있습니다.</h5>
                 <textarea 
@@ -315,7 +327,7 @@ const SettingContents = ({ history, questionNum }) => {
                     className="my-3 px-3 py-5 w-full text-base placeholder-gray-400">
                 </textarea>
 
-                <button onClick={(e) => introTextSubmitHandler(e)} className="mt-5 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
+                <button onClick={(e) => introTextSubmitHandler(e)} className="my-5 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
                     다음
                 </button>
             </section>
@@ -364,31 +376,30 @@ const SettingContents = ({ history, questionNum }) => {
     }else if(questionNumber === 12) {
         contents = (
             <>
-                <section style={{height: '30%'}} className="mt-5 flex flex-row items-center ">
+                <section style={{height: '20%'}} className="mt-5 flex flex-row items-center ">
                     <img 
                         style={{height: '70px', width: '70px'}}
-                        src="https://2donny.github.io/ykring/yk-logo.png"
+                        src="https://2donny.github.io/yk-logo.png"
                         alt="yk-logo"
                         className="rounded-2xl mx-auto"
                     />
                 </section>
 
-                <section style={{height: '30%'}} className=" text-center px-5">
-                    <h1 className="mb-3 px-10">연고링 회원가입및 사전신청을 해주셔서 대단히 감사합니다.</h1>
-                    <p>
+                <section style={{height: '40%'}} className=" text-center pt-5">
+                    <h1 className="mb-3 px-10">연고링 회원가입 및 사전신청을 해주셔서 대단히 감사합니다.</h1>
+                    <p className="px-10 pt-5 text-lg">
                         정식 서비스는 3월 20일날
                         시작됩니다. 
                         사전신청 이벤트 결과는 
                         연고링 카카오톡 플러스 채널로 공지가 
-                        됩니다 . 
-                        꼭 연고링 친구추가해주세요!
+                        됩니다.  꼭 연고링 친구추가 해주세요!
                         친구에게 연고링을 공유하면
-                        공유한 친구 개수만큼 추첨번호 늘려준다. 
+                        공유한 친구 개수만큼 추첨번호 늘려드립니다!
                     </p>
                 </section>
 
                 <section style={{height: '30%', padding: '0 10px'}}>
-                    <button onClick={() => console.log('clicked')} className="font-sans w-full border-2 rounded-2xl px-5 py-3 mt-10 bg-black text-white hover:text-black hover:bg-white focus:outline-none">공유하고 에어팟 당첨 확률 up하기 </button>
+                    <button onClick={() => console.log('clicked')} className="font-sans w-full border-2 rounded-2xl px-5 py-3 mt-24 bg-black text-white hover:text-black hover:bg-white focus:outline-none">공유하고 에어팟 당첨 확률 up하기 </button>
                 </section>
             </>
         )
@@ -396,9 +407,9 @@ const SettingContents = ({ history, questionNum }) => {
 
     
     return (
-        <>
+        <div>
             {contents}
-        </>
+        </div>
     )
 }
 export default SettingContents; 
