@@ -29,10 +29,10 @@
   "background_color": "#ffffff",
   "app": {
     "urls": [
-      "https://2donny.github.io/ykring/"
+      "https://2donny.github.io/"
     ],
     "launch": {
-      "web_url": "https://2donny.github.io/ykring/"
+      "web_url": "https://2donny.github.io/"
     }
   }
 }
