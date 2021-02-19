@@ -27,28 +27,28 @@ const Start = () => {
                     </div>
                 ) : (
                     <>
-                        <section style={{height: '20%'}} className="mt-5 flex flex-row items-center ">
+                        <section style={{height: '15%'}} className="mt-5 flex flex-row items-center ">
                             <img 
                                 style={{height: '70px', width: '70px'}}
-                                src="https://2donny.github.io/ykring/yk-logo.png"
+                                src="https://2donny.github.io/yk-logo.png"
                                 alt="yk-logo"
                                 className="rounded-2xl mx-auto"
                             />
                         </section>
 
-                        <section style={{height: '35%'}} className="px-10 mb-5">
+                        <section style={{height: '35%'}} className="px-16 mb-5">
                             <div style={{backgroundColor: '#ccc'}} className="h-full"></div>
                         </section>
 
-                        <section style={{height: '15%'}} className=" text-center">
-                            <h1 className="mb-3">대학생들의 네트워킹 공간</h1>
-                            <p>연고링은 대학생들의 네트워킹 공간이예요.</p>
-                            <p>새로운 대학생 친구들을 사귀어봐요!</p>
+                        <section style={{height: '20%'}} className="text-center px-10">
+                            <h1 style={{wordBreak: "keep-all"}} className="mb-3 font-light text-4xl">대학생들의 네트워킹 공간</h1>
+                            <p>연고링은 대학생들의 네트워킹 공간이예요. <br /> 새로운 대학생 친구들을 사귀어봐요!</p>
+                            <p></p>
                         </section>
 
                         <section style={{height: '10%', padding: '0 10px'}}>
                             <Link to="/login">
-                                <button onClick={() => console.log('clicked')} className="font-sans w-full border-2 rounded-2xl px-5 py-3 mt-10 bg-black text-white hover:text-black hover:bg-white focus:outline-none">'나'에 대해서 질문하고 시작하기</button>
+                                <button onClick={() => console.log('clicked')} className="font-sans w-full border-2 rounded-2xl px-5 py-3 mt-5 bg-black text-white hover:text-black hover:bg-white focus:outline-none">'나'에 대해서 질문하고 시작하기</button>
                             </Link>
                         </section>
                     </>

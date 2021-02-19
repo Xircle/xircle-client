@@ -12,9 +12,8 @@ const SettingCotainer = React.lazy(() => import('./pages/SettingPages/SettingCon
 const App = () => {
   return (
     <div>
-      <Suspense fallback={<div className="h-screen flex flex-row justify-center items-center" ><img style={{width: "200px", height: "200px"}} src="/ykring/yk-logo.png" /></div>}>
+      <Suspense fallback={<div className="h-screen flex flex-row justify-center items-center" ><img style={{width: "200px", height: "200px"}} src="/yk-logo.png" /></div>}>
         <Switch>
-           
             <Route path="/setting/:questionNum" component={SettingCotainer}/>
             <Route path="/univ" component={Univ}/>
             <Route path="/login" component={Login}/>

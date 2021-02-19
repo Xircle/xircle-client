@@ -13,7 +13,7 @@ const Login = ({ history }) => {
                 <section style={{height: '20%'}} className="my-5 flex flex-row items-center ">
                     <img 
                         style={{height: '70px', width: '70px'}}
-                        src="https://2donny.github.io/ykring/yk-logo.png"
+                        src="https://2donny.github.io/yk-logo.png"
                         alt="yk-logo"
                         className="rounded-2xl mx-auto"
                     />
