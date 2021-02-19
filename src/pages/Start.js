@@ -8,7 +8,7 @@ const Start = () => {
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false);
-        }, 500);
+        }, 100);
     }, []);
     return (
         <div className="w-full">
@@ -19,7 +19,7 @@ const Start = () => {
                     <div className="w-full h-full flex flex-col justify-center items-center">
                         <img 
                             style={{height: '150px', width: '150px', marginBottom: '10px'}}
-                            src="https://2donny.github.io/ykring/yk-logo.png"
+                            src="https://2donny.github.io/yk-logo.png"
                             alt="yk-logo"
                             className="rounded-2xl mx-auto"
                         />
