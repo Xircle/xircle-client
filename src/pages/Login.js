@@ -6,7 +6,7 @@ const Login = ({ history }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     return (
-        <div className="w-full">
+        <div className="w-full overflow-y-hidden">
             <Layout headerNone footerNone={true}>
                 
                 {/* main */}
@@ -24,13 +24,6 @@ const Login = ({ history }) => {
                     <ValidationButton history={history} />
                 </section>
 
-                <section style={{height: '20%'}} className=" text-center">
-                    
-                </section>
-
-                <section style={{height: '10%'}}>
-                    
-                </section>
                 
             </Layout>
         </div>

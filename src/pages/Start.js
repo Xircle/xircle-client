@@ -36,7 +36,7 @@ const Start = () => {
                             />
                         </section>
 
-                        <section style={{height: '35%'}} className="px-16 mb-5">
+                        <section style={{height: '30%'}} className="px-16 mb-5">
                             <div style={{backgroundColor: '#ccc'}} className="h-full"></div>
                         </section>
 

@@ -25,6 +25,8 @@ function SettingProgress({questionNum}) {
         ProgressPercent = '96%';
     } else if (questionNum === '11') {
         ProgressPercent = '100%';
+    } else {
+        ProgressPercent = '0%';
     }
 
 
@@ -32,10 +34,11 @@ function SettingProgress({questionNum}) {
         <div 
             style={{
                 width: `${ProgressPercent}`, 
+                backgroundColor: 'black',
                 transition: 'all .3s ease-in', 
                 border: '10px solid black',  
                 borderTopRightRadius: `10px`, 
-                borderBottomRightRadius: '10px'
+                borderBottomRightRadius: '10px',
             }}
         >
         </div>   

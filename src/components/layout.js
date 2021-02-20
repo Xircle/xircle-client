@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Footer_nav from './footer_nav';
 import Banner from './banner';
 import { Link } from 'react-router-dom';
-import Modal from '../components/UI/modal';
 
 const Layout = ({ children, headerNone, footerNone }) => {
     return (
@@ -10,7 +9,6 @@ const Layout = ({ children, headerNone, footerNone }) => {
             style={{ minWidth: "320px", maxWidth: "414px", maxHeight: '100vh', borderLeft: '1px solid black', borderRight: '1px solid black'}}
             className="flex flex-col mx-auto h-screen relative"
         >
-            {/* Navigation */}
             {!headerNone ? (
                 <>
                     <nav className="flex flex-row justify-between px-3 py-2">
