@@ -64,7 +64,7 @@
     }
   ],
   "scope": "/",
-  "start_url": "index.html",
+  "start_url": "/",
   "display": "fullscreen",
   "description": "연고링 웹 페이지",
   "theme_color": "#000000",
