@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 const Layout = ({ children, headerNone, footerNone }) => {
     return (
         <div 
-            style={{ minWidth: "320px", maxWidth: "414px", maxHeight: '100vh', borderLeft: '1px solid black', borderRight: '1px solid black'}}
-            className="flex flex-col mx-auto h-screen relative"
+            id="layout"
+            className="flex flex-col mx-auto bg-white md:w-full"
         >
             {!headerNone ? (
                 <>
@@ -34,7 +34,7 @@ const Layout = ({ children, headerNone, footerNone }) => {
             )}
 
             {/*  main custom  */}
-            <main className="h-screen">
+            <main className="h-full min-h-screen">
                 {children}
             </main>
 
