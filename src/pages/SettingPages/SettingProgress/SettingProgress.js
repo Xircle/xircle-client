@@ -36,7 +36,7 @@ function SettingProgress({questionNum}) {
                 width: `${ProgressPercent}`, 
                 backgroundColor: 'black',
                 transition: 'all .3s ease-in', 
-                border: '10px solid black',  
+                border: '8px solid black',  
                 borderTopRightRadius: `10px`, 
                 borderBottomRightRadius: '10px',
             }}

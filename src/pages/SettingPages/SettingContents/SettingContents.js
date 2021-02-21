@@ -8,6 +8,7 @@ import TextFieldUI from '../../../components/UI/textFieldUI'
 import KakaoShareButton from '../../../components/KakaoShareButton';
 import {FacebookIcon, FacebookShareButton, TwitterShareButton, TwitterIcon, LineShareButton, LineIcon } from 'react-share';
 import axios from 'axios';
+import Banner from '../../../components/banner';
 
 const SettingContents = ({ history, questionNum }) => {
     const [gender, setGender] = useState('');
@@ -179,9 +180,11 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <>
                 <section className="text-center px-5 mt-5">
-                    <p style={{textAlign: 'left'}} className="text-2xl text-left">나는?</p>
+                    <h1 style={{textAlign: 'left', marginBottom: '10px'}} className="text-2xl text-left">성별</h1>
+                    <p style={{color: "#C5C1C1", textAlign: 'left', marginBottom: '20px'}}>성별을 선택해주세요. (필수)<br /> 직접기입에 성별과 관련없는 정보 기재 하지마세요.</p>
                     <button onClick={(e) => WomanBtnClickedHandler(e)} style={{width: '80%'}} className="font-sans block border-2 px-5 py-3 mt-5 focus:outline-none"><span className=" text-lg">🙋🏻‍♀️ 여자</span></button>
                     <button onClick={(e) => ManBtnClickedHandler(e)} style={{width: '80%'}} className="font-sans block border-2 px-5 py-3 mt-5 focus:outline-none"><span className="text-lg">🙋🏻 남자</span></button>
+                    <button onClick={(e) => ManBtnClickedHandler(e)} style={{width: '80%'}} className="font-sans block border-2 px-5 py-3 mt-5 focus:outline-none"><span className="text-lg"> 논바이너리</span></button>
                 </section>
                 
                 <Modal show={genderClicked} clicked={() => setGenderClicked(false)}>
@@ -196,8 +199,7 @@ const SettingContents = ({ history, questionNum }) => {
                         options={AgeSettingOptions}
                     />
                     <div className="flex flex-row justify-evenly">
-                        <button onClick={() => setGenderClicked(false)} className="font-sans border-2 rounded-3xl px-5 py-3 mt-10 hover:text-white hover:bg-black focus:outline-none">취소</button>
-                        <button onClick={() => history.push('/setting/2')} className="font-sans border-2 rounded-3xl px-5 py-3 mt-10 hover:text-white hover:bg-black focus:outline-none">확인</button>
+                        <button onClick={() => history.push('/setting/2')} className="font-sans border-2 w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
                     </div>
                 </Modal>
             </>
@@ -205,12 +207,15 @@ const SettingContents = ({ history, questionNum }) => {
     }else if(questionNumber === 2) {
         contents = (
             <section className="text-center px-3 mt-3">
-                <p style={{textAlign: 'left'}} className="text-2xl text-left">회원님을 설명해주세요.</p>
+                <div className="px-3 py-5 mb-3">
+                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">회원님은 어떤 사람인가요?</h1>
+                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>회원님을 설명 해주세요. (필수) <br />어떤 사람인지 궁금해요.</p>
+                </div>
                 <Search
                     size="big"
-                    className="text-left"
+                    className="text-left ml-2"
                 />
-                <section style={{maxHeight: '400px'}} className="mt-3 px-2 overflow-y-scroll">
+                <section className="my-5 px-2">
                     {jobs.map((job, id) => (
                         <article onClick={() => jobClickedHandler(job.value)} style={{border: '1px solid #ccc'}} className=" cursor-pointer text-left mt-5 py-7 px-10 rounded-xl" key={id}>
                             <span>{job.value}</span>
@@ -222,15 +227,15 @@ const SettingContents = ({ history, questionNum }) => {
     }else if(questionNumber === 3) {
         contents = (
             <section className="text-center px-3 mt-3">
-                <p style={{textAlign: 'left'}} className="text-2xl text-left">회원님을 설명해주세요.</p>
-                <div className="flex flex-row items-center">
-                    <Search
-                        size="big"
-                        className="text-left w-1/4"
-                    />
-                    <h1 className="ml-3 text-xl my-auto font-medium text-right">{job}</h1>
+                <div className="px-3 py-5 mb-3">
+                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">회원님은 어떤 사람인가요?</h1>
+                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>회원님을 설명 해주세요. (필수) <br />어떤 사람인지 궁금해요.</p>
                 </div>
-                <section style={{maxHeight: '380px'}} className="mt-3 px-2 overflow-y-scroll">
+                <Search
+                    size="big"
+                    className="text-left ml-2"
+                />
+                <section className="my-3 px-2">
                     {adjectives.map((adj, id) => (
                         <article onClick={() => adjClickedHandler(adj.value)} style={{border: '1px solid #ccc'}} className=" cursor-pointer text-left mt-5 py-7 px-10 border-2 rounded-xl" key={id}>
                             <span >{adj.value}</span>
@@ -242,13 +247,17 @@ const SettingContents = ({ history, questionNum }) => {
     }else if(questionNumber === 4) {
         contents = (
             <section className="h-1/4 text-center px-3 mt-3">
+                <div className="px-3 py-5 mb-3">
+                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">거주지</h1>
+                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>거주지를 기입해주세요. (필수) <br /> 구까지만 해주세요.  EX. 서울특별시 성북구</p>
+                </div>
                 <div className="h-full flex flex-row justify-center items-center pt-20">
                     <p style={{marginBottom: 0}} className="mr-5">나는</p>
                     <TextFieldUI 
                         submitted={(e) => locationBtnHandler(e)} 
                         changeHandler={(e) => locationTextChangeHandler(e)}
                         label="사는곳" 
-                        placeholder="서울특별시 강동구" 
+                        placeholder="서울특별시 성북구" 
                     />
                     <p className="text-lg ml-5">에 삽니다.</p>
                 </div>
@@ -257,22 +266,23 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 5) {
         contents = (
-            <section className=" h-1/6 text-center px-3 mt-3">
-                <div className="mt-3">
-                    <h3 className="text-left text-3xl font-light">친구들에게 공유하고싶은 자신의 일상을 한가지만 사진과함께 적어보세요! ex.오늘 입은 옷ㅎㅎ</h3>
+            <section className="text-center px-3 my-3 mb-10">
+                <div className="px-3 py-5 mb-3">
+                    <h3 className="text-left">친구들에게 공유하고싶은 자신의 일상을 한가지만 사진과함께 적어보세요!</h3>
+                    <p style={{color: "#B3B3B3", textAlign: 'left'}}>ex.오늘 먹은 음식 / 오늘의 일기 </p>
                 </div>
-                
-                <section className="mt-7 px-5">
+                <section className="mt-5 px-5">
                     <img 
-                        style={{margin: '0 auto 10px', width: '350px', height: "350px", objectFit: 'contain'}} 
-                        src={imgSrc ? imgSrc : null} 
+                        style={{margin: '0 auto 10px', width: '350px', height: '350px', objectFit: 'contain'}} 
+                        src={imgSrc ? imgSrc : "/camera.png"} 
                     />
                     <input
                         type="file" 
                         accept="image/x-png,image/jpeg,image/gif"
                         onChange={(e) => uploadPhoto(e)}
+                        style={{marginLeft: '10px'}}
                     />
-                    <button onClick={(e) => uploadBtnHandler(e)} className="mt-5 w-1/3 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
+                    <button onClick={(e) => uploadBtnHandler(e)} className="mt-16 w-full rounded-xl px-5 py-3 bg-gray-400 text-white focus:outline-none">
                         <p style={{wordBreak: "keep-all"}}>업로드 하기</p>
                     </button>
                 </section>
@@ -280,13 +290,12 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 6) {
         contents = (
-            <section className=" h-1/6 text-center px-5 mt-10">
-                
-                <h3 className="text-2xl">[연고링 이벤트]</h3> <p> <strong className="text-xl">Airpod 2</strong>  절대 놓치지 마세요!!!</p>
+            <section className="text-center px-5 my-5">
+                <Banner />
                 <textarea 
-                    placeholder="친구들에게 공유할 글 작성해보세요. 해시태그"
-                    style={{height: '250px', border: '1px solid gray'}}
-                    className="my-3 px-3 py-5 w-full text-base placeholder-gray-400">
+                    placeholder="첫 번째 글을 작성해 보세요. 비방/욕설은 삼가해주세요."
+                    style={{height: '250px', border: '1px solid #ccc'}}
+                    className="my-10 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
                 <button onClick={(e) => articleSubmitHandler(e)} className="mt-5 w-full border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
                     다음
@@ -295,14 +304,14 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 7) {
         contents = (
-            <section className=" h-1/6 text-center px-3 mt-10">
-                <h3 className="text-left text-3xl font-light">닉네임을 설정해주세요.</h3>
-                <h5 className="text-left font-normal mb-10">새 계정에 사용할 사용자 이름을 선택하세요. 나중에 언제든지 변경할 수 있습니다.</h5>
+            <section className="text-center px-3 my-10">
+                <h3 className="text-left text-2xl">닉네임(아이디)을 설정해주세요.</h3>
+                <h5 className="text-left font-normal text-gray-400 mb-10">닉네임을 적어주세요. <br />언제든지 변경가능합니다.</h5>
                 <form onSubmit={(e) => displayNameSubmitHandler(e)} autoComplete="off" noValidate>
                     <input 
                         type="text"
                         defaultValue="@"
-                        className="w-3/4 bg-gray-200 px-5 py-5 rounded-xl mr-3"
+                        className="w-3/4 bg-gray-200 px-5 py-5 rounded-xl mb-3"
                         autoFocus
                         ref={displayRef}
                         onChange={(e) => displayNameChangeHandler(e)}
@@ -315,10 +324,11 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 8) {
         contents = (
-            <section className=" h-1/6 text-center px-3 mt-10">
-                <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님 <br />요즘 무엇에 관심있으신가요?</h3>
-                <h5 className="text-left font-normal mb-10">새 계정에 사용할 사용자 이름을 선택하세요. 나중에 언제든지 변경할 수 있습니다.</h5>
-                
+            <section className="text-center px-3 my-5">
+                <div className="px-3 py-5 mb-3">
+                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님 <br />요즘 무엇에 관심있으신가요?</h3>
+                    <h5 className="text-left font-normal my-5 text-gray-400">관심사를 5개 이상 골라주세요. <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 해시태그 해보세요.</h5>
+                </div>
                 <button onClick={(e) => interestSubmitHandler(e)} className="mt-5 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
                     다음
                 </button>
@@ -326,14 +336,16 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 9) {
         contents = (
-            <section className=" h-1/6 text-center px-5 mt-10">
-                <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님 <br />친구들에게 보여질 자신의 한줄소개를  간단히 적어주세요! </h3>
-                <h5 className="text-left font-normal mb-10">새 계정에 사용할 사용자 이름을 선택하세요. 나중에 언제든지 변경할 수 있습니다.</h5>
+            <section className="text-center px-5 my-5">
+                <div className="px-3 py-5 mb-3">
+                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님의 한줄소개! </h3>
+                    <h5 className="text-left font-normal text-gray-400 mb-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
+                </div>
                 <textarea 
                     placeholder="예) 안녕하세요. 저는 24살 연세대학교에 재학중인 뿅뿅뿅입니다. 저는 현재 스타트업에서 어플리케이션 기획을 하고있습니다. 커리어적으로는 인사이트를 공유하고싶어요! 취미로는 함께 카페에서 커피한잔 함께 마시는걸 즐겨요. 또 전시회 뮤지컬을 좋아합니다! 눈과 입이 즐거운걸 사랑하는 청춘입니다 핳핳"
                     onChange={(e) => introTextChangeHandler(e)}
-                    style={{height: '250px', border: '1px solid gray'}}
-                    className="my-3 px-3 py-5 w-full text-base placeholder-gray-400">
+                    style={{height: '250px', border: '1px solid #ccc'}}
+                    className="my-3 px-5 py-5 w-full text-base rounded-xl placeholder-gray-300">
                 </textarea>
 
                 <button onClick={(e) => introTextSubmitHandler(e)} className="my-5 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
@@ -343,21 +355,23 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 10) {
         contents = (
-            <section className=" h-1/6 text-center px-3 mt-10">
-                <h5 className="text-left font-normal mb-10">마지막!! 회원님의 프로필 사진을 올려주세요!</h5>
-                <p>얼굴 사진이 아니어도 됩니다. 본인을 가장 잘 드러낼 수  있는 사진 하나를 선택해주세요 ;) </p>
-                
+            <section className="text-center px-3 mb-10">
+                 <div className="px-3 py-5 mb-3">
+                    <h3 className="text-left">[마지막] 프로필 사진을 올려주세요.</h3>
+                    <p>얼굴 사진이 아니어도 됩니다. 본인을 가장 잘 드러낼 수  있는 사진 하나를 선택해주세요 ;) </p>
+                </div>
                 <section className="mt-5 px-5">
                     <img 
                         style={{margin: '0 auto 10px', width: '350px', height: "350px", objectFit: 'contain'}} 
-                        src={profileImgSrc ? profileImgSrc : null} 
+                        src={profileImgSrc ? profileImgSrc : "/camera.png"} 
+                        alt="camera"
                     />
                     <input
                         type="file" 
                         accept="image/x-png,image/jpeg,image/gif"
                         onChange={(e) => uploadProfileImg(e)}
                     />
-                    <button onClick={(e) => uploadProfileHandler(e)} className="mt-5 w-1/3 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
+                    <button onClick={(e) => uploadProfileHandler(e)} className="mt-16 w-full rounded-xl px-5 py-3 bg-gray-400 text-white focus:outline-none">
                         업로드 하기
                     </button>
                 </section>
@@ -365,7 +379,7 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 11) {
         contents = (
-            <section className=" h-1/6 text-center px-3 mt-10">
+            <section className="text-center px-3 mt-5">
                 <h3 className="text-left font-normal mb-10 text-2xl">이벤트 공지를 위한 전화번호 <br /> (이벤트 참가자 필수)</h3>
                 <section className="mt-3">
                     <input 
