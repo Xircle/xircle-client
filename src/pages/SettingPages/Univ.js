@@ -16,9 +16,9 @@ const Univ = ({ history }) => {
             <Layout headerNone footerNone={true}>
                 
                 {/* main */}
-                <div style={{height: '2%'}}></div>
-                <nav style={{height: '7%'}} className="flex flex-row items-center justify-between border-b-2">
-                    <p className="w-full text-lg text-center">자기소개</p>
+                {/* <div style={{height: '2%'}}></div> */}
+                <nav style={{height: '9%', border: '.5px solid #e5e5e5'}} className="flex flex-row items-center justify-between">
+                    <p className="w-full text-lg text-center py-10">자기소개</p>
                 </nav>
 
                 <section style={{height: '35%'}} className="flex flex-row items-center px-5">
@@ -30,6 +30,7 @@ const Univ = ({ history }) => {
                         <p>나는</p>
                         <div style={{width: '60%', margin: '0 10px'}}>
                             <Select
+                                isSearchable={false}
                                 defaultValue={UniversityOptions[1]}
                                 options={UnivgroupedOptions}
                                 onChange={UnivHandler}

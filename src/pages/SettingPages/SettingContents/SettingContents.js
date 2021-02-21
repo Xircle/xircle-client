@@ -5,6 +5,8 @@ import { AgeSettingOptions } from '../../../model/person';
 import { Search } from 'semantic-ui-react'
 import { jobs, adjectives } from '../../../model/person';
 import TextFieldUI from '../../../components/UI/textFieldUI'
+import KakaoShareButton from '../../../components/KakaoShareButton';
+import {FacebookIcon, FacebookShareButton, TwitterShareButton, TwitterIcon, LineShareButton, LineIcon } from 'react-share';
 import axios from 'axios';
 
 const SettingContents = ({ history, questionNum }) => {
@@ -22,7 +24,7 @@ const SettingContents = ({ history, questionNum }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
 
     const [genderClicked, setGenderClicked] = useState(false);
-
+    const [shareClicked, setShareClicked] = useState(false);
     
 
     const WomanBtnClickedHandler = useCallback((event) => {
@@ -163,6 +165,12 @@ const SettingContents = ({ history, questionNum }) => {
         history.push('/setting/12');
     }, []);
 
+    // /setting/12
+
+    const shareBtnClickedHandler = useCallback(() => {
+        setShareClicked(!shareClicked);
+    }, [shareClicked]);
+    
     
 
     const questionNumber = Number(questionNum);
@@ -199,6 +207,7 @@ const SettingContents = ({ history, questionNum }) => {
             <section className="text-center px-3 mt-3">
                 <p style={{textAlign: 'left'}} className="text-2xl text-left">회원님을 설명해주세요.</p>
                 <Search
+                    size="big"
                     className="text-left"
                 />
                 <section style={{maxHeight: '400px'}} className="mt-3 px-2 overflow-y-scroll">
@@ -219,7 +228,7 @@ const SettingContents = ({ history, questionNum }) => {
                         size="big"
                         className="text-left w-1/4"
                     />
-                    <h1 className="ml-3 text-xl my-auto font-medium">{job}</h1>
+                    <h1 className="ml-3 text-xl my-auto font-medium text-right">{job}</h1>
                 </div>
                 <section style={{maxHeight: '380px'}} className="mt-3 px-2 overflow-y-scroll">
                     {adjectives.map((adj, id) => (
@@ -338,9 +347,9 @@ const SettingContents = ({ history, questionNum }) => {
                 <h5 className="text-left font-normal mb-10">마지막!! 회원님의 프로필 사진을 올려주세요!</h5>
                 <p>얼굴 사진이 아니어도 됩니다. 본인을 가장 잘 드러낼 수  있는 사진 하나를 선택해주세요 ;) </p>
                 
-                <section className="mt-3">
+                <section className="mt-5 px-5">
                     <img 
-                        style={{margin: '0 auto 10px', width: '300px', height: "300px", objectFit: 'contain'}} 
+                        style={{margin: '0 auto 10px', width: '350px', height: "350px", objectFit: 'contain'}} 
                         src={profileImgSrc ? profileImgSrc : null} 
                     />
                     <input
@@ -357,9 +366,7 @@ const SettingContents = ({ history, questionNum }) => {
     }else if(questionNumber === 11) {
         contents = (
             <section className=" h-1/6 text-center px-3 mt-10">
-                <h5 className="text-left font-normal mb-10">이벤트 공지를 위한 전화번호</h5>
-                <p>(이벤트 참가자 필수)</p>
-                
+                <h3 className="text-left font-normal mb-10 text-2xl">이벤트 공지를 위한 전화번호 <br /> (이벤트 참가자 필수)</h3>
                 <section className="mt-3">
                     <input 
                         type="text"
@@ -367,7 +374,7 @@ const SettingContents = ({ history, questionNum }) => {
                         autoFocus
                         onChange={(e) => phoneNumberChangeHandler(e)}
                     />
-                    <button onClick={(e) => phoneNumberSubmit(e)} className="mt-5 w-1/3 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
+                    <button onClick={(e) => phoneNumberSubmit(e)} className="mt-5 w-1/3 ml-3 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
                         완료
                     </button>
                 </section>
@@ -375,7 +382,7 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 12) {
         contents = (
-            <>
+            <div className="h-screen">
                 <section style={{height: '20%'}} className="mt-5 flex flex-row items-center ">
                     <img 
                         style={{height: '70px', width: '70px'}}
@@ -399,9 +406,21 @@ const SettingContents = ({ history, questionNum }) => {
                 </section>
 
                 <section style={{height: '30%', padding: '0 10px'}}>
-                    <button onClick={() => console.log('clicked')} className="font-sans w-full border-2 rounded-2xl px-5 py-3 mt-24 bg-black text-white hover:text-black hover:bg-white focus:outline-none">공유하고 에어팟 당첨 확률 up하기 </button>
+                    <article style={{opacity: shareClicked ? 1 : 0, visibility: shareClicked ? 'visible' : 'hidden', transition: 'all .2s ease-in', marginBottom: '10px'}} className="mt-24 text-center">
+                        <KakaoShareButton />
+                        <FacebookShareButton url="https://2donny.github.io/">
+                            <FacebookIcon round/>
+                        </FacebookShareButton>
+                        <TwitterShareButton url="https://2donny.github.io/">
+                            <TwitterIcon round/>
+                        </TwitterShareButton>
+                        <LineShareButton url="https://2donny.github.io/">
+                            <LineIcon round/>
+                        </LineShareButton>
+                    </article>
+                    <button onClick={() => shareBtnClickedHandler()} className="w-full border-2 rounded-2xl px-5 py-3 bg-black text-white focus:outline-none">공유하고 에어팟 당첨 확률 up하기 </button>
                 </section>
-            </>
+            </div>
         )
     }
 
