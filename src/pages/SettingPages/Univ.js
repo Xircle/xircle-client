@@ -17,17 +17,17 @@ const Univ = ({ history }) => {
                 
                 {/* main */}
                 {/* <div style={{height: '2%'}}></div> */}
-                <nav style={{height: '9%', border: '.5px solid #e5e5e5'}} className="flex flex-row items-center justify-between">
+                <nav style={{height: '60px', border: '.5px solid #e5e5e5'}} className="flex flex-row items-center justify-between">
                     <p className="w-full text-lg text-center py-10">자기소개</p>
                 </nav>
 
-                <section style={{height: '35%'}} className="flex flex-row items-center px-5">
+                <section className="flex flex-row items-center px-5 my-20">
                     <p className="text-center text-sm">연고링에는 현재 966의 남성분, 719의 여성분들이 이용중입니다. 베타테스트 단계로 서울대 고려대 연세대 서강대 한양대 성균관대 학생들로만 진행중입니다.</p>
                 </section>
 
-                <section style={{height: '20%'}} className="text-center">
-                    <div className="flex flex-row items-center mx-5">
-                        <p>나는</p>
+                <section className="text-center">
+                    <div className="flex flex-row items-center mx-5 my-10">
+                        <p className="mb-0">나는</p>
                         <div style={{width: '60%', margin: '0 10px'}}>
                             <Select
                                 isSearchable={false}
