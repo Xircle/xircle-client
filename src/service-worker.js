@@ -51,18 +51,6 @@ self.addEventListener('beforeinstallprompt', (e) => {
   console.log(`'beforeinstallprompt' event was fired.`);
 });
 
-self.addEventListener('fetch', function (event) {
-  //nothing for now
-});
-
-self.addEventListener('appinstalled', () => {
-  // Hide the app-provided install promotion
-  hideInstallPromotion();
-  // Clear the deferredPrompt so it can be garbage collected
-  deferredPrompt = null;
-  // Optionally, send analytics event to indicate successful install
-  console.log('PWA was installed');
-});
 
 butInstall.addEventListener('click', async () => {
   console.log('👍', 'butInstall-clicked');
@@ -81,4 +69,13 @@ butInstall.addEventListener('click', async () => {
   window.deferredPrompt = null;
   // Hide the install button.
   divInstall.classList.toggle('hidden', true);
+});
+
+self.addEventListener('appinstalled', () => {
+  // Hide the app-provided install promotion
+  hideInstallPromotion();
+  // Clear the deferredPrompt so it can be garbage collected
+  deferredPrompt = null;
+  // Optionally, send analytics event to indicate successful install
+  console.log('PWA was installed');
 });
