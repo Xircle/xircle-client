@@ -25,6 +25,10 @@ function SettingProgress({questionNum}) {
         ProgressPercent = '96%';
     } else if (questionNum === '11') {
         ProgressPercent = '100%';
+    }else if (questionNum === '12') {
+        ProgressPercent = '100%';
+    }else if (questionNum === '13') {
+        ProgressPercent = '100%';
     } else {
         ProgressPercent = '0%';
     }

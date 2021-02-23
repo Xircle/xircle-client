@@ -47,7 +47,7 @@ const Start = () => {
                         </section>
 
                         <section style={{height: '10%', padding: '0 10px'}}>
-                            <Link to="/login">
+                            <Link to="/secure">
                                 <button onClick={() => console.log('clicked')} className="font-sans w-full border-2 rounded-2xl px-5 py-3 mt-5 bg-black text-white hover:text-black hover:bg-white focus:outline-none">'나'에 대해서 질문하고 시작하기</button>
                             </Link>
                         </section>

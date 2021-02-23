@@ -7,9 +7,9 @@ const SettingContainer = ({ history, match }) => {
     const num = match.params.questionNum;
     return (
         <>
-        {num !== '12' ? (
+        {num !== '13' ? (
             <div className="w-full overflow-x-hidden">
-                <Layout headerNone footerNone>
+                <Layout num={num} headerNone footerNone>
                     <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
                         <img
                             onClick={() => history.goBack()} 
