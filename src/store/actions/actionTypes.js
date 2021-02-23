@@ -1,0 +1,19 @@
+export const AUTH_START = 'AUTH_START';
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export const AUTH_FAIL = 'AUTH_FAIL';
+export const ERROR_INIT = 'ERROR_INIT';
+
+export const ADD_GENDER = 'ADD_GENDER';
+export const ADD_JOB = 'ADD_JOB';
+export const ADD_ADJ = 'ADD_ADJ';
+export const ADD_LOCATION = 'ADD_LOCATION';
+export const ADD_ARTICLE_IMGSRC = 'ADD_ARTICLE_IMGSRC';
+export const ADD_ARTICLE_TEXT = 'ADD_ARTICLE_TEXT';
+export const DISPLAYNAME_START = 'DISPLAYNAME_START';
+export const DISPLAYNAME_SUCCESS = 'DISPLAYNAME_SUCCESS';
+export const DISPLAYNAME_FAIL = 'DISPLAYNAME_FAIL';
+export const ADD_INTEREST = 'ADD_INTEREST';
+export const ADD_INTRO_TEXT = 'ADD_INTRO_TEXT';
+export const ADD_PROFILE_IMG_SRC = 'ADD_PROFILE_IMG_SRC';
+export const ADD_INSTA_ID = 'ADD_INSTA_ID';
+export const SUBMIT_TO_SERVER = 'SUBMIT_TO_SERVER';

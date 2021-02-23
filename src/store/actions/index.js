@@ -1,18 +1,18 @@
 export {
-    addIngredient,
-    removeIngredient,
-    initIngredient
-} from './burgerBuilder';
-
-export {
-    purchaseBurger,
-    purchaseInit,
-    fetchOrder
-} from './order';
-
-export {
     auth,
     errorInit,
-    logout,
-    authCheckState
 } from './Auth';
+
+export {
+    addGender,
+    addJob,
+    addAdj,
+    addLocation,
+    addArticleImgSrc,
+    addArticleText,
+    displayName,
+    addIntroText,
+    addProfileImgSrc,
+    addInstagramId,
+    submitToServer
+} from './User';
