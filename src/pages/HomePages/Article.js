@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Footer_nav from '../components/footer_nav';
-import Layout from '../components/layout';
-import { personCommunity } from '../model/person';
-import Card from '../components/card';
+import Footer_nav from '../../components/footer_nav';
+import Layout from '../../components/layout';
+import { personCommunity } from '../../model/person';
+import Card from '../../components/card';
 
 const Article = ({ match }) => {
     const cnt = match.params.cnt; // id는 글의 고유 번호

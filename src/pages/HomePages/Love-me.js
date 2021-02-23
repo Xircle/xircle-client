@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Footer_nav from '../components/footer_nav';
-import Layout from '../components/layout';
-import Banner from '../components/banner';
+import Footer_nav from '../../components/footer_nav';
+import Layout from '../../components/layout';
+import Banner from '../../components/banner';
 
 const Love_me = () => {
     return (

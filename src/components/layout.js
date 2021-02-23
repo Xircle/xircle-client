@@ -3,7 +3,7 @@ import Footer_nav from './footer_nav';
 import Banner from './banner';
 import { Link } from 'react-router-dom';
 
-const Layout = ({ children, headerNone, footerNone }) => {
+const Layout = ({ children, num, headerNone, footerNone }) => {
     return (
         <div 
             id="layout"
@@ -32,8 +32,16 @@ const Layout = ({ children, headerNone, footerNone }) => {
             ) : (
                 null
             )}
-
-            {/*  main custom  */}
+            {num === '2' || num === '3' ? (
+                <aside>
+                    <img
+                        style={{width: '60px', height: '60px', position: 'fixed', right: 10, bottom: 10, cursor: 'pointer'}} 
+                        onClick={() => window.scrollTo(0, 0)}
+                        src="/arrow-up-circle.svg"
+                        alt="scroll-top"
+                        />
+                </aside>
+            ) : null}
             <main className="h-full min-h-screen">
                 {children}
             </main>
