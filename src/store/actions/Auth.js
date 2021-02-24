@@ -1,19 +1,17 @@
 import * as actionTypes from './actionTypes';
 import axios from 'axios';
 
-export const authStart = () => {
+export const authStart = (univ) => {
     return {
         type: actionTypes.AUTH_START,
+        univ,
     }
 }
 
-export const authSuccess = (emailId, idToken, localId) => {
-    console.log(emailId)
+export const authSuccess = (email) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
-        emailId: emailId,
-        tokenId: idToken,
-        userId: localId
+        email: email,
     }
 }
 
@@ -30,15 +28,17 @@ export const errorInit = () => {
     }
 }
 
-export const auth = (email) => {
+export const auth = (payload) => {
+    const {email, univ} = payload;
+
     return dispatch => {
-        dispatch(authStart());
+        dispatch(authStart(univ));
         const authData = {
             email,
         };
         
         setTimeout(() => {
-            dispatch(authSuccess(email, 'fvcbasqvsdqdwknjk', '정이든'))
+            dispatch(authSuccess(email));
         }, 3000);
         // let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAQ3DtnwE8fgDvy-TeHf1uZIWjAwCoqMMM";
         // axios.post(url, authData)
