@@ -1,6 +1,13 @@
 import * as actionTypes from './actionTypes';
 import axios from '../../axios-instance';
 
+
+export const addAge = (age) => {
+    return {
+        type: actionTypes.ADD_AGE,
+        age,
+    }
+}
 export const addGender = (gender) => {
     return {
         type: actionTypes.ADD_GENDER,
@@ -41,6 +48,14 @@ export const addArticleText = (articleText) => {
         articleText,
     }
 }
+
+export const addInterest = (interestArr) => {
+    return {
+        type: actionTypes.ADD_INTEREST,
+        interestArr,
+    }
+}
+
 
 // displayName check
 
@@ -94,15 +109,39 @@ export const addProfileImgSrc = (ProfileImgSrc) => {
     }
 }
 
-export const addInstagramId = (intagramId) => {
+export const addInstagramId = (instagramId) => {
     return {
         type: actionTypes.ADD_INSTA_ID,
-        intagramId
+        instagramId
     }
 }
 
-export const submitToServer = () => {
+
+// SubmitToServer
+export const submitToServerStart = () => {
+    return {
+        type: actionTypes.SUBMIT_TO_SERVER_START,
+    }
+}
+
+export const submitToServerSuccess = () => {
+    return {
+        type: actionTypes.SUBMIT_TO_SERVER_SUCCESS,
+    }
+}
+export const submitToServerFail = () => {
+    return {
+        type: actionTypes.SUBMIT_TO_SERVER_FAIL,
+    }
+}
+
+export const submitToServer = (emailId) => {
     return dispatch => {
+        dispatch(submitToServerStart());
+        
+        setTimeout(() => {
+            dispatch(submitToServerSuccess())
+        }, 2000);
     }
     // return dispatch => {
     //     dispatch(authStart());
@@ -124,4 +163,19 @@ export const submitToServer = () => {
     //             console.log(err);
     //             dispatch(authFail(err));
     //         })
+}
+
+
+export const updateProfileImg = (updatedProfileImg) => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_IMG,
+        updatedProfileImg,
+    }
+}
+
+export const updateProfileImgToServer = (updatedProfileImg) => {
+    return dispatch => {
+        dispatch(updateProfileImg(updatedProfileImg));
+        // 서버에 보내기
+    }
 }
