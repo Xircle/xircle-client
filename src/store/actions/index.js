@@ -5,6 +5,7 @@ export {
 
 export {
     addGender,
+    addAge,
     addJob,
     addAdj,
     addLocation,
@@ -12,7 +13,10 @@ export {
     addArticleText,
     displayName,
     addIntroText,
+    addInterest,
     addProfileImgSrc,
     addInstagramId,
-    submitToServer
+    submitToServer,
+    updateProfileImg,
+    updateProfileImgToServer
 } from './User';
