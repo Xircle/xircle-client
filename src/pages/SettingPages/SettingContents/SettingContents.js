@@ -11,6 +11,7 @@ import {FacebookIcon, FacebookShareButton, TwitterShareButton, TwitterIcon, Line
 import Banner from '../../../components/banner';
 import LoadingIndicator from 'react-loading-indicator';
 import CheckboxUI from '../../../components/UI/CheckboxUI';
+import InterestSetting from '../../../components/interestSetting';
 import * as actions from '../../../store/actions/index';
 
 const SettingContents = ({ history, questionNum }) => {
@@ -20,8 +21,9 @@ const SettingContents = ({ history, questionNum }) => {
     const [imgSrc, setImgSrc] = useState(null);
 
     const displayRef = useRef();
-    const displayNameCheeckLoading = useSelector(store => store.user.loading);
-    const displayNameError = useSelector(store => store.user.error);
+    const displayName = useSelector(store => store.user.displayName);
+    const displayNameCheeckLoading = useSelector(store => store.user.displayNameUI.loading);
+    const displayNameError = useSelector(store => store.user.displayNameUI.error);
 
     const articleRef = useRef();
     const [introText, setIntroText] = useState('');
@@ -33,8 +35,11 @@ const SettingContents = ({ history, questionNum }) => {
     const [genderClicked, setGenderClicked] = useState(false);
     const [shareClicked, setShareClicked] = useState(false);
 
+    const submitToServerLoading = useSelector(store => store.user.submitToServer.loading);
+    const submitToServerError = useSelector(store => store.user.submitToServer.error);
     const dispatch = useDispatch();
 
+    
     // /setting/1
     const WomanBtnClickedHandler = useCallback((event) => {
         setGenderClicked(true);
@@ -62,7 +67,7 @@ const SettingContents = ({ history, questionNum }) => {
     // /setting/3
     const adjClickedHandler = useCallback((adjective) => {
         setAdj(adjective);
-        dispatch(actions.addJob(adjective));
+        dispatch(actions.addAdj(adjective));
         history.push('/setting/4'); 
         //저장
     }, []);
@@ -196,15 +201,16 @@ const SettingContents = ({ history, questionNum }) => {
         setInstagram(event.target.value);
     }, []);
 
-    const InstaSubmit = useCallback((event) => {
+    const InstaSubmit = useCallback(async (event) => {
         event.preventDefault();
         if(!Instagram.match(/^@/))
             return alert("@로 시작해주세요!");
         if(Instagram.length === 1)
             return alert('아이디를 제대로 입력해주셔야 이벤트 당첨시 연락이 닿습니다!');
         
-        dispatch(actions.addInstagramId(Instagram));
-        history.push('/setting/13');
+        await dispatch(actions.addInstagramId(Instagram));
+        await dispatch(actions.submitToServer());
+        
     }, [Instagram]);
 
     // /setting/13
@@ -212,6 +218,23 @@ const SettingContents = ({ history, questionNum }) => {
         setShareClicked(!shareClicked);
     }, [shareClicked]);
     
+    // Submit to serber
+    useEffect(() => {
+        if(submitToServerError === false) {
+            history.push('/setting/13');
+        }
+        else if(submitToServerError === true)
+            alert("일시적인 오류가 발생했습니다. 다시 시도해주세요.") // 서버 에러
+    }, [submitToServerLoading])
+
+    const emailId = useSelector(store => store.auth.emailId);
+    const submitToServer = useCallback(async () => {
+        const extraData = emailId;
+        await dispatch(actions.submitToServer(extraData));
+    }, [submitToServerError]);
+    
+    // console.log(submitToServerError)
+
     const questionNumber = Number(questionNum);
     let contents = null;
     if(questionNumber === 1) {
@@ -235,6 +258,7 @@ const SettingContents = ({ history, questionNum }) => {
                         blurInputOnSelect
                         placeholder="나이를 선택해주세요."
                         options={AgeSettingOptions}
+                        onChange={(e) => dispatch(actions.addAge(e.value))}
                     />
                     <div className="flex flex-row justify-evenly">
                         <button onClick={() => history.push('/setting/2')} className="font-sans border-2 w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
@@ -376,19 +400,17 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="text-center px-3 my-5">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayRef.current.value}님 <br />요즘 무엇에 관심있으신가요?</h3>
+                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님 <br />요즘 무엇에 관심있으신가요?</h3>
                     <h5 className="text-left font-normal my-5 text-gray-400">관심사를 5개 이상 골라주세요. <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 해시태그 해보세요.</h5>
                 </div>
-                <button onClick={(e) => interestSubmitHandler(e)} className="mt-5 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
-                    다음
-                </button>
+                <InterestSetting history={history}/>
             </section>
         )
     }else if(questionNumber === 9) {
         contents = (
             <section className="text-center px-5 my-5">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayRef.current.value}님의 한줄소개! </h3>
+                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님의 한줄소개! </h3>
                     <h5 className="text-left font-normal text-gray-400 mb-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
                 </div>
                 <textarea 
@@ -455,7 +477,15 @@ const SettingContents = ({ history, questionNum }) => {
                 <button onClick={(e) => isChecked_1 && isChecked_2 ? history.push('/setting/12') : alert('모두 체크해주세요.')} className="mt-5 w-full rounded-lg px-5 py-3 bg-gray-400 text-white focus:outline-none">
                     이벤트 참가
                 </button>
-                <button onClick={() => history.push('/setting/13')} style={{border: '1px solid black'}} className="mt-5 w-full rounded-lg px-5 py-3 bg-white text-black focus:outline-none">
+                {submitToServerLoading ? (
+                    <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
+                        <LoadingIndicator 
+                            color={{red: 0, green: 0, blue: 0, alpha: 1}}
+                            segmentWidth={2}
+                        />
+                    </div>
+                ) : null}
+                <button onClick={() => submitToServer()} style={{border: '1px solid black'}} className="mt-5 w-full rounded-lg px-5 py-3 bg-white text-black focus:outline-none">
                     사전신청만 하기
                 </button>
             </section>
@@ -478,7 +508,15 @@ const SettingContents = ({ history, questionNum }) => {
                         placeholder="- 제외하고 입력해주세요."
                         onChange={(e) => InstaChangeHandler(e)}
                     />
-                    <button onClick={(e) => InstaSubmit(e)} className="mt-10 w-3/4 rounded-lg px-5 py-3 bg-gray-400 text-white focus:outline-none">
+                    {submitToServerLoading ? (
+                        <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
+                            <LoadingIndicator 
+                                color={{red: 0, green: 0, blue: 0, alpha: 1}}
+                                segmentWidth={2}
+                            />
+                        </div>
+                    ) : null}
+                    <button onClick={(e) => InstaSubmit(e)} className="mt-10 w-full rounded-lg px-5 py-3 bg-gray-400 text-white focus:outline-none">
                         완료
                     </button>
                 </section>
