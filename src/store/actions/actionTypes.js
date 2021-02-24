@@ -3,6 +3,8 @@ export const AUTH_SUCCESS = 'AUTH_SUCCESS';
 export const AUTH_FAIL = 'AUTH_FAIL';
 export const ERROR_INIT = 'ERROR_INIT';
 
+
+export const ADD_AGE = 'ADD_AGE';
 export const ADD_GENDER = 'ADD_GENDER';
 export const ADD_JOB = 'ADD_JOB';
 export const ADD_ADJ = 'ADD_ADJ';
@@ -17,3 +19,9 @@ export const ADD_INTRO_TEXT = 'ADD_INTRO_TEXT';
 export const ADD_PROFILE_IMG_SRC = 'ADD_PROFILE_IMG_SRC';
 export const ADD_INSTA_ID = 'ADD_INSTA_ID';
 export const SUBMIT_TO_SERVER = 'SUBMIT_TO_SERVER';
+export const SUBMIT_TO_SERVER_START = 'SUBMIT_TO_SERVER_START';
+export const SUBMIT_TO_SERVER_FAIL = 'SUBMIT_TO_SERVER_FAIL';
+export const SUBMIT_TO_SERVER_SUCCESS = 'SUBMIT_TO_SERVER_SUCCESS';
+export const UPDATE_PROFILE_IMG = 'UPDATE_PROFILE_IMG';
+export const UPDATE_PROFILE_IMG_To_Server = 'UPDATE_PROFILE_IMG_To_Server';
+
