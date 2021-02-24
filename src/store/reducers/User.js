@@ -1,13 +1,21 @@
 import * as actionTypes from '../actions/actionTypes';
+import { submitToServer } from '../actions';
 
 const initialState = {
-    loading: null,
-    error: null,
+    displayNameUI: {
+        loading: null,
+        error: null,
+    },
+    submitToServer: {
+        loading: null,
+        error: null
+    },
+    age: null,
     gender: null,
     job: null,
     adj: null,
     location: null,
-    articleImgSrc: null,
+    articleImgSrc: "something",
     articleText: null,
     displayName: null,
     interestArr: [],
@@ -18,6 +26,11 @@ const initialState = {
 
 const reducer = (state=initialState, action) => {
     switch(action.type) {
+        case actionTypes.ADD_AGE:
+            return {
+                ...state,
+                age: action.age
+            }
         case actionTypes.ADD_GENDER:
             return {
                 ...state,
@@ -51,19 +64,29 @@ const reducer = (state=initialState, action) => {
         case actionTypes.DISPLAYNAME_START:
             return {
                 ...state,
-                loading: true,
+                displayNameUI: {
+                    ...state.displayNameUI,
+                    loading: true
+                }
             }
         case actionTypes.DISPLAYNAME_FAIL:
             return {
                 ...state,
-                loading: false,
-                error: true,
+                displayNameUI: {
+                    ...state.displayNameUI,
+                    loading: false,
+                    error: true
+                }
             }
         case actionTypes.DISPLAYNAME_SUCCESS:
             return {
                 ...state,
-                loading: false,
-                error: false,
+                displayName: action.displayName,
+                displayNameUI: {
+                    ...state.displayNameUI,
+                    loading: false,
+                    error: false
+                }
             }
         case actionTypes.ADD_INTRO_TEXT:
             return {
@@ -73,12 +96,43 @@ const reducer = (state=initialState, action) => {
         case actionTypes.ADD_PROFILE_IMG_SRC:
             return {
                 ...state,
-                profileImgSrc: action.profileImgSrc
+                profileImgSrc: action.ProfileImgSrc
             }
         case actionTypes.ADD_INSTA_ID:
             return {
                 ...state,
-                instaId: action.instaId
+                instagramId: action.instagramId
+            }
+        case actionTypes.SUBMIT_TO_SERVER_START:
+            return {
+                ...state,
+                submitToServer: {
+                    ...state.submitToServer,
+                    loading: true
+                }
+            }
+        case actionTypes.SUBMIT_TO_SERVER_FAIL:
+            return {
+                ...state,
+                submitToServer: {
+                    ...state.submitToServer,
+                    loading: false,
+                    error: true
+                }
+            }
+        case actionTypes.SUBMIT_TO_SERVER_SUCCESS:
+            return {
+                ...state,
+                submitToServer: {
+                    ...state.submitToServer,
+                    loading: false,
+                    error: false
+                }
+            }
+        case actionTypes.UPDATE_PROFILE_IMG:
+            return {
+                ...state,
+                profileImgSrc: action.updatedProfileImg
             }
         default:
             return state
