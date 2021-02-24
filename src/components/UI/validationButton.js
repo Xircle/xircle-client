@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import LoadingIndicator from 'react-loading-indicator';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions/index';
+import universitySwitcher from '../universitySwitcher';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,13 +30,16 @@ export default function ValidationTextFields({ isSent }) {
 
   const submitHandler = useCallback((event) => {
     event.preventDefault();
-    if(!email.match(emailRegex)) { //먼저 필터링
+    if(!email.match(emailRegex)) { // 먼저 필터링
       event.preventDefault();
       return alert('올바른 메일로 입력해주세요.');
     }
+    const index = email.indexOf('@');
+    const univ = email.slice(index+1); // 영어
+    const univKor = universitySwitcher(univ); //한국말
 
     // redux 스토어에 dispatch
-    dispatch(actions.auth(email));
+    dispatch(actions.auth(email, univKor));
   }, [email]);
 
   return (
