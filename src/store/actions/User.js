@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import axios from '../../axios-instance';
+import Axios from '../../axios-instance';
 
 
 export const addAge = (age) => {
@@ -79,18 +79,16 @@ export const displayName = (displayName) => {
     return dispatch => {
         dispatch(displayNameStart());
 
-        setTimeout(() => {
-            dispatch(displayNameSuccess(displayName));
-        }, 2000);
-        // axios.post('/displayName', displayName)
-        //     .then(res => {
-        //         console.log(res);
-        //         dispatch(displayNameSuccess(displayName));
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //         dispatch(displayNameFail());
-        //     })
+        Axios.post('/check/name', displayName)
+            .then(res => {
+                console.log(res);
+                dispatch(displayNameSuccess(displayName));
+            })
+            .catch(err => {
+                console.log(err);
+                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                dispatch(displayNameFail());
+            })
     }
 }
 
@@ -135,34 +133,35 @@ export const submitToServerFail = () => {
     }
 }
 
-export const submitToServer = (emailId) => {
+export const submitToServer = (genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayName, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux) => {
     return dispatch => {
         dispatch(submitToServerStart());
         
-        setTimeout(() => {
-            dispatch(submitToServerSuccess())
-        }, 2000);
+        const userData = {
+            genderInRedux, 
+            ageInRedux, 
+            jobInRedux, 
+            adjInRedux, 
+            locationInRedux, 
+            articleImgSrcInRedux, 
+            articleTextInRedux, 
+            displayName, 
+            interestArrInRedux, 
+            introTextInRedux, 
+            profileImgSrcInRedux, 
+            instagramIdInRedux
+        };
+        Axios.post('/pre/user', userData)
+            .then(res => {
+                console.log(res);
+                dispatch(submitToServerSuccess());
+            })
+            .catch(err => {
+                console.log(err);
+                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                dispatch(submitToServerFail());
+            })
     }
-    // return dispatch => {
-    //     dispatch(authStart());
-    //     const authData = {
-    //         email,
-    //     };
-        
-    //     setTimeout(() => {
-    //         dispatch(authSuccess(email, 'fvcbasqvsdqdwknjk', '정이든'))
-    //     }, 3000);
-    //     let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAQ3DtnwE8fgDvy-TeHf1uZIWjAwCoqMMM";
-    //     axios.post(url, authData)
-    //         .then(res => {
-    //             localStorage.setItem('_count', res.data.tokenId); //tk
-    //             localStorage.setItem('userId', res.data.userId); //userId
-    //             dispatch(authSuccess(res.data.tokenId, res.data.userId));
-    //         })       
-    //         .catch(err => {
-    //             console.log(err);
-    //             dispatch(authFail(err));
-    //         })
 }
 
 
