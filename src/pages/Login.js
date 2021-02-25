@@ -7,9 +7,8 @@ import LoadingIndicator from 'react-loading-indicator';
 
 const Login = ({ history }) => {
     const isLoading = useSelector(store => store.auth.loading);
-    const tokenId = useSelector(store => store.auth.tokenId); //만약 토큰이 있으면 AUTH_SUCCESS 이므로
+    const isEmailSent = useSelector(store => store.auth.isEmailSent); //만약 토큰이 있으면 AUTH_SUCCESS 이므로
     const emailId = useSelector(store => store.auth.emailId); //만약 토큰이 있으면 AUTH_SUCCESS 이므로
-
     const dispatch = useDispatch();
 
     let description = null;
@@ -48,7 +47,7 @@ const Login = ({ history }) => {
                     {description}
                 </section>
                 <section className="px-10 mb-5">
-                    {tokenId ? (
+                    {isEmailSent ? (
                         <>
                             {isLoading ? (
                             <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
