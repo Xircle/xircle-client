@@ -4,35 +4,68 @@ import { Link } from 'react-router-dom';
 import * as actions from '../store/actions/index';
 
 function reducer(state, action) {
+    let newArr = null;
     switch (action.type) {
         case 'ART_CLICKED':
+            newArr = state.interestArr.slice(); // swallow copy
+            console.log('beforeArr : ', newArr);
+
+            if(state.artClicked) { // false이면 => true가 될테니, 배열에 추가
+                const index = newArr.findIndex(el => el === 'art');
+                newArr.splice(index, 1);
+                console.log('AfterArr : ', newArr);
+            }else {
+                newArr.push('art')
+            }
             return {
+                ...state,
                 artClicked: !state.artClicked,
-                mukbangClicked: state.mukbangClicked,
-                gameClicked: state.gameClicked,
-                developmentClicked: state.developmentClicked,
+                interestArr: newArr
             };
         case 'MUKBANG_CLICKED':
+            newArr = state.interestArr.slice(); 
+            console.log('beforeArr : ', newArr);
+            if(state.mukbangClicked) {
+                const index = newArr.findIndex(el => el === 'mukbang');
+                newArr.splice(index, 1);
+                console.log('AfterArr : ', newArr);
+            }else {
+                newArr.push('mukbang')
+            }
             return {
-                artClicked: state.artClicked,
+                ...state,
                 mukbangClicked: !state.mukbangClicked,
-                gameClicked: state.gameClicked,
-                developmentClicked: state.developmentClicked,
+                interestArr: newArr
             };
         case 'GAME_CLICKED':
+            newArr = state.interestArr.slice(); 
+            console.log('beforeArr : ', newArr);
+            if(state.gameClicked){
+                const index = newArr.findIndex(el => el === 'game');
+                newArr.splice(index, 1);
+                console.log('AfterArr : ', newArr);
+            }else {
+                newArr.push('game')
+            }
             return {
-                artClicked: state.artClicked,
-                mukbangClicked: state.mukbangClicked,
+                ...state,
                 gameClicked: !state.gameClicked,
-                developmentClicked: state.developmentClicked,
+                interestArr: newArr
             };
-            
         case 'DEVELOP_CLICKED':
+            newArr = state.interestArr.slice();
+            console.log('beforeArr : ', newArr);
+            if(state.developmentClicked) {
+                const index = newArr.findIndex(el => el === 'develope');
+                newArr.splice(index, 1);
+                console.log('AfterArr : ', newArr);
+            }else {
+                newArr.push('develope')
+            }
             return {
-                artClicked: state.artClicked,
-                mukbangClicked: state.mukbangClicked,
-                gameClicked: state.gameClicked,
+                ...state,
                 developmentClicked: !state.developmentClicked,
+                interestArr: newArr
             };
         default:
             throw new Error(`Unhandled action type: ${action.type}`);
@@ -45,15 +78,16 @@ const InterestSetting = ({ history }) => {
         mukbangClicked: false,
         gameClicked: false,
         developmentClicked: false,
+        interestArr: [],
     });
 
     const dispatchRedux = useDispatch();
     const interestSubmitHandler = useCallback((event) => {
         event.preventDefault();
-
-        dispatchRedux(actions.addInterest());
+        dispatchRedux(actions.addInterest(state.interestArr));
+        console.log(state);
         history.push('/setting/9');
-    }, []);
+    }, [state]);
     
     const { artClicked, mukbangClicked, gameClicked, developmentClicked } = state;
     return (
