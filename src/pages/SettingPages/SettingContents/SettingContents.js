@@ -19,24 +19,36 @@ const SettingContents = ({ history, questionNum }) => {
     const [adj, setAdj] = useState('');
     const [location, setLocation] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
-
+    
     const displayRef = useRef();
-    const displayName = useSelector(store => store.user.displayName);
     const displayNameCheeckLoading = useSelector(store => store.user.displayNameUI.loading);
     const displayNameError = useSelector(store => store.user.displayNameUI.error);
-
+    
     const articleRef = useRef();
     const [introText, setIntroText] = useState('');
     const [profileImgSrc, setProfileImgSrc] = useState('');
     const [Instagram, setInstagram] = useState('@');
     const [isChecked_1, setIsChecked_1] = useState(false);
     const [isChecked_2, setIsChecked_2] = useState(false);
-
+    
     const [genderClicked, setGenderClicked] = useState(false);
     const [shareClicked, setShareClicked] = useState(false);
-
+    
     const submitToServerLoading = useSelector(store => store.user.submitToServer.loading);
     const submitToServerError = useSelector(store => store.user.submitToServer.error);
+    const genderInRedux = useSelector(store => store.user.gender);
+    const ageInRedux = useSelector(store => store.user.age);
+    const jobInRedux = useSelector(store => store.user.job);
+    const adjInRedux = useSelector(store => store.user.adj);
+    const locationInRedux = useSelector(store => store.user.location);
+    const articleTextInRedux = useSelector(store => store.user.articleImgSrc);
+    const articleImgSrcInRedux = useSelector(store => store.user.articleText);
+    const displayName = useSelector(store => store.user.displayName);
+    const interestArrInRedux = useSelector(store => store.user.interestArr);
+    const introTextInRedux = useSelector(store => store.user.introText);
+    const profileImgSrcInRedux = useSelector(store => store.user.profileImgSrc);
+    const instagramIdInRedux = useSelector(store => store.user.instagramId);
+
     const dispatch = useDispatch();
 
     
@@ -218,19 +230,23 @@ const SettingContents = ({ history, questionNum }) => {
         setShareClicked(!shareClicked);
     }, [shareClicked]);
     
-    // Submit to serber
+    // Submit to server
     useEffect(() => {
         if(submitToServerError === false) {
+            console.log('error false')
             history.push('/setting/13');
         }
-        else if(submitToServerError === true)
+        else if(submitToServerError === true) {
             alert("일시적인 오류가 발생했습니다. 다시 시도해주세요.") // 서버 에러
+            console.log('error true')
+        }
     }, [submitToServerLoading])
 
-    const emailId = useSelector(store => store.auth.emailId);
     const submitToServer = useCallback(async () => {
-        const extraData = emailId;
-        await dispatch(actions.submitToServer(extraData));
+        await dispatch(actions.submitToServer(
+            genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayName, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux
+        ));
+        console.log(genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayName, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux);
     }, [submitToServerError]);
     
     // console.log(submitToServerError)
