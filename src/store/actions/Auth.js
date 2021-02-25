@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import axios from 'axios';
+import Axios from '../../axios-instance';
 
 export const authStart = (univ) => {
     return {
@@ -29,27 +29,24 @@ export const errorInit = () => {
 }
 
 export const auth = (payload) => {
-    const {email, univ} = payload;
+    const {email, univKor} = payload;
 
     return dispatch => {
-        dispatch(authStart(univ));
+        dispatch(authStart(univKor));
+
         const authData = {
-            email,
+            email: email
         };
         
-        setTimeout(() => {
-            dispatch(authSuccess(email));
-        }, 3000);
-        // let url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAQ3DtnwE8fgDvy-TeHf1uZIWjAwCoqMMM";
-        // axios.post(url, authData)
-        //     .then(res => {
-        //         localStorage.setItem('_count', res.data.tokenId); //tk
-        //         localStorage.setItem('userId', res.data.userId); //userId
-        //         dispatch(authSuccess(res.data.tokenId, res.data.userId));
-        //     })       
-        //     .catch(err => {
-        //         console.log(err);
-        //         dispatch(authFail(err));
-        //     })
+        Axios.post('/email', authData)
+            .then(res => {
+                console.log(res);
+                dispatch(authSuccess(email));
+            })
+            .catch(err => {
+                console.log(err);
+                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                dispatch(authFail(err));
+            })
     }
 }
