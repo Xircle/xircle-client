@@ -10,8 +10,8 @@ const initialState = {
         loading: null,
         error: null
     },
-    age: null,
     gender: null,
+    age: null,
     job: null,
     adj: null,
     location: null,
@@ -50,6 +50,11 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 location: action.location
+            }
+        case actionTypes.ADD_LOCATION:
+            return {
+                ...state,
+                interestArr: action.interestArr
             }
         case actionTypes.ADD_ARTICLE_IMGSRC:
             return {

@@ -16,6 +16,7 @@
     "radium": "^0.26.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-headroom": "^3.1.0",
     "react-helmet": "^6.1.0",
     "react-loading-indicator": "^1.0.2",
     "react-redux": "^7.2.2",
@@ -27,7 +28,8 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^2.0.3"
+    "semantic-ui-react": "^2.0.3",
+    "styled-components": "^5.2.1"
   },
   "scripts": {
     "predeploy": "npm run build",
@@ -56,6 +58,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "resolutions": {
+    "styled-components": "^5"
   },
   "devDependencies": {
     "autoprefixer": "^10.2.4",
