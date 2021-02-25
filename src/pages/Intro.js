@@ -19,7 +19,7 @@ const Intro = ({ history }) => {
         <section style={{}} className="h-screen w-full">
           <section className="relative">
             <div className="h-screen w-full overflow-visible">
-              <video className="h-screen object-cover" src="/Intro/intro-video.mp4" autoPlay loop muted></video>
+              <video autoPlay loop muted playsInline typeof="video/mp4" className="h-screen object-cover" src="/Intro/intro-video.mp4"></video>
             </div>
             <div  style={{transform: "translate(-50%, -50%)", position: 'absolute', left: '50%', top: '50%', textAlign: 'center'}}>
               <div data-aos="fade-up" data-aos-duration="2000">
