@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 const Footer_nav = ({ footerNone }) => {
     return (
-        !footerNone && <footer
+        !footerNone && <nav
             style={{ borderTop: '1px solid #ccc', padding: '15px 0 30px', backgroundColor: '#fefefe' }}
             className="flex flex-row w-full justify-evenly absolute bottom-0 "
         >
@@ -42,7 +42,7 @@ const Footer_nav = ({ footerNone }) => {
                     height={30}
                 />
             </NavLink>
-        </footer>
+        </nav>
     )
 }
 
