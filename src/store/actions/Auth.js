@@ -1,24 +1,23 @@
 import * as actionTypes from './actionTypes';
-import Axios from '../../axios-instance';
+import { Axios } from '../../axios-instance';
 
-export const authStart = (univ) => {
+export const authStart = () => {
     return {
         type: actionTypes.AUTH_START,
-        univ,
     }
 }
 
-export const authSuccess = (email) => {
+export const authSuccess = (email, univKor) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         email: email,
+        univ: univKor
     }
 }
 
-export const authFail = (error) => {
+export const authFail = () => {
     return {
         type: actionTypes.AUTH_FAIL,
-        error,
     }
 }
 
@@ -28,20 +27,20 @@ export const errorInit = () => {
     }
 }
 
-export const auth = (payload) => {
-    const {email, univKor} = payload;
-
+export const auth = (email, univKor) => {
     return dispatch => {
-        dispatch(authStart(univKor));
-
+        dispatch(authStart());
         const authData = {
             email: email
         };
-        
         Axios.post('/email', authData)
             .then(res => {
                 console.log(res);
-                dispatch(authSuccess(email));
+                const isSuccess = res.data.success;
+                if(isSuccess)
+                    dispatch(authSuccess(email, univKor));
+                else
+                    dispatch(authFail());
             })
             .catch(err => {
                 console.log(err);
@@ -50,3 +49,54 @@ export const auth = (payload) => {
             })
     }
 }
+
+// auth Confirm
+export const authConfirmStart = () => {
+    return {
+        type: actionTypes.AUTH_CONFIRM_START,
+    }
+}
+export const authConfirmFail = () => {
+    return {
+        type: actionTypes.AUTH_CONFIRM_FAIL,
+    }
+}
+export const authConfirmSuccess = () => {
+    return {
+        type: actionTypes.AUTH_CONFIRM_SUCCESS,
+    }
+}
+export const authConfirmInit = () => {
+    return {
+        type: actionTypes.AUTH_CONFIRM_INIT,
+    }
+}
+
+export const authConfirm = (email) => {
+    return dispatch => {
+        dispatch(authConfirmStart());
+        const authData = {
+            email: email
+        };
+        Axios.post('/check/email', authData)
+            .then(res => {
+                console.log(res);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    dispatch(authConfirmSuccess());
+                    dispatch(authConfirmInit());
+                }
+                else {
+                    dispatch(authConfirmFail());
+                    dispatch(authConfirmInit());
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(authConfirmFail());
+                dispatch(authConfirmInit());
+                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+            })
+    }
+}
+
