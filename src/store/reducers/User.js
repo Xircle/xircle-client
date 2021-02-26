@@ -1,5 +1,4 @@
 import * as actionTypes from '../actions/actionTypes';
-import { submitToServer } from '../actions';
 
 const initialState = {
     displayNameUI: {
@@ -51,7 +50,7 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 location: action.location
             }
-        case actionTypes.ADD_LOCATION:
+        case actionTypes.ADD_INTEREST:
             return {
                 ...state,
                 interestArr: action.interestArr
@@ -93,6 +92,15 @@ const reducer = (state=initialState, action) => {
                     error: false
                 }
             }
+        case actionTypes.DISPLAYNAME_INIT:
+            return {
+                ...state,
+                displayNameUI: {
+                    ...state.displayNameUI,
+                    error: null
+                }
+            }
+            
         case actionTypes.ADD_INTRO_TEXT:
             return {
                 ...state,
