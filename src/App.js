@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import './styles/main.css';
 import Intro from './pages/Intro';
 
 const Start = React.lazy(() => import('./pages/Start'));
