@@ -1,5 +1,6 @@
 export {
     auth,
+    authConfirm,
     errorInit,
 } from './Auth';
 
@@ -12,6 +13,7 @@ export {
     addArticleImgSrc,
     addArticleText,
     displayName,
+    displayNameInit,
     addIntroText,
     addInterest,
     addProfileImgSrc,
