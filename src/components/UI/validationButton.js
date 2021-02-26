@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ValidationTextFields({ isSent }) {
+export default function ValidationTextFields() {
   const classes = useStyles();
   const [email, setEmail] = useState('');
 

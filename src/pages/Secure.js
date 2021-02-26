@@ -68,7 +68,7 @@ const Secure = ({ history }) => {
                                 </section>
                             </div>
                             <div style={{width: '300px', margin: '0 auto'}}>
-                                <button onClick={() => history.push('/login')} className="w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">
+                                <button onClick={() => history.push('/login')} className="w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white focus:text-white focus:bg-black focus:outline-none">
                                     알겠습니다.
                                 </button>
 
