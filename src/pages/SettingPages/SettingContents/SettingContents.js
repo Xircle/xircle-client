@@ -24,6 +24,7 @@ const SettingContents = ({ history, questionNum }) => {
     const displayNameCheeckLoading = useSelector(store => store.user.displayNameUI.loading);
     const displayNameError = useSelector(store => store.user.displayNameUI.error);
     
+
     const articleRef = useRef();
     const [introText, setIntroText] = useState('');
     const [profileImgSrc, setProfileImgSrc] = useState('');
@@ -43,7 +44,7 @@ const SettingContents = ({ history, questionNum }) => {
     const locationInRedux = useSelector(store => store.user.location);
     const articleTextInRedux = useSelector(store => store.user.articleImgSrc);
     const articleImgSrcInRedux = useSelector(store => store.user.articleText);
-    const displayName = useSelector(store => store.user.displayName);
+    const displayNameInRedux = useSelector(store => store.user.displayName);
     const interestArrInRedux = useSelector(store => store.user.interestArr);
     const introTextInRedux = useSelector(store => store.user.introText);
     const profileImgSrcInRedux = useSelector(store => store.user.profileImgSrc);
@@ -136,15 +137,17 @@ const SettingContents = ({ history, questionNum }) => {
     // /setting/7
     const displayNameSubmitHandler = useCallback(async (e) => {
         e.preventDefault();
+        if(displayNameError) // 리덕스에 있는데도 다시 제출하는건, 중복됐다는 거니까 ERROR_INIT
+            dispatch(actions.displayNameInit());
+        
         const displayNameRegex = /^@/;
-        console.log(displayRef.current.value)
         if(displayRef.current.value.length < 2)
             return alert('닉네임을 입력해주세요.');
         if(!displayRef.current.value.match(displayNameRegex)) {
             return alert("닉네임은 맨 앞은 @를 포함해야합니다.")}
 
         await dispatch(actions.displayName(displayRef.current.value));
-    }, []);
+    }, [displayNameError]);
 
     useEffect(() => {
         if(displayNameError === false)
@@ -221,9 +224,9 @@ const SettingContents = ({ history, questionNum }) => {
             return alert('아이디를 제대로 입력해주셔야 이벤트 당첨시 연락이 닿습니다!');
         
         await dispatch(actions.addInstagramId(Instagram));
-        await dispatch(actions.submitToServer());
+        await dispatch(actions.submitToServer(genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux));
         
-    }, [Instagram]);
+    }, [Instagram, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
 
     // /setting/13
     const shareBtnClickedHandler = useCallback(() => {
@@ -233,23 +236,19 @@ const SettingContents = ({ history, questionNum }) => {
     // Submit to server
     useEffect(() => {
         if(submitToServerError === false) {
-            console.log('error false')
             history.push('/setting/13');
         }
         else if(submitToServerError === true) {
             alert("일시적인 오류가 발생했습니다. 다시 시도해주세요.") // 서버 에러
-            console.log('error true')
         }
     }, [submitToServerLoading])
 
     const submitToServer = useCallback(async () => {
         await dispatch(actions.submitToServer(
-            genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayName, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux
+            genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux
         ));
-        console.log(genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayName, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux);
-    }, [submitToServerError]);
+    }, [genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux]);
     
-    // console.log(submitToServerError)
 
     const questionNumber = Number(questionNum);
     let contents = null;
@@ -416,7 +415,7 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="text-center px-3 my-5">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님 <br />요즘 무엇에 관심있으신가요?</h3>
+                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님 <br />요즘 무엇에 관심있으신가요?</h3>
                     <h5 className="text-left font-normal my-5 text-gray-400">관심사를 5개 이상 골라주세요. <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 해시태그 해보세요.</h5>
                 </div>
                 <InterestSetting history={history}/>
@@ -426,7 +425,7 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="text-center px-5 my-5">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayName}님의 한줄소개! </h3>
+                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님의 한줄소개! </h3>
                     <h5 className="text-left font-normal text-gray-400 mb-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
                 </div>
                 <textarea 
@@ -545,7 +544,7 @@ const SettingContents = ({ history, questionNum }) => {
                     <img
                         onClick={() => history.push('/')} 
                         style={{height: '70px', width: '70px', cursor: 'pointer'}}
-                        src="https://2donny.github.io/yk-logo.png"
+                        src="/yk-logo.png"
                         alt="yk-logo"
                         className="rounded-2xl mx-auto"
                     />
