@@ -37,10 +37,10 @@
     "tailwindcss": "^2.0.3"
   },
   "scripts": {
-    "build:css": "postcss src/styles/tailwind.css -o src/styles/main.css -w",
-    "watch:css": "postcss src/styles/tailwind.css -o src/styles/main.css",
+    "build:css": "postcss src/styles/tailwind.css -o src/styles/main.css",
+    "watch:css": "postcss src/styles/tailwind.css -o src/styles/main.css -w",
     "start": "npm-run-all -p watch:css start-js",
-    "build": "npm-run-all -p build:css build-js",
+    "build": "npm-run-all build:css build-js",
     "start-js": "react-scripts start",
     "build-js": "react-scripts build",
     "test": "react-scripts test",
