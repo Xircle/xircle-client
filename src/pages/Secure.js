@@ -19,7 +19,7 @@ const Secure = ({ history }) => {
                     <div className="w-full h-screen flex flex-col justify-center items-center">
                         <img 
                             style={{height: '150px', width: '150px', marginBottom: '10px'}}
-                            src="https://2donny.github.io/yk-logo.png"
+                            src="/yk-logo.png"
                             alt="yk-logo"
                             className="rounded-2xl mx-auto"
                         />
