@@ -1,6 +1,5 @@
 import * as actionTypes from './actionTypes';
-import Axios from '../../axios-instance';
-
+import { Axios, AxiosForCORS } from '../../axios-instance';
 
 export const addAge = (age) => {
     return {
@@ -75,19 +74,33 @@ export const displayNameFail = () => {
         type: actionTypes.DISPLAYNAME_FAIL,
     }
 }
+export const displayNameInit = () => {
+    return {
+        type: actionTypes.DISPLAYNAME_INIT,
+    }
+}
+
 export const displayName = (displayName) => {
     return dispatch => {
         dispatch(displayNameStart());
 
-        Axios.post('/check/name', displayName)
+        const data = {
+            displayName
+        }
+        Axios.post('/check/name', data)
             .then(res => {
                 console.log(res);
-                dispatch(displayNameSuccess(displayName));
+                const isSuccess = res.data.success;
+                if(isSuccess){ 
+                    dispatch(displayNameSuccess(displayName));
+                }else {
+                    dispatch(displayNameFail());
+                }
             })
             .catch(err => {
                 console.log(err);
-                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
                 dispatch(displayNameFail());
+                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
             })
     }
 }
@@ -133,10 +146,9 @@ export const submitToServerFail = () => {
     }
 }
 
-export const submitToServer = (genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayName, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux) => {
+export const submitToServer = (genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux) => {
     return dispatch => {
         dispatch(submitToServerStart());
-        
         const userData = {
             genderInRedux, 
             ageInRedux, 
@@ -145,20 +157,24 @@ export const submitToServer = (genderInRedux, ageInRedux, jobInRedux, adjInRedux
             locationInRedux, 
             articleImgSrcInRedux, 
             articleTextInRedux, 
-            displayName, 
+            displayNameInRedux, 
             interestArrInRedux, 
             introTextInRedux, 
             profileImgSrcInRedux, 
             instagramIdInRedux
         };
-        Axios.post('/pre/user', userData)
+        console.log(ageInRedux);
+        AxiosForCORS.post('/pre/user', userData)
             .then(res => {
                 console.log(res);
-                dispatch(submitToServerSuccess());
+                const isSuccess = res.data.success;
+                if(isSuccess)
+                    dispatch(submitToServerSuccess());
+                else
+                    dispatch(submitToServerFail());
             })
             .catch(err => {
                 console.log(err);
-                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
                 dispatch(submitToServerFail());
             })
     }
