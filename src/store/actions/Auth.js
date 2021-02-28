@@ -39,8 +39,10 @@ export const auth = (email, univKor) => {
                 const isSuccess = res.data.success;
                 if(isSuccess)
                     dispatch(authSuccess(email, univKor));
-                else
+                else {
                     dispatch(authFail());
+                    alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                }
             })
             .catch(err => {
                 console.log(err);
