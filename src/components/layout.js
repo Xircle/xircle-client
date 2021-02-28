@@ -4,8 +4,9 @@ import Banner from './banner';
 import { Link } from 'react-router-dom';
 import { createKakaoButton } from '../components/KakaoShareButton';
 import Headroom from 'react-headroom';
+import { scrolltoTop } from '../components/scrolltoTop';
 
-const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone }) => {
+const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone, setBtnClicked }) => {
     const [headerColor, setHeaderColor] = useState('black');
 
     useEffect(() => {
@@ -14,6 +15,9 @@ const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone }) 
             document.body.style.backgroundColor = 'black';
         else
             document.body.style.backgroundColor = '#E4E4E4';
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        }
     }, []);
 
     const shareBtnClicked = useCallback(() => {
@@ -98,9 +102,7 @@ const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone }) 
                         <div className="flex flex-row items-center justify-between px-5 py-7">
                             <h3 style={{color: headerColor === 'black' ? 'white' : 'black'}} className="m-0 text-xl font-bold text-white">Xircle.연고링</h3>
                             <nav>
-                                <Link to="/start">
-                                    <label className="text-black cursor-pointer px-5 py-2 rounded-lg font-bold border-2 bg-white hover:bg-white hover:text-black focus:outline-none">사전신청하기</label>
-                                </Link>
+                                <label onClick={() => scrolltoTop(setBtnClicked)} className="text-black cursor-pointer px-5 py-2 rounded-lg font-bold border-2 bg-white hover:bg-white hover:text-black focus:outline-none">사전신청하기</label>
                             </nav>
                         </div>
                     </Headroom>
