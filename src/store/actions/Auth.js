@@ -40,8 +40,15 @@ export const auth = (email, univKor) => {
                 if(isSuccess)
                     dispatch(authSuccess(email, univKor));
                 else {
+                    const code = res.data.code;
                     dispatch(authFail());
-                    alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                    if(code === 450) {
+                        alert('이미 가입된 이메일입니다!');
+                        // 여기서 dispatch 또해야함.
+                        window.location.assign('/my-profile');
+                    }else {
+                        alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                    }
                 }
             })
             .catch(err => {
