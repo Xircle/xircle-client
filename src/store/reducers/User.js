@@ -9,12 +9,16 @@ const initialState = {
         loading: null,
         error: null
     },
+    submitImgSrc: {
+        loading: null,
+        error: null
+    },
     gender: null,
     age: null,
     job: null,
     adj: null,
     location: null,
-    articleImgSrc: "something",
+    articleImgSrc: null,
     articleText: null,
     displayName: null,
     interestArr: [],
@@ -55,10 +59,42 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 interestArr: action.interestArr
             }
-        case actionTypes.ADD_ARTICLE_IMGSRC:
+        case actionTypes.SUBMIT_ARTICLE_IMGSRC_TO_AWS_START:
             return {
                 ...state,
-                articleImgSrc: action.articleImgSrc
+                submitImgSrc: {
+                    ...state.submitImgSrc,
+                    loading: true
+                }
+            }
+        case actionTypes.SUBMIT_ARTICLE_IMGSRC_TO_AWS_SUCCESS:
+            return {
+                ...state,
+                submitImgSrc: {
+                    ...state.submitImgSrc,
+                    loading: false,
+                    error: false,
+                },
+                articleImgSrc: action.imgAwsUrl
+            }
+        case actionTypes.SUBMIT_ARTICLE_IMGSRC_TO_AWS_FAIL:
+            return {
+                ...state,
+                submitImgSrc: {
+                    ...state.submitImgSrc,
+                    loading: false,
+                    error: true,
+                },
+                articleImgSrc: action.imgAwsUrl
+            }
+        case actionTypes.SUBMIT_IMG_SRC_TO_AWS_INIT:
+            return {
+                ...state,
+                submitImgSrc: {
+                    ...state.submitImgSrc,
+                    loading: null,
+                    error: null,
+                },
             }
         case actionTypes.ADD_ARTICLE_TEXT:
             return {
@@ -106,10 +142,33 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 introText: action.introText
             }
-        case actionTypes.ADD_PROFILE_IMG_SRC:
+        case actionTypes.SUBMIT_PROFILE_IMGSRC_TO_AWS_START:
             return {
                 ...state,
-                profileImgSrc: action.ProfileImgSrc
+                submitImgSrc: {
+                    ...state.submitImgSrc,
+                    loading: true
+                }
+            }
+        case actionTypes.SUBMIT_PROFILE_IMGSRC_TO_AWS_SUCCESS:
+            return {
+                ...state,
+                submitImgSrc: {
+                    ...state.submitImgSrc,
+                    loading: false,
+                    error: false,
+                },
+                profileImgSrc: action.imgAwsUrl
+            }
+        case actionTypes.SUBMIT_PROFILE_IMGSRC_TO_AWS_FAIL:
+            return {
+                ...state,
+                submitImgSrc: {
+                    ...state.submitImgSrc,
+                    loading: false,
+                    error: true,
+                },
+                profileImgSrc: action.imgAwsUrl
             }
         case actionTypes.ADD_INSTA_ID:
             return {
