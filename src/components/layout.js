@@ -10,7 +10,12 @@ const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone }) 
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll)
+        if(isIntro)
+            document.body.style.backgroundColor = 'black';
+        else
+            document.body.style.backgroundColor = '#E4E4E4';
     }, []);
+
     const shareBtnClicked = useCallback(() => {
         createKakaoButton('#kakao-link-btn-second');
     }, []);
@@ -25,7 +30,7 @@ const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone }) 
     }, []);
     
     return (
-        <div id="layout" className="flex flex-col mx-auto bg-white md:w-full">
+        <div id="layout" style={{backgroundColor: isIntro ? 'black' : "white"}} className="flex flex-col mx-auto md:w-full">
             {!headerNone ? (
                 <>
                     <nav className="flex flex-row justify-between px-3 py-2">
@@ -80,13 +85,21 @@ const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone }) 
             {isIntro ? (
                 <header>
                     <Headroom
-                        style={{zIndex: 50, overflow: 'hidden', backgroundColor: headerColor}}
+                        style={{
+                            position: 'fixed', 
+                            zIndex: 200, 
+                            backgroundColor: headerColor,
+                            WebkitTransition: 'all .4s ease-in-out',
+                            MozTransition: 'all .4s ease-in-out',
+                            OTransition: 'all .4s ease-in-out',
+                            transition: 'all .4s ease-in-out',
+                        }}
                     >
                         <div className="flex flex-row items-center justify-between px-5 py-7">
                             <h3 style={{color: headerColor === 'black' ? 'white' : 'black'}} className="m-0 text-xl font-bold text-white">Xircle.연고링</h3>
                             <nav>
                                 <Link to="/start">
-                                    <label className="text-black cursor-pointer px-5 py-2 rounded-xl font-bold border-2 bg-white hover:bg-white hover:text-black focus:outline-none">사전신청 하기</label>
+                                    <label className="text-black cursor-pointer px-5 py-2 rounded-lg font-bold border-2 bg-white hover:bg-white hover:text-black focus:outline-none">사전신청하기</label>
                                 </Link>
                             </nav>
                         </div>
