@@ -1,19 +1,31 @@
-import React, { useEffect } from 'react';
-import manHalf from '../images/man_half.jpeg';
-import womanHalf from '../images/woman_half.jpeg';
+import React, { useEffect, useCallback, useState } from 'react';
 import airpod_bg from '../images/airpod_bg.png';
 import Aos from 'aos';
 import 'aos/dist/aos.css';
 import Layout from '../components/layout';
-
+import { scrolltoTop } from '../components/scrolltoTop';
 
 const Intro = ({ history }) => {
+  const [btnClicked, setBtnClicked] = useState(false);
 
   useEffect(() => {
     Aos.init();
   }, []);
+
+  useEffect(() => {
+    if(!btnClicked)
+      return null;
+
+    const timer = setTimeout(() => {
+      history.push('/start');
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+    }
+  }, [btnClicked]);
   return (
-    <Layout isIntro footerNone headerNone>
+    <Layout isIntro footerNone headerNone setBtnClicked={setBtnClicked}>
       <>
         {/* 1번째 Slide */}
         <section style={{minHeight: '100vh'}} className="h-full w-full">
@@ -25,20 +37,30 @@ const Intro = ({ history }) => {
             <div  style={{transform: "translate(-50%, -50%)", position: 'absolute', left: '50%', top: '35%', textAlign: 'center'}}>
               <div data-aos="fade-up" data-aos-duration="2000">
                 <h1
-                  style={{fontSize: 20, lineHeight: 2}} 
+                  style={{fontSize: 22, lineHeight: 1.5}} 
                   className="font-bold text-white"
                 >
-                  요즘 대학생들의
+                  요즘 대학생들의 <br/>
+                  새로운 네트워킹
                 </h1>
                 <h1 style={{fontSize: 33, wordBreak: 'keep-all'}} className="text-white m-0 font-extrabold">XIRCLE, 써클</h1>
-                <button 
-                  onClick={() => history.push('/start')} 
-                  className=" px-16 py-3 text-white mt-10 rounded-3xl bg-transparent-600 border-2 hover:bg-white hover:text-black focus:outline-none"
-                > 
-                  신청하기
-                </button>
-                <p style={{color: 'white', fontSize: '12px', margin: '10px 0 5px', wordBreak: 'keep-all', whiteSpace: 'nowrap'}}>[베타서비스] 서연고서성한포카 대상</p>
-                <p style={{color: 'white', fontSize: '10px',  wordBreak: 'keep-all', whiteSpace: 'nowrap'}}> 고려대/연세대 재학생들이 만든 프로젝트입니다.</p>
+                {btnClicked ? (
+                  <div data-aos="zoom-out" data-aos-duration="2000">
+                    <p style={{fontSize: 18, color: 'white', whiteSpace: 'nowrap', margin: '20px 0'}}>사전신청에 오신걸 환영합니다.</p>
+                    <p style={{color: 'white', fontSize: '12px', margin: '10px 0 5px', wordBreak: 'keep-all', whiteSpace: 'nowrap'}}>고려대/연세대 재학생들이 만든 프로젝트입니다. <br/> 가벼운 마음으로 함께 저희와 써클을 만들어주시면 감사하겠습니다</p>
+                  </div>
+                ) : (
+                  <>
+                    <button 
+                      onClick={() => scrolltoTop(setBtnClicked)} 
+                      className=" px-16 py-3 text-white mt-10 rounded-3xl bg-transparent-600 border-2 hover:bg-white hover:text-black focus:outline-none"
+                    > 
+                      신청하기
+                    </button>
+                    <p style={{color: 'white', fontSize: '12px', margin: '10px 0 5px', wordBreak: 'keep-all', whiteSpace: 'nowrap'}}>[베타서비스] 서연고서성한포카 대상 (-3/21)</p>
+                    <p style={{color: 'white', fontSize: '10px',  wordBreak: 'keep-all', whiteSpace: 'nowrap'}}> 고려대/연세대 재학생들이 만든 프로젝트입니다.</p>
+                  </>
+                )}
               </div>
             </div>
             <div className="flex flex-row items-center justify-between" style={{position: 'absolute', bottom: 100, left: "50%", transform: 'translate(-50%, 0)'}}>
@@ -147,7 +169,7 @@ const Intro = ({ history }) => {
                 </div>
                 <div style={{padding: "15px 15px 10px 15px", borderRadius: 10, boxShadow: '0px 0px 50px 5px rgba(0, 0, 0, 0.08)'}} className="my-5">
                   <p style={{fontWeight: '400', fontSize: 13}}>개발자님 정말 감사합니다. <br/> 사실 이 프로그램을 처음 접했을때 그리 기대하지 않았는데 <strong>세상에서 제일 잘 맞는 사람이랑 만날 기회가 생겼습니다.</strong> 적절한 시국에 데이트 앱처럼 개인정보를 드러내지 않아 부담스럽지 않게 사람을 만날 수 있는 좋은 프로그램이라고 생각합니다ㅎㅎ 진심으로요! 다른 사람들이 이걸 알아줬으면 좋겠네요.<br/></p>
-                  <p style={{fontSize: 10, textAlign: "right"}}>서울대 2**님</p>
+                  <p style={{fontSize: 10, textAlign: "right"}}>고려대 청**** 님 </p>
                 </div>
               </div>
             </div>
@@ -283,6 +305,12 @@ const Intro = ({ history }) => {
                   <a style={{color: 'goldenrod', margin: '20px 0', display: 'block'}} href="https://pf.kakao.com/_kDxhtK"> 고객센터 바로가기 </a>
                 </div>
 
+                <button 
+                  onClick={() => scrolltoTop(setBtnClicked)} 
+                  className="w-full px-16 py-3 mt-5 rounded-xl bg-black text-white border-2 focus:outline-none"
+                > 
+                  사전 신청하기
+                </button>
                 </div>
               </div>
           </section>
