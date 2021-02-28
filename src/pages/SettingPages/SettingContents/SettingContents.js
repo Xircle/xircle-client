@@ -23,27 +23,32 @@ const SettingContents = ({ history, questionNum }) => {
     const displayRef = useRef();
     const displayNameCheeckLoading = useSelector(store => store.user.displayNameUI.loading);
     const displayNameError = useSelector(store => store.user.displayNameUI.error);
-    
 
     const articleRef = useRef();
     const [introText, setIntroText] = useState('');
     const [profileImgSrc, setProfileImgSrc] = useState('');
     const [Instagram, setInstagram] = useState('@');
     const [isChecked_1, setIsChecked_1] = useState(false);
-    const [isChecked_2, setIsChecked_2] = useState(false);
+    const [articleImg_formData, setArticleImgSrcFormData] = useState(null);
+    const [profileImg_formData, setProfileImgSrcFormData] = useState(null);
     
+    const [isChecked_2, setIsChecked_2] = useState(false);
     const [genderClicked, setGenderClicked] = useState(false);
     const [shareClicked, setShareClicked] = useState(false);
     
     const submitToServerLoading = useSelector(store => store.user.submitToServer.loading);
     const submitToServerError = useSelector(store => store.user.submitToServer.error);
+    const submitImgSrcToAWSLoading = useSelector(store => store.user.submitImgSrc.loading);
+    const submitImgSrcToAWSError = useSelector(store => store.user.submitImgSrc.error);
+
+    const emailInRedux = useSelector(store => store.auth.email);
     const genderInRedux = useSelector(store => store.user.gender);
     const ageInRedux = useSelector(store => store.user.age);
     const jobInRedux = useSelector(store => store.user.job);
     const adjInRedux = useSelector(store => store.user.adj);
     const locationInRedux = useSelector(store => store.user.location);
-    const articleTextInRedux = useSelector(store => store.user.articleImgSrc);
-    const articleImgSrcInRedux = useSelector(store => store.user.articleText);
+    const articleTextInRedux = useSelector(store => store.user.articleText);
+    const articleImgSrcInRedux = useSelector(store => store.user.articleImgSrc);
     const displayNameInRedux = useSelector(store => store.user.displayName);
     const interestArrInRedux = useSelector(store => store.user.interestArr);
     const introTextInRedux = useSelector(store => store.user.introText);
@@ -51,19 +56,18 @@ const SettingContents = ({ history, questionNum }) => {
     const instagramIdInRedux = useSelector(store => store.user.instagramId);
 
     const dispatch = useDispatch();
-
     
     // /setting/1
-    const WomanBtnClickedHandler = useCallback((event) => {
+    const WomanBtnClickedHandler = useCallback(() => {
         setGenderClicked(true);
         dispatch(actions.addGender('woman'))
     }, []);
-    const ManBtnClickedHandler = useCallback((event) => {
+    const ManBtnClickedHandler = useCallback(() => {
         setGenderClicked(true);
         dispatch(actions.addGender('man'))
     }, []);
 
-    const NonBinaryBtnClickedHandler = useCallback((event) => {
+    const NonBinaryBtnClickedHandler = useCallback(() => {
         setGenderClicked(true);
         dispatch(actions.addGender('non'))
         //저장
@@ -90,6 +94,7 @@ const SettingContents = ({ history, questionNum }) => {
         event.preventDefault();
         // set 하기전에, 잘 적었는지 위치 필터링 한번 해야함.
         const locationRegex = /^(서울|경기도|강원도|충청북도|충청남도|전라북도|전라남도|경상북도|경상남도|부산|제주|세종|대구|인천|광주|대전|울산)/;
+
         if(!location.match(locationRegex))
             return alert('올바른 지역을 입력해주세요.');
 
@@ -101,29 +106,62 @@ const SettingContents = ({ history, questionNum }) => {
         setLocation(event.target.value);
     }, []);
     
+    useEffect(() => {
+        const currentPath = window.location.pathname;
+        if(currentPath === '/setting/5') {
+            const articleImgInLocalStorage = localStorage.getItem('article-image');
+            if(articleImgInLocalStorage) {
+                setImgSrc(articleImgInLocalStorage);
+            }
+        }
+        if(currentPath === '/setting/10') {
+            const profileImgInLocalStorage = localStorage.getItem('profile-image');
+            if(profileImgInLocalStorage) {
+                setProfileImgSrc(profileImgInLocalStorage);
+            }
+        }
+    }, []);
+
     // /setting/5
     const uploadPhoto = useCallback((event) => {
         event.preventDefault();
         // file을 읽을 reader 객체 생성
-        const reader = new FileReader();
-        reader.onload = event => { // async하게 다 읽었으면 실행 
-            setImgSrc(event.target.result);
-        };
         const files = event.target.files;
         const __file = files[0];
+        console.log(__file);
 
-        reader.readAsDataURL(__file);
+        // 미리보기용
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(__file);
+        fileReader.onload = e => {
+            setImgSrc(e.target.result);
+            localStorage.setItem('article-image', e.target.result);
+        }
+        // 서버 제출용
+        const formData = new FormData();
+        formData.append("img", __file);
+
+        setArticleImgSrcFormData(formData);
     }, []);
     
     const uploadBtnHandler = useCallback((event) => {
         event.preventDefault();
         if(!imgSrc)
             return alert("사진을 선택해주세요.")
-
-        dispatch(actions.addArticleImgSrc(imgSrc));
-        history.push('/setting/6')
-    }, [imgSrc]);
+        // /img 라우터로 formData 올려서 S3에 이미지 업로드하고, URL 받아야함.
+        dispatch(actions.submitArticleImgToAWS(articleImg_formData));
+    }, [imgSrc, articleImg_formData]);
     
+    useEffect(() => {
+        const currentPath = window.location.pathname;
+        if(currentPath !== '/setting/5')
+            return null;
+        if(submitImgSrcToAWSError)
+            return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
+        else if(submitImgSrcToAWSError === false)
+            history.push('/setting/6');
+    }, [submitImgSrcToAWSLoading]);
+
     // /setting/6
     const articleSubmitHandler = useCallback((event) => {
         event.preventDefault();
@@ -154,13 +192,6 @@ const SettingContents = ({ history, questionNum }) => {
             history.push('/setting/8')
     }, [displayNameError]);
 
-    // /setting/8
-    const interestSubmitHandler = useCallback((event) => {
-        event.preventDefault();
-        
-        history.push('/setting/9')
-    }, []);
-    
     // /setting/9
     const introTextSubmitHandler = useCallback((event) => {
         event.preventDefault();
@@ -179,14 +210,19 @@ const SettingContents = ({ history, questionNum }) => {
     const uploadProfileImg = useCallback((event) => {
         event.preventDefault();
         // file을 읽을 reader 객체 생성
-        const reader = new FileReader();
-        reader.onload = event => { // async하게 다 읽었으면 실행 
-            setProfileImgSrc(event.target.result);
-        };
         const files = event.target.files;
         const __file = files[0];
 
-        reader.readAsDataURL(__file);
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(__file);
+        fileReader.onload = e => { // async하게 다 읽었으면 실행 
+            setProfileImgSrc(e.target.result);
+            localStorage.setItem('profile-image', e.target.result);
+        };
+
+        const formData = new FormData();
+        formData.append("img", __file);
+        setProfileImgSrcFormData(formData);
     }, []);
 
     const uploadProfileHandler = useCallback((event) => {
@@ -194,10 +230,24 @@ const SettingContents = ({ history, questionNum }) => {
         if(!profileImgSrc)
             return alert("사진을 선택해주세요.");
 
-        dispatch(actions.addProfileImgSrc(profileImgSrc));
-        // axios 서버로
-        history.push('/setting/11');
-    }, [profileImgSrc]);
+        console.log(profileImg_formData);
+        for (var pair of profileImg_formData.entries()) {
+            console.log(pair[0]+ ', ' + pair[1]); 
+        }
+
+        dispatch(actions.submitProfileImgToAWS(profileImg_formData));
+    }, [profileImgSrc, profileImg_formData]);
+
+    useEffect(() => {
+        const currentPath = window.location.pathname;
+        if(currentPath !== '/setting/10')
+            return null;
+
+        if(submitImgSrcToAWSError === true)
+            return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
+        else if(submitImgSrcToAWSError === false)
+            history.push('/setting/11');
+    }, [submitImgSrcToAWSLoading]);
 
     // /setting/11
     const checkboxChanged = useCallback((event) => {
@@ -224,7 +274,7 @@ const SettingContents = ({ history, questionNum }) => {
             return alert('아이디를 제대로 입력해주셔야 이벤트 당첨시 연락이 닿습니다!');
         
         await dispatch(actions.addInstagramId(Instagram));
-        await dispatch(actions.submitToServer(genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux));
+        await dispatch(actions.submitToServer(emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux));
         
     }, [Instagram, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
 
@@ -245,11 +295,11 @@ const SettingContents = ({ history, questionNum }) => {
 
     const submitToServer = useCallback(async () => {
         await dispatch(actions.submitToServer(
-            genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux
+            emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux
         ));
-    }, [genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux]);
+        
+    }, [emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux]);
     
-
     const questionNumber = Number(questionNum);
     let contents = null;
     if(questionNumber === 1) {
@@ -258,9 +308,9 @@ const SettingContents = ({ history, questionNum }) => {
                 <section className="px-8 mt-8">
                     <h1 style={{textAlign: 'left', marginBottom: '10px'}} className="text-2xl text-left">성별</h1>
                     <p style={{color: "#C5C1C1", textAlign: 'left', marginBottom: '20px'}}>성별을 선택해주세요. (필수)<br /> 직접기입에 성별과 관련없는 정보 기재 하지마세요.</p>
-                    <button onClick={(e) => WomanBtnClickedHandler(e)} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base ">여성</span></button>
-                    <button onClick={(e) => ManBtnClickedHandler(e)} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base ">남성</span></button>
-                    <button onClick={(e) => NonBinaryBtnClickedHandler(e)} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base "> 논바이너리</span></button>
+                    <button onClick={() => WomanBtnClickedHandler()} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base ">여성</span></button>
+                    <button onClick={() => ManBtnClickedHandler()} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base ">남성</span></button>
+                    <button onClick={() => NonBinaryBtnClickedHandler()} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base "> 논바이너리</span></button>
                 </section>
                 
                 <Modal show={genderClicked} clicked={() => setGenderClicked(false)}>
