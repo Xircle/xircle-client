@@ -1,5 +1,6 @@
 export const scrolltoTop = (setBtnClicked) => {
-    setBtnClicked(true);
+    if(setBtnClicked)
+      setBtnClicked(true);
     const rootEl = document.documentElement;
     rootEl.scrollTo({
       top: 0,

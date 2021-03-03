@@ -1,11 +1,10 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
 
-const TextFieldUI = ({ label, placeholder, submitted, changeHandler }) => {
+const TextFieldUI = ({ width, label, placeholder, submitted, changeHandler }) => {
   return (
-    <form onSubmit={(e) => submitted(e)} noValidate autoComplete="off" style={{width: '50%'}}>
+    <form onSubmit={(e) => submitted(e)} noValidate autoComplete="off" className="flex flex-row justify-center" style={{width: width}}>
       <TextField 
         id="filled-basic" 
         variant="filled"
