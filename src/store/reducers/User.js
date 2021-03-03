@@ -13,31 +13,49 @@ const initialState = {
         loading: null,
         error: null
     },
+    phoneNumber: null,
+    isPublic: null,
+    isGraduate: null,
     gender: null,
     age: null,
     job: null,
     adj: null,
     location: null,
+    interestArr: [],
     articleImgSrc: null,
     articleText: null,
+    articleTag: null,
     displayName: null,
-    interestArr: [],
     introText: null,
     profileImgSrc: null,
-    instagramId: null,
 }
 
 const reducer = (state=initialState, action) => {
     switch(action.type) {
-        case actionTypes.ADD_AGE:
+        case actionTypes.ADD_PHONE_NUMBER:
             return {
                 ...state,
-                age: action.age
+                phoneNumber: action.phoneNumber
+            }
+        case actionTypes.ADD_IS_PUBLIC:
+            return {
+                ...state,
+                isPublic: action.isPublic
+            }
+        case actionTypes.ADD_IS_GRADUATE:
+            return {
+                ...state,
+                isGraduate: action.isGraduate
             }
         case actionTypes.ADD_GENDER:
             return {
                 ...state,
                 gender: action.gender
+            }
+        case actionTypes.ADD_AGE:
+            return {
+                ...state,
+                age: action.age
             }
         case actionTypes.ADD_JOB:
             return {
@@ -100,6 +118,11 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 articleText: action.articleText
+            }
+        case actionTypes.ADD_ARTICLE_HASHTAG:
+            return {
+                ...state,
+                articleTag: action.articleTag
             }
         case actionTypes.DISPLAYNAME_START:
             return {
@@ -169,11 +192,6 @@ const reducer = (state=initialState, action) => {
                     error: true,
                 },
                 profileImgSrc: action.imgAwsUrl
-            }
-        case actionTypes.ADD_INSTA_ID:
-            return {
-                ...state,
-                instagramId: action.instagramId
             }
         case actionTypes.SUBMIT_TO_SERVER_START:
             return {
