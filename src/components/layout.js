@@ -6,8 +6,9 @@ import { createKakaoButton } from '../components/KakaoShareButton';
 import Headroom from 'react-headroom';
 import { scrolltoTop } from '../components/scrolltoTop';
 
-const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone, setBtnClicked }) => {
+const Layout = ({ children, isIntro, invitement, num, footerNone, btnClicked, setBtnClicked }) => {
     const [headerColor, setHeaderColor] = useState('black');
+    const [isInvitementClosed, setIsInvitementClosed] = useState(false);
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll)
@@ -20,11 +21,8 @@ const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone, se
         }
     }, []);
 
-    const shareBtnClicked = useCallback(() => {
-        createKakaoButton('#kakao-link-btn-second');
-    }, []);
-
-    // Head room. scroll에 따라 색깔 변경
+    
+    // Headroom. scroll에 따라 색깔 변경
     const handleScroll = useCallback(() => {
         const screenHeight = window.innerHeight;
         if(window.scrollY > screenHeight) {
@@ -35,58 +33,33 @@ const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone, se
     
     return (
         <div id="layout" style={{backgroundColor: isIntro ? 'black' : "white"}} className="flex flex-col mx-auto md:w-full">
-            {!headerNone ? (
-                <>
-                    <nav className="flex flex-row justify-between px-3 py-2">
-                        <Link to="/my-profile">
-                            <img
-                                style={{width: 40, height: 40}}
-                                src="/yk-logo.png"
-                                alt="yk-logo"
-                                className=" rounded-2xl"
-                            />
-                        </Link>
-                        <div className="flex flex-row items-center">
-                            <Link to="/my-profile">
-                                <img 
-                                    style={{width: 30, height: 30, margin: '0 10px'}}
-                                    src="/notifications-outline.svg"
-                                    alt="notification"
-                                />
-                            </Link>
-                            <Link to="/my-profile">
-                                <img 
-                                    style={{width: 30, height: 30, margin: '0 10px'}}
-                                    src="/Article/ellipsis-vertical-outline.svg"
-                                    alt="notification"
-                                />
-                            </Link>
-                            
-                        </div>
-                    </nav>
-                    {/* Banner */}
-                    <Banner />
-                </>
-            ) : null}
-
             {num === '2' || num === '3' ? (
                 <aside>
                     <img
                         style={{width: '60px', height: '60px', position: 'fixed', right: 10, bottom: 10, cursor: 'pointer'}} 
-                        onClick={() => window.scrollTo(0, 0)}
+                        onClick={() => scrolltoTop()}
                         src="/arrow-up-circle.svg"
                         alt="scroll-top"
                         />
                 </aside>
             ) : null}
 
-            {invitement ? (
-                <aside style={{width: '100%', position: 'fixed', bottom: 30, left: 'calc(50% - 159px)'}}>
-                    <button onClick={() => shareBtnClicked()} id="kakao-link-btn-second" className="focus:outline-none" style={{padding: '10px 100px', border: '1px solid black', backgroundColor: '#eee', borderRadius: '10px'}}>연고링 초대장 보내기</button>
+            {invitement && !isInvitementClosed ? (
+                <aside id="invitement">
+                    <div className="relative flex flex-row justify-center items-center" style={{backgroundColor: "rgba(38, 38, 38, 0.8)", height: 64}}>
+                        <p style={{color: 'white', margin: 0}}>XIRCLE 초대장 보내기</p>
+                        <img 
+                            src="/close-outline.svg"
+                            alt="close"
+                            color="white"
+                            style={{width: 20, height: 20, position: 'absolute', right: 0, top: 0, backgroundColor: '#fff', cursor: 'pointer'}}
+                            onClick={() => setIsInvitementClosed(true)}
+                        />
+                    </div>
                 </aside>
             ) : null}
 
-            {isIntro ? (
+            {isIntro && !btnClicked ? (
                 <header>
                     <Headroom
                         style={{
@@ -107,18 +80,29 @@ const Layout = ({ children, isIntro, invitement, num, headerNone, footerNone, se
                         </div>
                     </Headroom>
                 </header>
-            ) : null}
+            ) : isIntro ?  <header style={{height: 73, backgroundColor: 'black'}}></header> : null}
 
             <main className="min-h-screen">
                 {children}
             </main>
 
-            <Footer_nav footerNone={footerNone}/>
-
             {/* footer */}
-            <footer>
-                <div></div>
-            </footer>
+            {isIntro ? (
+                <footer style={{height: '40vh', padding: '50px 20px 60px'}}>
+                    <div style={{color: '#D9D9D9'}}>
+                        <p style={{margin: 0}}>고객센터 (팀) 연고링</p> <br/>
+                        <p style={{margin: 0}}>각종 문의 : <a style={{color: '##4183c4'}} href="https://pf.kakao.com/_kDxhtK">[XIRCLE] 카카오톡 채널</a></p>
+                        <p style={{margin: 0}}>이메일 문의 : <a style={{color: '##4183c4'}} href="https://www.instagram.com/ykring_official/">XIRCLE 인스타그램</a></p>
+                        <p style={{margin: 0}}>비즈니스 문의 : <a style={{color: '##4183c4'}} href="https://www.instagram.com/ykring_official/">XIRCLE 인스타그램   010 8033 6028</a></p>
+                        <br/>
+                        <p style={{margin: 0}}>XIRCLE 인스타그램</p> 
+                        <p style={{margin: 0}}>XIRCLE 페이스북</p>  
+                        <p style={{margin: 0}}>XIRCLE 유튜브 채널 [오픈 예정]</p>
+                    </div>
+                </footer>
+            ) : 
+                <Footer_nav footerNone={footerNone}/>
+            }
         </div>
     )
 }
