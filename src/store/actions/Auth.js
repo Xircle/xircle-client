@@ -43,8 +43,7 @@ export const auth = (email, univKor) => {
                     const code = res.data.code;
                     dispatch(authFail());
                     if(code === 450) {
-                        alert('이미 가입된 이메일입니다!');
-                        // 여기서 dispatch 또해야함.
+                        // 여기서 dispatch 또해야함. 해당 이메일로 정보를 서버에서 가져와야함.
                         window.location.assign('/my-profile');
                     }else {
                         alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
