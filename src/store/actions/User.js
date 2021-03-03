@@ -1,10 +1,23 @@
 import * as actionTypes from './actionTypes';
 import { Axios } from '../../axios-instance';
 
-export const addAge = (age) => {
+
+export const addPhoneNumber = (phoneNumber) => {
     return {
-        type: actionTypes.ADD_AGE,
-        age,
+        type: actionTypes.ADD_PHONE_NUMBER,
+        phoneNumber,
+    }
+}
+export const addIsPublic = (isPublic) => {
+    return {
+        type: actionTypes.ADD_IS_PUBLIC,
+        isPublic,
+    }
+}
+export const addIsGraduate = (isGraduate) => {
+    return {
+        type: actionTypes.ADD_IS_GRADUATE,
+        isGraduate,
     }
 }
 export const addGender = (gender) => {
@@ -13,7 +26,12 @@ export const addGender = (gender) => {
         gender,
     }
 }
-
+export const addAge = (age) => {
+    return {
+        type: actionTypes.ADD_AGE,
+        age,
+    }
+}
 export const addJob = (job) => {
     return {
         type: actionTypes.ADD_JOB,
@@ -90,6 +108,12 @@ export const addArticleText = (articleText) => {
     return {
         type: actionTypes.ADD_ARTICLE_TEXT,
         articleText,
+    }
+}
+export const addArticleTag = (articleTag) => {
+    return {
+        type: actionTypes.ADD_ARTICLE_HASHTAG,
+        articleTag,
     }
 }
 
@@ -196,13 +220,6 @@ export const submitProfileImgToAWS = (profileImg_formData) => {
 }
 // -----
 
-export const addInstagramId = (instagramId) => {
-    return {
-        type: actionTypes.ADD_INSTA_ID,
-        instagramId
-    }
-}
-
 // SubmitToServer
 export const submitToServerStart = () => {
     return {
@@ -221,11 +238,14 @@ export const submitToServerFail = () => {
     }
 }
 
-export const submitToServer = (emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux) => {
+export const submitToServer = (phoneNumberInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText) => {
     return dispatch => {
         dispatch(submitToServerStart());
         const userData = {
+            phoneNumber: phoneNumberInRedux,
             email: emailInRedux,
+            isPublic: isPublicInRedux,
+            isGraduate: isGraduateInRedux,
             gender: genderInRedux, 
             age: ageInRedux,
             job: jobInRedux, 
@@ -233,25 +253,29 @@ export const submitToServer = (emailInRedux, genderInRedux, ageInRedux, jobInRed
             location: locationInRedux, 
             articleImgSrc: articleImgSrcInRedux, 
             articleText: articleTextInRedux, 
+            articleTag: articleTagInRedux,
             displayName: displayNameInRedux, 
             interestArr: interestArrInRedux, 
             introText: introTextInRedux, 
             profileImgSrc: profileImgSrcInRedux, 
-            instagramId: instagramIdInRedux
+            resume: resumeText,
+            workPlace: workPlaceText
         };
-        console.log(userData);
         Axios.post('/pre/user', userData)
             .then(res => {
                 console.log(res);
                 const isSuccess = res.data.success;
                 if(isSuccess)
                     dispatch(submitToServerSuccess());
-                else
+                else {
                     dispatch(submitToServerFail());
+                    alert(res.data.message);
+                }
             })
             .catch(err => {
                 console.log(err);
                 dispatch(submitToServerFail());
+                alert('일시적인 오류가 발생했습니다. 잠시후 다시 시도해주세요.');
             })
     }
 }
