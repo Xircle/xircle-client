@@ -1,6 +1,9 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import airpod_bg from '../images/airpod_bg.png';
 import Aos from 'aos';
+import first_bg from '../images/first_scroll.jpg';
+import second_bg from '../images/second_scroll.jpg';
+import third_bg from '../images/third_scroll.png';
 import 'aos/dist/aos.css';
 import Layout from '../components/layout';
 import { scrolltoTop } from '../components/scrolltoTop';
@@ -15,17 +18,16 @@ const Intro = ({ history }) => {
   useEffect(() => {
     if(!btnClicked)
       return null;
-
     const timer = setTimeout(() => {
-      history.push('/start');
-    }, 2000);
+      history.push('/secure');
+    }, 3500);
 
     return () => {
       clearTimeout(timer);
     }
   }, [btnClicked]);
   return (
-    <Layout isIntro footerNone headerNone setBtnClicked={setBtnClicked}>
+    <Layout isIntro footerNone headerNone btnClicked={btnClicked} setBtnClicked={setBtnClicked} >
       <>
         {/* 1번째 Slide */}
         <section style={{minHeight: '100vh'}} className="h-full w-full">
@@ -37,7 +39,7 @@ const Intro = ({ history }) => {
             <div  style={{transform: "translate(-50%, -50%)", position: 'absolute', left: '50%', top: '35%', textAlign: 'center'}}>
               <div data-aos="fade-up" data-aos-duration="2000">
                 <h1
-                  style={{fontSize: 22, lineHeight: 1.5}} 
+                  style={{fontSize: 22, lineHeight: 1.5, marginBottom: 13}} 
                   className="font-bold text-white"
                 >
                   요즘 대학생들의 <br/>
@@ -63,13 +65,13 @@ const Intro = ({ history }) => {
                 )}
               </div>
             </div>
-            <div className="flex flex-row items-center justify-between" style={{position: 'absolute', bottom: 100, left: "50%", transform: 'translate(-50%, 0)'}}>
+            <div className="flex flex-row items-center justify-between" style={{position: 'absolute', bottom: 150, left: "50%", transform: 'translate(-50%, 0)', display: btnClicked ? 'none': null}}>
               <img 
                 style={{width: 12, height: 12}}
                 src="/Intro/prefix_keyboard_arrow_left_24px.svg"
                 alt="arrow"
               />
-              <span style={{color: 'white', margin: '0 10px'}}>Xircle 소개</span>
+              <span style={{color: 'white', margin: '0 10px', fontWeight: 'lighter'}}>Xircle 소개</span>
             </div>
           </section>
         </section>
@@ -112,10 +114,12 @@ const Intro = ({ history }) => {
               
               {/* 내용 */}
               <div className="px-4">
-                <h1 data-aos="fade-right" data-aos-duration="2000" style={{fontSize: 35, fontWeight: 'bold', lineHeight: '3.2rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>검증된 인맥 <br /> 오직 XIRCLE 에서만 <br/> 가능한 일 </h1> 
-                <div className="my-12">
-                  <h3 style={{fontSize: 16}}>이메일 인증을 통해서 들어온 사람들만의 <br/>새로운 형태의 <span style={{color: "#2F51F0"}}>네트워킹</span> </h3>
-                  <p style={{}}>또 다른 인맥을 형성하세요</p>
+                <div data-aos="fade-right" data-aos-duration="2000">
+                  <h1 style={{fontSize: 35, fontWeight: 'bold', lineHeight: '3.2rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>검증된 인맥 <br /> 오직 XIRCLE 에서만 <br/> 가능한 일 </h1> 
+                  <div className="my-12">
+                    <h3 style={{fontSize: 16}}>이메일 인증을 통해서 들어온 사람들만의 <br/>새로운 형태의 <span style={{color: "#2F51F0"}}>네트워킹</span> </h3>
+                    <p style={{}}>또 다른 인맥을 형성하세요</p>
+                  </div>
                 </div>
 
                 <div style={{marginTop: 100}}>
@@ -176,6 +180,109 @@ const Intro = ({ history }) => {
           </section>
         </section>
 
+        {/* Background Image */}
+        <section className=" overflow-x-hidden">
+          <section 
+            style={{
+              backgroundImage: `url(${first_bg})`,
+              height: "100vh",
+              backgroundSize: "cover",
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat', 
+            }}
+          >
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+              <div className="text-center">
+                <div className="flex flex-row justify-center">
+                  <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'white', border: '1px solid white', margin: '0 3px'}}></div>
+                  <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'transparent', border: '1px solid white', margin: '0 3px'}}></div>
+                  <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'transparent', border: '1px solid white', margin: '0 3px'}}></div>
+                </div>
+                <h1
+                  style={{fontSize: 24, marginBottom: 13}} 
+                  className="w-full font-bold text-white text-center leading-10"
+                >
+                  소모임 / 소개팅 / 미팅 <br/> 특별한 우리만의 네트워크 시작! 
+                </h1>
+                <button 
+                  onClick={() => scrolltoTop(setBtnClicked)} 
+                  className=" px-16 py-3 my-1 text-white rounded-3xl bg-transparent-600 border-2 focus:outline-none"
+                > 
+                  신청하기
+                </button>
+                <p style={{color: 'white', fontSize: '12px', margin: '10px 0 5px', wordBreak: 'keep-all', whiteSpace: 'nowrap'}}>[베타서비스] 서연고서성한포카 대상 (-3/21)</p>
+                
+              </div>
+            </div>
+          </section>
+          <section 
+            style={{
+              backgroundImage: `url(${second_bg})`,
+              height: "100vh",
+              backgroundSize: "cover",
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',  
+            }}
+          >
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+              <div className="text-center">
+                  <div className="flex flex-row justify-center">
+                    <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'transparent', border: '1px solid white', margin: '0 3px'}}></div>
+                    <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'white', border: '1px solid white', margin: '0 3px'}}></div>
+                    <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'transparent', border: '1px solid white', margin: '0 3px'}}></div>
+                  </div>
+                  <h1
+                    style={{fontSize: 24, marginBottom: 13}} 
+                    className="w-full font-bold text-white text-center leading-10"
+                  >
+                    XIRCLE 친구들과 <br/> 관심사와 정보를 <br/> 공유하며 대화해요!
+                  </h1>
+                  <button 
+                    onClick={() => scrolltoTop(setBtnClicked)} 
+                    className=" px-16 py-3 text-white rounded-3xl bg-transparent-600 border-2 focus:outline-none"
+                  > 
+                    신청하기
+                  </button>
+                  <p style={{color: 'white', fontSize: '12px', margin: '10px 0 5px', wordBreak: 'keep-all', whiteSpace: 'nowrap'}}>[베타서비스] 서연고서성한포카 대상 (-3/21)</p>
+              </div>
+            </div>
+          </section>
+          <section 
+            style={{
+              backgroundImage: `url(${third_bg})`,
+              height: "100vh",
+              backgroundSize: "cover",
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',  
+            }}
+          >
+            <div className="flex flex-col justify-center items-center w-full h-full" style={{backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
+              <div className="text-center">
+                  <div className="flex flex-row justify-center">
+                    <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'transparent', border: '1px solid white', margin: '0 3px'}}></div>
+                    <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'transparent', border: '1px solid white', margin: '0 3px'}}></div>
+                    <div style={{width: 8, height: 8, borderRadius: 8, backgroundColor: 'white', border: '1px solid white', margin: '0 3px'}}></div>
+                  </div>
+                  <h1
+                    style={{fontSize: 24, marginBottom: 13}} 
+                    className="w-full font-bold text-white text-center leading-10"
+                  >
+                    코로나에는 새로운 대학친구 <br/> 네트워킹 , XIRCLE
+                  </h1>
+                  <button 
+                    onClick={() => scrolltoTop(setBtnClicked)} 
+                    className=" px-16 py-3 text-white rounded-3xl bg-transparent-600 border-2 focus:outline-none"
+                  > 
+                    신청하기
+                  </button>
+                  <p style={{color: 'white', fontSize: '12px', margin: '10px 0 5px', wordBreak: 'keep-all', whiteSpace: 'nowrap'}}>[베타서비스] 서연고서성한포카 대상 (-3/21)</p>
+                
+              </div>
+            </div>
+          </section>
+
+        </section>
+
         {/* 에어팟 Slide  */}
         <section style={{
           minHeight: '100vh', 
@@ -208,58 +315,6 @@ const Intro = ({ history }) => {
             </div>
           </section>
         </section>
-
-        {/* Background Image */}
-        {/* <section style={{minHeight: '100vh', height: '100%'}}>
-          <section 
-            style={{
-              backgroundImage: `url(${manHalf})`,
-              width: "100%",
-              height: "100%",
-              backgroundSize: "cover",
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',  
-              backgroundAttachment: 'fixed',
-            }}
-          >
-            <div className="flex flex-col items-center w-full h-full" style={{backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
-              <div data-aos="fade-up" data-aos-duration="2500" className="text-center">
-                <h1
-                  style={{fontSize: 24}} 
-                  className="w-full pt-56 font-bold text-white text-center leading-10"
-                >
-                  요즘 대학생들의 <br/> 새로운 네트워킹
-                </h1>
-                <h1 style={{fontSize: 38}} className="text-white m-0 font-extrabold">XIRCLE</h1>
-                
-              </div>
-            </div>
-          </section>
-          <section 
-            style={{
-              backgroundImage: `url(${womanHalf})`,
-              width: "100%",
-              height: "100%",
-              backgroundSize: "cover",
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',  
-              backgroundAttachment: 'fixed',
-            }}
-          >
-            <div className="flex flex-col items-center w-full h-full" style={{backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
-              <div data-aos="fade-up" data-aos-duration="2500" className="text-center">
-                <h1
-                  style={{fontSize: 24}} 
-                  className="w-full pt-56 font-bold text-white text-center leading-10"
-                >
-                  요즘 대학생들의 <br/> 새로운 네트워킹
-                </h1>
-                <h1 style={{fontSize: 38}} className="text-white m-0 font-extrabold">XIRCLE</h1>
-                
-              </div>
-            </div>
-          </section>
-        </section> */}
 
         {/* 마지막 Q & A */}
         <section style={{minHeight: '100vh', height: '100%', padding: '30px 0', backgroundColor: "#F7F7FA"}}>
@@ -307,7 +362,7 @@ const Intro = ({ history }) => {
 
                 <button 
                   onClick={() => scrolltoTop(setBtnClicked)} 
-                  className="w-full px-16 py-3 mt-5 rounded-xl bg-black text-white border-2 focus:outline-none"
+                  className="w-full py-5 mt-5 rounded-xl bg-black text-white focus:outline-none"
                 > 
                   사전 신청하기
                 </button>
@@ -316,18 +371,7 @@ const Intro = ({ history }) => {
           </section>
         </section>
 
-        <footer style={{height: '40vh', padding: '50px 20px 60px'}}>
-          <div style={{color: '#D9D9D9'}}>
-            <p style={{margin: 0}}>고객센터 (팀) 연고링</p> <br/>
-            <p style={{margin: 0}}>각종 문의 : <a style={{color: '##4183c4'}} href="https://pf.kakao.com/_kDxhtK">[XIRCLE] 카카오톡 채널</a></p>
-            <p style={{margin: 0}}>이메일 문의 : <a style={{color: '##4183c4'}} href="https://www.instagram.com/ykring_official/">XIRCLE 인스타그램</a></p>
-            <p style={{margin: 0}}>비즈니스 문의 : <a style={{color: '##4183c4'}} href="https://www.instagram.com/ykring_official/">XIRCLE 인스타그램   010 8033 6028</a></p>
-            <br/>
-            <p style={{margin: 0}}>XIRCLE 인스타그램</p> 
-            <p style={{margin: 0}}>XIRCLE 페이스북</p>  
-            <p style={{margin: 0}}>XIRCLE 유튜브 채널 [오픈 예정]</p>
-          </div>
-        </footer>
+        
 
       </>
     </Layout>
