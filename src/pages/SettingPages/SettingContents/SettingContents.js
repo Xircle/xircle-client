@@ -7,14 +7,16 @@ import { Search } from 'semantic-ui-react'
 import { jobs, adjectives } from '../../../model/person';
 import TextFieldUI from '../../../components/UI/textFieldUI'
 import KakaoShareButton from '../../../components/KakaoShareButton';
-import {FacebookIcon, FacebookShareButton, TwitterShareButton, TwitterIcon, LineShareButton, LineIcon } from 'react-share';
+import { FacebookIcon, FacebookShareButton, TwitterShareButton, TwitterIcon, LineShareButton, LineIcon } from 'react-share';
 import Banner from '../../../components/banner';
 import LoadingIndicator from 'react-loading-indicator';
-import CheckboxUI from '../../../components/UI/CheckboxUI';
+import RadioUI from '../../../components/UI/RadioUI';
 import InterestSetting from '../../../components/interestSetting';
 import * as actions from '../../../store/actions/index';
 
 const SettingContents = ({ history, questionNum }) => {
+    const [isUnivPublic, setIsUnivPublic] = useState(null);
+    const [isGraduateUniv, setGraduateUniv] = useState(null);
     const [job, setJob] = useState('');
     const [adj, setAdj] = useState('');
     const [location, setLocation] = useState('');
@@ -23,16 +25,18 @@ const SettingContents = ({ history, questionNum }) => {
     const displayRef = useRef();
     const displayNameCheeckLoading = useSelector(store => store.user.displayNameUI.loading);
     const displayNameError = useSelector(store => store.user.displayNameUI.error);
-
     const articleRef = useRef();
+    const articleTagRef = useRef();
+    const resume = useRef();
+    const workPlace = useRef();
+    const [defaultHashTag, setDefaultHashTag] = useState('');
     const [introText, setIntroText] = useState('');
     const [profileImgSrc, setProfileImgSrc] = useState('');
-    const [Instagram, setInstagram] = useState('@');
-    const [isChecked_1, setIsChecked_1] = useState(false);
     const [articleImg_formData, setArticleImgSrcFormData] = useState(null);
     const [profileImg_formData, setProfileImgSrcFormData] = useState(null);
     
-    const [isChecked_2, setIsChecked_2] = useState(false);
+    const [publicOrNotClicked, setPublicOrNotClicked] = useState(true);
+    const [graduateOrNotClicked, setGraduateOrNotClicked] = useState(true);
     const [genderClicked, setGenderClicked] = useState(false);
     const [shareClicked, setShareClicked] = useState(false);
     
@@ -41,23 +45,57 @@ const SettingContents = ({ history, questionNum }) => {
     const submitImgSrcToAWSLoading = useSelector(store => store.user.submitImgSrc.loading);
     const submitImgSrcToAWSError = useSelector(store => store.user.submitImgSrc.error);
 
+    const phoneNumberInRedux = useSelector(store => store.auth.phoneNumber);
     const emailInRedux = useSelector(store => store.auth.email);
+    const univInRedux = useSelector(store => store.auth.univ);
+    const isPublicInRedux = useSelector(store => store.user.isPublic);
+    const isGraduateInRedux = useSelector(store => store.user.isGraduate);
     const genderInRedux = useSelector(store => store.user.gender);
     const ageInRedux = useSelector(store => store.user.age);
     const jobInRedux = useSelector(store => store.user.job);
     const adjInRedux = useSelector(store => store.user.adj);
     const locationInRedux = useSelector(store => store.user.location);
+    const interestArrInRedux = useSelector(store => store.user.interestArr);
     const articleTextInRedux = useSelector(store => store.user.articleText);
+    const articleTagInRedux = useSelector(store => store.user.articleTag);
     const articleImgSrcInRedux = useSelector(store => store.user.articleImgSrc);
     const displayNameInRedux = useSelector(store => store.user.displayName);
-    const interestArrInRedux = useSelector(store => store.user.interestArr);
     const introTextInRedux = useSelector(store => store.user.introText);
     const profileImgSrcInRedux = useSelector(store => store.user.profileImgSrc);
-    const instagramIdInRedux = useSelector(store => store.user.instagramId);
 
     const dispatch = useDispatch();
     
+    useEffect(() => {
+        // 새로고침 시 하나라도 없어지면 /login 페이지로 라우팅
+        // if(!emailInRedux || !genderInRedux || !ageInRedux || !jobInRedux || !adjInRedux || !locationInRedux || !articleTextInRedux || !articleImgSrcInRedux || !displayNameInRedux || !interestArrInRedux || !introTextInRedux || !profileImgSrcInRedux)
+        //     window.location.assign('/login');
+        
+    }, []);
+
     // /setting/1
+    const UnivPublicChangeHandler = useCallback((e, { value }) => {
+        if(value === 'public')
+            setIsUnivPublic(true);
+        else
+            setIsUnivPublic(false);
+    }, []);
+
+    const UnivGraduateChangeHandler = useCallback((e, { value }) => {
+        console.log(value);
+        if(value === 'graduate')
+            setGraduateUniv(true);
+        else
+            setGraduateUniv(false);
+    }, []);
+
+    const radioSubmitHandler = useCallback(() => {
+        console.log(isUnivPublic, isGraduateUniv);
+        dispatch(actions.addIsPublic(isUnivPublic))
+        dispatch(actions.addIsGraduate(isGraduateUniv))
+        
+        setGraduateOrNotClicked(false);
+    }, [isUnivPublic, isGraduateUniv]);
+    
     const WomanBtnClickedHandler = useCallback(() => {
         setGenderClicked(true);
         dispatch(actions.addGender('woman'))
@@ -66,7 +104,6 @@ const SettingContents = ({ history, questionNum }) => {
         setGenderClicked(true);
         dispatch(actions.addGender('man'))
     }, []);
-
     const NonBinaryBtnClickedHandler = useCallback(() => {
         setGenderClicked(true);
         dispatch(actions.addGender('non'))
@@ -106,23 +143,7 @@ const SettingContents = ({ history, questionNum }) => {
         setLocation(event.target.value);
     }, []);
     
-    useEffect(() => {
-        const currentPath = window.location.pathname;
-        if(currentPath === '/setting/5') {
-            const articleImgInLocalStorage = localStorage.getItem('article-image');
-            if(articleImgInLocalStorage) {
-                setImgSrc(articleImgInLocalStorage);
-            }
-        }
-        if(currentPath === '/setting/10') {
-            const profileImgInLocalStorage = localStorage.getItem('profile-image');
-            if(profileImgInLocalStorage) {
-                setProfileImgSrc(profileImgInLocalStorage);
-            }
-        }
-    }, []);
-
-    // /setting/5
+    // /setting/6
     const uploadPhoto = useCallback((event) => {
         event.preventDefault();
         // file을 읽을 reader 객체 생성
@@ -135,7 +156,6 @@ const SettingContents = ({ history, questionNum }) => {
         fileReader.readAsDataURL(__file);
         fileReader.onload = e => {
             setImgSrc(e.target.result);
-            localStorage.setItem('article-image', e.target.result);
         }
         // 서버 제출용
         const formData = new FormData();
@@ -154,7 +174,7 @@ const SettingContents = ({ history, questionNum }) => {
     
     useEffect(() => {
         const currentPath = window.location.pathname;
-        if(currentPath !== '/setting/5')
+        if(currentPath !== '/setting/6')
             return null;
         if(submitImgSrcToAWSError)
             return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
@@ -162,20 +182,53 @@ const SettingContents = ({ history, questionNum }) => {
             history.push('/setting/6');
     }, [submitImgSrcToAWSLoading]);
 
-    // /setting/6
+    // /setting/7
+    const articleHashTagClickHandler = useCallback((clickedHashTag) => {
+        let newHashTag = null;
+        if(defaultHashTag)
+            newHashTag = defaultHashTag + ` ${clickedHashTag}`;
+        else
+            newHashTag = clickedHashTag;
+        setDefaultHashTag(newHashTag);
+    }, [defaultHashTag]);
+    
     const articleSubmitHandler = useCallback((event) => {
         event.preventDefault();
         const articleText = articleRef.current.value;
         if(articleText.length < 3)
             return alert("적어도 3자 이상은 작성해주세요.")
         dispatch(actions.addArticleText(articleText));
-        history.push('/setting/7')
+
+        
+        if(articleTagRef.current.value){
+            const articleTagText = articleTagRef.current.value.trim();
+            const TagArr = articleTagText.split(" ");
+            const hashTagRegex = /^@/;
+
+            let isSuccess = true;
+            TagArr.forEach(tag => {
+                if(!tag.match(hashTagRegex)){
+                    alert("해시태그의 맨 앞은 @를 포함해야합니다.")
+                    isSuccess = false;
+                    return null;
+                }
+            });
+            if(!isSuccess) 
+                return null;
+            // 성공했으면 @ 빼서 리덕스에 디스패치
+            const hashTagArr = TagArr.map(tag => {
+                return tag.replace('@', '');
+            });
+            dispatch(actions.addArticleTag(hashTagArr));
+            history.push('/setting/8')
+        }
+        history.push('/setting/8')
     }, []);
 
-    // /setting/7
+    // /setting/8
     const displayNameSubmitHandler = useCallback(async (e) => {
         e.preventDefault();
-        if(displayNameError) // 리덕스에 있는데도 다시 제출하는건, 중복됐다는 거니까 ERROR_INIT
+        if(displayNameError !== null) // 리덕스에 있는데도 다시 제출하는건, 중복됐다는 거니까 ERROR_INIT
             dispatch(actions.displayNameInit());
         
         const displayNameRegex = /^@/;
@@ -189,8 +242,8 @@ const SettingContents = ({ history, questionNum }) => {
 
     useEffect(() => {
         if(displayNameError === false)
-            history.push('/setting/8')
-    }, [displayNameError]);
+            history.push('/setting/9')
+    }, [displayNameError, displayNameCheeckLoading]);
 
     // /setting/9
     const introTextSubmitHandler = useCallback((event) => {
@@ -217,7 +270,6 @@ const SettingContents = ({ history, questionNum }) => {
         fileReader.readAsDataURL(__file);
         fileReader.onload = e => { // async하게 다 읽었으면 실행 
             setProfileImgSrc(e.target.result);
-            localStorage.setItem('profile-image', e.target.result);
         };
 
         const formData = new FormData();
@@ -249,56 +301,30 @@ const SettingContents = ({ history, questionNum }) => {
             history.push('/setting/11');
     }, [submitImgSrcToAWSLoading]);
 
-    // /setting/11
-    const checkboxChanged = useCallback((event) => {
-        event.preventDefault();
-        const text = event.target.innerText;
-        if(text === "연고링 카카오톡 채널 친구추가 하셨나요?") 
-            setIsChecked_1(!isChecked_1);
-        else
-            setIsChecked_2(!isChecked_2);
-        
-    }, [isChecked_1, isChecked_2]);
+    // /setting/11 || Submit to server
+    useEffect(() => {
+        if(submitToServerError === false) {
+            history.push('/setting/12');
+        }
+        else if(submitToServerError === true) {
+            history.push('/login');
+        }
+    }, [submitToServerLoading])
 
+    const submitToServer = useCallback(() => {
+        const resumeText = resume.current.value;
+        const workPlaceText = workPlace.current.value;
+        dispatch(actions.submitToServer(
+            phoneNumberInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText
+        ));
+        
+    }, [phoneNumberInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
+    
     // /setting/12
-    const InstaChangeHandler = useCallback((event) => {
-        event.preventDefault();
-        setInstagram(event.target.value);
-    }, []);
-
-    const InstaSubmit = useCallback(async (event) => {
-        event.preventDefault();
-        if(!Instagram.match(/^@/))
-            return alert("@로 시작해주세요!");
-        if(Instagram.length === 1)
-            return alert('아이디를 제대로 입력해주셔야 이벤트 당첨시 연락이 닿습니다!');
-        
-        await dispatch(actions.addInstagramId(Instagram));
-        await dispatch(actions.submitToServer(emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux));
-        
-    }, [Instagram, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
-
-    // /setting/13
     const shareBtnClickedHandler = useCallback(() => {
         setShareClicked(!shareClicked);
     }, [shareClicked]);
     
-    // Submit to server
-    useEffect(() => {
-        if(submitToServerError === false) {
-            history.push('/setting/13');
-        }
-        else if(submitToServerError === true) {
-            alert("일시적인 오류가 발생했습니다. 다시 시도해주세요.") // 서버 에러
-        }
-    }, [submitToServerLoading])
-
-    const submitToServer = useCallback(async () => {
-        await dispatch(actions.submitToServer(
-            emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux
-        ));
-        
-    }, [emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, instagramIdInRedux]);
     
     const questionNumber = Number(questionNum);
     let contents = null;
@@ -313,6 +339,24 @@ const SettingContents = ({ history, questionNum }) => {
                     <button onClick={() => NonBinaryBtnClickedHandler()} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base "> 논바이너리</span></button>
                 </section>
                 
+                {isUnivPublic === null ? (
+                    <Modal show={publicOrNotClicked}>
+                        <div className="mb-5">
+                            <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
+                            <span style={{fontSize: '14px', color: '#5c5c5c'}}>학교를 공개하시겠습니까? 비공개 하시겠습니까?<br/> 공개여부는 언제든지 변경 가능합니다.</span>
+                        </div>
+                        <RadioUI subject="privateOrNot" propValue={isUnivPublic} changeHandler={UnivPublicChangeHandler}/>
+                    </Modal>
+                ) : (
+                    <Modal show={graduateOrNotClicked}>
+                        <div className="mb-5">
+                            <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
+                            <span style={{fontSize: '14px', color: '#5c5c5c'}}>재학중이신가요? 졸업을 하셨나요? </span>
+                        </div>
+                        <RadioUI subject="graduateOrNot" isFirstValue={isGraduateUniv} changeHandler={UnivGraduateChangeHandler}/>
+                        <button onClick={() => radioSubmitHandler()} className="font-sans border-2 w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
+                    </Modal>
+                )}
                 <Modal show={genderClicked} clicked={() => setGenderClicked(false)}>
                     <div className="mb-5">
                         <h1 className=" text-xl mb-5">회원님은 몇 살이신가요?</h1>
@@ -384,6 +428,7 @@ const SettingContents = ({ history, questionNum }) => {
                 <div className="h-full flex flex-row justify-center items-center pt-20">
                     <p style={{marginBottom: 0}} className="mr-5">나는</p>
                     <TextFieldUI 
+                        width="50%"
                         submitted={(e) => locationBtnHandler(e)} 
                         changeHandler={(e) => locationTextChangeHandler(e)}
                         label="사는곳" 
@@ -396,9 +441,20 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 5) {
         contents = (
+            <section className="text-center px-3 my-5">
+                <div className="px-3 py-5 mb-3">
+                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님 <br />요즘 무엇에 관심있으신가요?</h3>
+                    <h5 className="text-left font-normal my-5 text-gray-400">관심사를 2개 이상 골라주세요. (필수) <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 @@@ 해보세요.</h5>
+                    <p style={{color: "#8D8D8D", fontSize: 10, textAlign: 'left'}}>※런칭 후 추가 예정</p>
+                </div>
+                <InterestSetting history={history}/>
+            </section>
+        )
+    }else if(questionNumber === 6) {
+        contents = (
             <section className="text-center px-3 my-3 mb-10">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left">친구들에게 공유하고싶은 자신의 일상을 한가지만 사진과함께 적어보세요!</h3>
+                    <h3 className="text-left">관심사에 맞는 자신의 이야기를 한가지만 사진과 함께 적어보세요! </h3>
                     <p style={{color: "#B3B3B3", textAlign: 'left'}}>ex.오늘 먹은 음식 / 오늘의 일기 </p>
                 </div>
                 <section className="mt-5 px-5">
@@ -412,28 +468,53 @@ const SettingContents = ({ history, questionNum }) => {
                         onChange={(e) => uploadPhoto(e)}
                         style={{marginLeft: '10px'}}
                     />
+                    {submitImgSrcToAWSLoading ? (
+                        <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
+                            <LoadingIndicator 
+                                color={{red: 0, green: 0, blue: 0, alpha: 1}}
+                                segmentWidth={2}
+                            />
+                        </div>
+                    ) : null}
                     <button onClick={(e) => uploadBtnHandler(e)} className="mt-16 w-full rounded-xl px-5 py-3 bg-gray-400 text-white focus:outline-none">
                         <p style={{wordBreak: "keep-all"}}>업로드 하기</p>
                     </button>
                 </section>
             </section>
         )
-    }else if(questionNumber === 6) {
+    }else if(questionNumber === 7) {
+        
+        console.log(defaultHashTag)
         contents = (
             <section className="text-center px-5 my-5">
                 <Banner />
                 <textarea 
                     ref={articleRef}
                     placeholder="첫 번째 글을 작성해 보세요. 비방/욕설은 삼가해주세요."
-                    style={{height: '250px', border: '1px solid #ccc'}}
-                    className="my-10 px-3 py-5 w-full text-base placeholder-gray-300">
+                    style={{height: '250px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                    className="mt-10 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
-                <button onClick={(e) => articleSubmitHandler(e)} className="mt-5 w-full border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
+                <textarea 
+                    ref={articleTagRef}
+                    placeholder="@태그하기 (선택사항)"
+                    defaultValue={defaultHashTag}
+                    style={{height: '50px', color: "#4700FF", backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                    className="mt-5 px-3 py-5 w-full text-base placeholder-gray-300">
+                </textarea>
+                <section className="flex flex-row flex-wrap ">
+                    {interestArrInRedux.map((interest, id) => (
+                        <div key={id} style={{width: 70, margin: '5px', padding: '3px', border: '1px solid #D9D9D9', borderRadius: '30px', cursor: 'pointer'}}>
+                            <p onClick={() => articleHashTagClickHandler(`@${interest}`)} style={{fontSize: 12, color: "#8D8D8D"}}>@{interest}</p>
+                        </div>
+                    ))}
+                </section>
+                {/* <p style={{marginBottom: 20, textAlign: 'center', color: "#bbb"}}> XIRCLE에서는 @를 붙이면 해시태그가 적용됩니다! </p> */}
+                <button onClick={(e) => articleSubmitHandler(e)} className="mt-5 w-full border-2 rounded-xl px-5 py-3 bg-black text-white focus:outline-none">
                     다음
                 </button>
             </section>
         )
-    }else if(questionNumber === 7) {
+    }else if(questionNumber === 8) {
         contents = (
             <section className="text-center px-3 my-10">
                 <h3 className="text-left text-2xl">닉네임(아이디)을 설정해주세요.</h3>
@@ -461,17 +542,7 @@ const SettingContents = ({ history, questionNum }) => {
                 </form>
             </section>
         )
-    }else if(questionNumber === 8) {
-        contents = (
-            <section className="text-center px-3 my-5">
-                <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님 <br />요즘 무엇에 관심있으신가요?</h3>
-                    <h5 className="text-left font-normal my-5 text-gray-400">관심사를 5개 이상 골라주세요. <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 해시태그 해보세요.</h5>
-                </div>
-                <InterestSetting history={history}/>
-            </section>
-        )
-    }else if(questionNumber === 9) {
+    } else if(questionNumber === 9) {
         contents = (
             <section className="text-center px-5 my-5">
                 <div className="px-3 py-5 mb-3">
@@ -508,40 +579,49 @@ const SettingContents = ({ history, questionNum }) => {
                         accept="image/x-png,image/jpeg,image/gif"
                         onChange={(e) => uploadProfileImg(e)}
                     />
+                    {submitImgSrcToAWSLoading ? (
+                        <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
+                            <LoadingIndicator 
+                                color={{red: 0, green: 0, blue: 0, alpha: 1}}
+                                segmentWidth={2}
+                            />
+                        </div>
+                    ) : null} 
                     <button onClick={(e) => uploadProfileHandler(e)} className="mt-16 w-full rounded-xl px-5 py-3 bg-gray-400 text-white focus:outline-none">
                         업로드 하기
                     </button>
                 </section>
             </section>
         )
-    }else if(questionNumber === 11) { // 이벤트 참가
+    }else if(questionNumber === 11) { 
         contents = (
             <section className="text-center px-10 my-10">
-                <h2 className="text-left mb-5">이벤트 참가</h2>
+                <h2 className="text-left mb-3">선택 사항</h2>
                 <section>
                     <p className="text-gray-400 text-left">
-                        에어팟 이벤트 참가를 위해서는 밑의 항목들을 
-                        진행해 주셔야 합니다. 
-                        (이벤트 결과가 인스타그램과 카카오톡채널로 
-                        공지가 됩니다 3.20)
+                        친구들에게 알려줄 정보가 더 있나요? <br/>
+                        자유롭게 적어주세요 :) 
                     </p>
-                    <div className="ui checkbox w-full text-left my-2">
-                        <CheckboxUI checked={isChecked_1} checkboxChanged={checkboxChanged} label="연고링 카카오톡 채널 친구추가 하셨나요?"/>
-                        <a style={{display: 'block', margin: '10px 0 0 30px'}} href="https://www.naver.com/">친구추가 하러가기</a>
-                    </div>
-                    <div className="ui checkbox w-full text-left my-2">
-                        <CheckboxUI checked={isChecked_2} checkboxChanged={checkboxChanged} label="연고링 인스타그램 팔로우 하셨나요?"/>
-                        <a style={{display: 'block', margin: '10px 0 0 30px'}} href="https://www.naver.com/">팔로우 하러가기</a>
-                    </div>
-                    <img 
-                        style={{width: '300px', height: '300px', margin: '50px auto 0', border: '1px solid #ccc', objectFit: 'cover'}}
-                        src="/airpod.png"
-                        alt="airpod"
-                    />
                 </section>
-                <button onClick={(e) => isChecked_1 && isChecked_2 ? history.push('/setting/12') : alert('모두 체크해주세요.')} className="mt-5 w-full rounded-lg px-5 py-3 bg-gray-400 text-white focus:outline-none">
-                    이벤트 참가
-                </button>
+                
+                <section style={{margin: "15px 0"}}>
+                    <p style={{marginBottom: 0}} className="text-left"> 활동 이력 </p>
+                    <textarea 
+                        ref={resume}
+                        placeholder="가입한 동아리 / 학회 활동/ 이전 직장 등등"
+                        style={{height: '100px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                        className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
+                    </textarea>
+                </section>
+                <section style={{margin: "10px 0"}}>
+                    <p style={{marginBottom: 0}} className="text-left"> 근무 직장 </p>
+                    <textarea 
+                        ref={workPlace}
+                        style={{height: '50px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                        className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
+                    </textarea>
+                </section>
+
                 {submitToServerLoading ? (
                     <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
                         <LoadingIndicator 
@@ -550,73 +630,33 @@ const SettingContents = ({ history, questionNum }) => {
                         />
                     </div>
                 ) : null}
-                <button onClick={() => submitToServer()} style={{border: '1px solid black'}} className="mt-5 w-full rounded-lg px-5 py-3 bg-white text-black focus:outline-none">
-                    사전신청만 하기
+                <button onClick={() => submitToServer()} style={{border: '1px solid black'}} className="mt-20 w-full rounded-lg px-5 py-3 bg-black text-white focus:outline-none">
+                    다음
                 </button>
             </section>
         )
-    }else if(questionNumber === 12) { // 인스타 아이디
+    }else if(questionNumber === 12) { // 초대장
         contents = (
-            <section className="text-center px-3 mt-5">
-                <section className="px-5 py-5 ">
-                    <h3 className="text-left mb-5 text-3xl font-bold ">인스타그램 아이디</h3>
-                    <p className="text-gray-400 mb-10 text-base text-left">
-                        이벤트에 참가해주셔서 감사합니다. <br/>
-                        인스타그램 팔로우 확인을 위한 아이디를 알려주세요!
-                        팔로우 확인 후 바로 처분예정
+            <div className="min-h-screen h-full relative">
+                <section style={{height: '120px'}} className="mt-5 flex flex-row justify-center items-center ">
+                    <p style={{fontSize: 36, fontWeight: 300}}>XIRCLE</p>
+                </section>
+                <section style={{height: '220px'}} className=" text-center pt-5">
+                    <h1 style={{fontSize: 20}} className="mb-3 px-10">연고링 회원가입 및 사전신청을 해주셔서 대단히 감사합니다.</h1>
+                    <p style={{fontSize: 14}} className="px-10 pt-5 text-lg text-gray-500">
+                    정식 서비스는 3월 21일날 시작됩니다. <br/>
+                    초대장을 보내면 더 많은 친구들과 네트워킹이 가능해요!  
                     </p>
-                    <input 
-                        type="text"
-                        className="w-full bg-gray-200 px-5 py-5 rounded-xl"
-                        autoFocus
-                        defaultValue="@"
-                        placeholder="- 제외하고 입력해주세요."
-                        onChange={(e) => InstaChangeHandler(e)}
-                    />
-                    {submitToServerLoading ? (
-                        <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
-                            <LoadingIndicator 
-                                color={{red: 0, green: 0, blue: 0, alpha: 1}}
-                                segmentWidth={2}
-                            />
-                        </div>
-                    ) : null}
-                    <button onClick={(e) => InstaSubmit(e)} className="mt-10 w-full rounded-lg px-5 py-3 bg-gray-400 text-white focus:outline-none">
-                        완료
-                    </button>
                 </section>
-            </section>
-        )
-    }else if(questionNumber === 13) { // 초대장
-        contents = (
-            <div className="h-full">
-                <section style={{height: '150px'}} className="mt-5 flex flex-row items-center ">
-                    <img
-                        onClick={() => history.push('/')} 
-                        style={{height: '70px', width: '70px', cursor: 'pointer'}}
-                        src="/yk-logo.png"
-                        alt="yk-logo"
-                        className="rounded-2xl mx-auto"
-                    />
+                <section className="text-center">
+                    <p>공지 및 문의</p>
+                    <div className="flex flex-col">
+                        <a style={{color: "#8A8888"}} href="https://www.instagram.com/ykring_official/">XIRCLE 인스타그램</a>
+                        <a style={{color: "#8A8888"}} href="http://pf.kakao.com/_kDxhtK">XIRCLE 카카오톡 채널</a>
+                    </div>
                 </section>
-
-                <section style={{height: '320px'}} className=" text-center pt-5">
-                    <h1 className="mb-3 px-10">연고링 회원가입 및 사전신청을 해주셔서 대단히 감사합니다.</h1>
-                    <p className="px-10 pt-5 text-lg text-gray-500">
-                        정식 서비스는 3월 20일날 시작됩니다. (변경가능) 
-                        사전신청 이벤트 결과는 연고링 인스타그램과 
-                        연고링 카카오톡 플러스 채널로 공지가 됩니다. <br/>
-                        <br/>
-                        *초대장을 공유하시면 에어팟 당첨확률이 높아져요. 
-                        공유하신 수 만큼 추첨 이름을 더 넣어드려요. :) 
-                        초대장인증은 밑에 인증방에서 진행해주세요! 벌써 
-                        10명이상 인증하신 분도 계시는걸요..? ^^  
-                    </p>
-                    <a href="https://www.naver.com/"><h3>초대장 공유 인증하기</h3></a>
-                </section>
-
-                <section style={{height: '240px', padding: '0 10px'}}>
-                    <article style={{opacity: shareClicked ? 1 : 0, visibility: shareClicked ? 'visible' : 'hidden', transition: 'all .2s ease-in', marginBottom: '10px'}} className="mt-24 text-center">
+                <section style={{transform: 'translate(-50%, 0)'}} className="absolute w-4/5 bottom-0 left-1/2">
+                    <section style={{opacity: shareClicked ? 1 : 0, visibility: shareClicked ? 'visible' : 'hidden', transition: 'all .2s ease-in', marginBottom: '10px'}} className="mt-24 text-center">
                         <KakaoShareButton />
                         <FacebookShareButton url="https://2donny.github.io/">
                             <FacebookIcon round/>
@@ -627,13 +667,21 @@ const SettingContents = ({ history, questionNum }) => {
                         <LineShareButton url="https://2donny.github.io/">
                             <LineIcon round/>
                         </LineShareButton>
-                    </article>
-                    <button onClick={() => shareBtnClickedHandler()} className="w-full border-2 rounded-2xl px-5 py-3 bg-black text-white focus:outline-none">초대장 공유하고 에어팟 당첨 확률 up하기 </button>
-                    <button onClick={() => history.push('/my-profile')} className="w-full border-2 rounded-2xl px-5 py-3 mt-3 mb-10 bg-white text-black focus:outline-none">넘어가기 </button>
+                    </section>
+                    <button 
+                        onClick={() => shareBtnClickedHandler()}  
+                        style={{ backgroundColor: '#F7F7FA', border: '1px solid #8D8D8D'}} 
+                        className="w-full rounded-lg py-3 text-black focus:outline-none"
+                    > XIRCLE 초대장 보내기 </button>
+                    <button 
+                        onClick={() => history.push('/my-profile')} 
+                        style={{backgroundColor: '#F7F7FA', border: '1px solid #8D8D8D'}} 
+                        className="w-full rounded-lg py-3 mt-3 mb-10 text-black focus:outline-none"
+                    > 넘어가기 </button>
                 </section>
             </div>
         )
-    }else {
+    } else {
         history.push('/')
     }
 
