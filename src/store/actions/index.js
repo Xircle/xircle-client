@@ -5,6 +5,9 @@ export {
 } from './Auth';
 
 export {
+    addPhoneNumber,
+    addIsPublic,
+    addIsGraduate,
     addGender,
     addAge,
     addJob,
@@ -12,12 +15,12 @@ export {
     addLocation,
     submitArticleImgToAWS,
     addArticleText,
+    addArticleTag,
     displayName,
     displayNameInit,
     addIntroText,
     addInterest,
     submitProfileImgToAWS,
-    addInstagramId,
     submitToServer,
     updateProfileImg,
     updateProfileImgToServer
