@@ -13,7 +13,7 @@ const SettingContainer = ({ history, match }) => {
                     <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
                         <img
                             onClick={() => history.goBack()} 
-                            style={{width: '25px', height: '25px', cursor: 'pointer'}}
+                            style={{width: '25px', height: '25px', marginLeft: 10, cursor: 'pointer'}}
                             src="/arrow-back-outline.svg"
                             alt="back"
                         />

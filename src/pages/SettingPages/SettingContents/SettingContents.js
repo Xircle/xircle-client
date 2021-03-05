@@ -13,6 +13,7 @@ import LoadingIndicator from 'react-loading-indicator';
 import RadioUI from '../../../components/UI/RadioUI';
 import InterestSetting from '../../../components/interestSetting';
 import * as actions from '../../../store/actions/index';
+import KakaoMap from '../../../components/kakaoMap';
 
 const SettingContents = ({ history, questionNum }) => {
     const [isUnivPublic, setIsUnivPublic] = useState(null);
@@ -27,10 +28,12 @@ const SettingContents = ({ history, questionNum }) => {
     const displayNameError = useSelector(store => store.user.displayNameUI.error);
     const articleRef = useRef();
     const articleTagRef = useRef();
+    const introRef = useRef();
+    const firstIntroText = '';
     const resume = useRef();
     const workPlace = useRef();
+
     const [defaultHashTag, setDefaultHashTag] = useState('');
-    const [introText, setIntroText] = useState('');
     const [profileImgSrc, setProfileImgSrc] = useState('');
     const [articleImg_formData, setArticleImgSrcFormData] = useState(null);
     const [profileImg_formData, setProfileImgSrcFormData] = useState(null);
@@ -93,7 +96,7 @@ const SettingContents = ({ history, questionNum }) => {
         dispatch(actions.addIsPublic(isUnivPublic))
         dispatch(actions.addIsGraduate(isGraduateUniv))
         
-        setGraduateOrNotClicked(false);
+        setPublicOrNotClicked(false);
     }, [isUnivPublic, isGraduateUniv]);
     
     const WomanBtnClickedHandler = useCallback(() => {
@@ -127,21 +130,7 @@ const SettingContents = ({ history, questionNum }) => {
     }, []);
     
     // /setting/4
-    const locationBtnHandler = useCallback((event) => {
-        event.preventDefault();
-        // set 하기전에, 잘 적었는지 위치 필터링 한번 해야함.
-        const locationRegex = /^(서울|경기도|강원도|충청북도|충청남도|전라북도|전라남도|경상북도|경상남도|부산|제주|세종|대구|인천|광주|대전|울산)/;
-
-        if(!location.match(locationRegex))
-            return alert('올바른 지역을 입력해주세요.');
-
-        dispatch(actions.addLocation(location));
-        history.push('/setting/5'); 
-    }, [location]);
-
-    const locationTextChangeHandler = useCallback((event) => {
-        setLocation(event.target.value);
-    }, []);
+    
     
     // /setting/6
     const uploadPhoto = useCallback((event) => {
@@ -179,7 +168,7 @@ const SettingContents = ({ history, questionNum }) => {
         if(submitImgSrcToAWSError)
             return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
         else if(submitImgSrcToAWSError === false)
-            history.push('/setting/6');
+            history.push('/setting/7');
     }, [submitImgSrcToAWSLoading]);
 
     // /setting/7
@@ -191,14 +180,14 @@ const SettingContents = ({ history, questionNum }) => {
             newHashTag = clickedHashTag;
         setDefaultHashTag(newHashTag);
     }, [defaultHashTag]);
-    
+
     const articleSubmitHandler = useCallback((event) => {
         event.preventDefault();
+        
         const articleText = articleRef.current.value;
         if(articleText.length < 3)
             return alert("적어도 3자 이상은 작성해주세요.")
         dispatch(actions.addArticleText(articleText));
-
         
         if(articleTagRef.current.value){
             const articleTagText = articleTagRef.current.value.trim();
@@ -220,46 +209,23 @@ const SettingContents = ({ history, questionNum }) => {
                 return tag.replace('@', '');
             });
             dispatch(actions.addArticleTag(hashTagArr));
-            history.push('/setting/8')
         }
         history.push('/setting/8')
     }, []);
 
-    // /setting/8
-    const displayNameSubmitHandler = useCallback(async (e) => {
-        e.preventDefault();
-        if(displayNameError !== null) // 리덕스에 있는데도 다시 제출하는건, 중복됐다는 거니까 ERROR_INIT
-            dispatch(actions.displayNameInit());
-        
-        const displayNameRegex = /^@/;
-        if(displayRef.current.value.length < 2)
-            return alert('닉네임을 입력해주세요.');
-        if(!displayRef.current.value.match(displayNameRegex)) {
-            return alert("닉네임은 맨 앞은 @를 포함해야합니다.")}
 
-        await dispatch(actions.displayName(displayRef.current.value));
-    }, [displayNameError]);
-
-    useEffect(() => {
-        if(displayNameError === false)
-            history.push('/setting/9')
-    }, [displayNameError, displayNameCheeckLoading]);
-
-    // /setting/9
+    // setting/8
     const introTextSubmitHandler = useCallback((event) => {
         event.preventDefault();
+        const introText = introRef.current.value;
+        console.log(introText)
         if(introText.length < 3)
             return alert("3글자 이상 입력해주세요!");
         dispatch(actions.addIntroText(introText));
-        history.push('/setting/10')
-    }, [introText]);
-
-    const introTextChangeHandler = useCallback((event) => {
-        event.preventDefault();
-        setIntroText(event.target.value);
+        history.push('/setting/9')
     }, []);
     
-    // /setting/10
+    // /setting/9
     const uploadProfileImg = useCallback((event) => {
         event.preventDefault();
         // file을 읽을 reader 객체 생성
@@ -294,14 +260,13 @@ const SettingContents = ({ history, questionNum }) => {
         const currentPath = window.location.pathname;
         if(currentPath !== '/setting/10')
             return null;
-
         if(submitImgSrcToAWSError === true)
             return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
         else if(submitImgSrcToAWSError === false)
-            history.push('/setting/11');
+            history.push('/setting/10');
     }, [submitImgSrcToAWSLoading]);
 
-    // /setting/11 || Submit to server
+    // /setting/10 || Submit to server
     useEffect(() => {
         if(submitToServerError === false) {
             history.push('/setting/12');
@@ -320,7 +285,7 @@ const SettingContents = ({ history, questionNum }) => {
         
     }, [phoneNumberInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
     
-    // /setting/12
+    // /setting/11
     const shareBtnClickedHandler = useCallback(() => {
         setShareClicked(!shareClicked);
     }, [shareClicked]);
@@ -339,22 +304,23 @@ const SettingContents = ({ history, questionNum }) => {
                     <button onClick={() => NonBinaryBtnClickedHandler()} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base "> 논바이너리</span></button>
                 </section>
                 
-                {isUnivPublic === null ? (
-                    <Modal show={publicOrNotClicked}>
-                        <div className="mb-5">
-                            <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
-                            <span style={{fontSize: '14px', color: '#5c5c5c'}}>학교를 공개하시겠습니까? 비공개 하시겠습니까?<br/> 공개여부는 언제든지 변경 가능합니다.</span>
-                        </div>
-                        <RadioUI subject="privateOrNot" propValue={isUnivPublic} changeHandler={UnivPublicChangeHandler}/>
-                    </Modal>
-                ) : (
+                {isGraduateUniv === null ? (
                     <Modal show={graduateOrNotClicked}>
                         <div className="mb-5">
                             <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
                             <span style={{fontSize: '14px', color: '#5c5c5c'}}>재학중이신가요? 졸업을 하셨나요? </span>
                         </div>
-                        <RadioUI subject="graduateOrNot" isFirstValue={isGraduateUniv} changeHandler={UnivGraduateChangeHandler}/>
-                        <button onClick={() => radioSubmitHandler()} className="font-sans border-2 w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
+                        <RadioUI subject="graduateOrNot" changeHandler={UnivGraduateChangeHandler}/>
+                    </Modal>
+                ) : (
+                    <Modal show={publicOrNotClicked}>
+                        <div className="mb-5">
+                            <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
+                            <span style={{fontSize: '14px', color: '#5c5c5c'}}>학교를 공개하시겠습니까? 비공개 하시겠습니까?<br/> 공개여부는 언제든지 변경 가능합니다.</span>
+                        </div>
+                        <RadioUI subject="privateOrNot" isFirstValue={isUnivPublic} changeHandler={UnivPublicChangeHandler}/>
+                        <p style={{color: "#cdcdcd", fontSize: 12, marginTop: 15}}>공개하면 더 많은 네트워킹이 가능해요 :)</p>
+                        <button onClick={() => radioSubmitHandler()} className="font-sans border-2 w-full rounded-3xl px-5 py-3 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
                     </Modal>
                 )}
                 <Modal show={genderClicked} clicked={() => setGenderClicked(false)}>
@@ -422,21 +388,10 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="h-1/4 text-center px-3 mt-3">
                 <div className="px-3 py-5 mb-3">
-                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">거주지</h1>
-                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>거주지를 기입해주세요. (필수) <br /> 구까지만 해주세요.  EX. 서울특별시 성북구</p>
+                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">위치 허용해주세요</h1>
+                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>고객님의 도시 정보까지만 표시하며 언제든지 <br/> 변경 가능해요. 프라이버시에 대해 걱정 하지 마세요!</p>
                 </div>
-                <div className="h-full flex flex-row justify-center items-center pt-20">
-                    <p style={{marginBottom: 0}} className="mr-5">나는</p>
-                    <TextFieldUI 
-                        width="50%"
-                        submitted={(e) => locationBtnHandler(e)} 
-                        changeHandler={(e) => locationTextChangeHandler(e)}
-                        label="사는곳" 
-                        placeholder="서울특별시 성북구" 
-                    />
-                    <p className="text-lg ml-5">에 삽니다.</p>
-                </div>
-                <button onClick={(e) => locationBtnHandler(e)} className="mt-20 w-full border-2 rounded-3xl px-5 py-3 hover:text-white hover:bg-black focus:outline-none">확인</button>
+                <KakaoMap history={history} />
             </section>
         )
     }else if(questionNumber === 5) {
@@ -483,25 +438,26 @@ const SettingContents = ({ history, questionNum }) => {
             </section>
         )
     }else if(questionNumber === 7) {
-        
-        console.log(defaultHashTag)
         contents = (
             <section className="text-center px-5 my-5">
                 <Banner />
                 <textarea 
+                    name="articleText"
+                    id="articleText"
                     ref={articleRef}
                     placeholder="첫 번째 글을 작성해 보세요. 비방/욕설은 삼가해주세요."
                     style={{height: '250px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
                     className="mt-10 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
-                <textarea 
+                <textarea
+                    id="articleTag"
                     ref={articleTagRef}
                     placeholder="@태그하기 (선택사항)"
                     defaultValue={defaultHashTag}
                     style={{height: '50px', color: "#4700FF", backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
                     className="mt-5 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
-                <section className="flex flex-row flex-wrap ">
+                <section className="flex flex-row flex-wrap">
                     {interestArrInRedux.map((interest, id) => (
                         <div key={id} style={{width: 70, margin: '5px', padding: '3px', border: '1px solid #D9D9D9', borderRadius: '30px', cursor: 'pointer'}}>
                             <p onClick={() => articleHashTagClickHandler(`@${interest}`)} style={{fontSize: 12, color: "#8D8D8D"}}>@{interest}</p>
@@ -516,52 +472,24 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 8) {
         contents = (
-            <section className="text-center px-3 my-10">
-                <h3 className="text-left text-2xl">닉네임(아이디)을 설정해주세요.</h3>
-                <h5 className="text-left font-normal text-gray-400 mb-10">닉네임을 적어주세요. <br />언제든지 변경가능합니다.</h5>
-                <form onSubmit={(e) => displayNameSubmitHandler(e)} autoComplete="off" noValidate>
-                    <input 
-                        type="text"
-                        defaultValue="@"
-                        className="w-3/4 bg-gray-200 px-5 py-5 rounded-xl mb-3"
-                        autoFocus
-                        ref={displayRef}
-                    />
-                    {displayNameError & !displayNameCheeckLoading ? <p style={{color: 'red', margin: 0}}>[중복]사용자 이름 {displayRef.current.value}은 사용하실 수 없습니다.</p> : null}
-                    {displayNameCheeckLoading ? (
-                        <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
-                            <LoadingIndicator 
-                                color={{red: 0, green: 0, blue: 0, alpha: 1}}
-                                segmentWidth={2}
-                            />
-                        </div>
-                    ) : null}
-                    <button onClick={(e) => displayNameSubmitHandler(e)} className="mt-10 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
-                        설정하기
-                    </button>
-                </form>
-            </section>
-        )
-    } else if(questionNumber === 9) {
-        contents = (
             <section className="text-center px-5 my-5">
                 <div className="px-3 py-5 mb-3">
                     <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님의 한줄소개! </h3>
-                    <h5 className="text-left font-normal text-gray-400 mb-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
+                    <h5 className="text-left font-normal text-gray-400 my-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
                 </div>
                 <textarea 
-                    placeholder="예) 안녕하세요. 저는 24살 연세대학교에 재학중인 뿅뿅뿅입니다. 저는 현재 스타트업에서 어플리케이션 기획을 하고있습니다. 커리어적으로는 인사이트를 공유하고싶어요! 취미로는 함께 카페에서 커피한잔 함께 마시는걸 즐겨요. 또 전시회 뮤지컬을 좋아합니다! 눈과 입이 즐거운걸 사랑하는 청춘입니다 핳핳"
-                    onChange={(e) => introTextChangeHandler(e)}
-                    style={{height: '250px', border: '1px solid #ccc'}}
-                    className="my-3 px-5 py-5 w-full text-base rounded-xl placeholder-gray-300">
-                </textarea>
-
-                <button onClick={(e) => introTextSubmitHandler(e)} className="my-5 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
+                    placeholder="ex. 안녕하세요. 저는 스타트업에 관심이 많은 대학생입니다. ㅎㅎ"
+                    ref={introRef}
+                    autoFocus
+                    style={{height: 250, border: '1px solid #ccc', backgroundColor: "#F7F7FA"}}
+                    className="my-3 px-3 py-5 w-full text-base rounded-xl placeholder-gray-300"
+                />
+                <button onClick={(e) => introTextSubmitHandler(e)} style={{width: '100%'}} className="my-5 rounded-lg px-5 py-3 bg-black text-white focus:outline-none">
                     다음
                 </button>
             </section>
         )
-    }else if(questionNumber === 10) {
+    }else if(questionNumber === 9) {
         contents = (
             <section className="text-center px-3 mb-10">
                  <div className="px-3 py-5 mb-3">
@@ -593,7 +521,7 @@ const SettingContents = ({ history, questionNum }) => {
                 </section>
             </section>
         )
-    }else if(questionNumber === 11) { 
+    }else if(questionNumber === 10) { 
         contents = (
             <section className="text-center px-10 my-10">
                 <h2 className="text-left mb-3">선택 사항</h2>
@@ -604,24 +532,38 @@ const SettingContents = ({ history, questionNum }) => {
                     </p>
                 </section>
                 
-                <section style={{margin: "15px 0"}}>
-                    <p style={{marginBottom: 0}} className="text-left"> 활동 이력 </p>
+                <section style={{margin: "25px 0 15px"}}>
+                    <div className="flex flex-row">
+                        <p style={{marginBottom: 0, marginRight: 5}} className="text-left"> 활동 이력 </p>
+                        <img 
+                            src="/activity.svg"
+                            alts="activity"
+                        />
+                    </div>
                     <textarea 
                         ref={resume}
-                        placeholder="가입한 동아리 / 학회 활동/ 이전 직장 등등"
-                        style={{height: '100px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                        placeholder="인사이더스 1기 / 연고대창업학회 13기"
+                        style={{height: '60px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
                         className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
                     </textarea>
                 </section>
                 <section style={{margin: "10px 0"}}>
-                    <p style={{marginBottom: 0}} className="text-left"> 근무 직장 </p>
+                    <div className="flex flex-row">
+                        <p style={{marginBottom: 0, marginRight: 5}} className="text-left"> 근무 직장 </p>
+                        <img 
+                            src="/company.svg"
+                            alts="company"
+                        />
+                    </div>
+                    
                     <textarea 
                         ref={workPlace}
-                        style={{height: '50px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                        placeholder="삼성 / SKT / 카카오 / 네이버"
+                        style={{height: '60px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
                         className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
                     </textarea>
                 </section>
-
+                <p style={{color: "#7C7C7C"}}>※ 추후 프로필 수정에서 추가 가능합니다</p>
                 {submitToServerLoading ? (
                     <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
                         <LoadingIndicator 
@@ -635,7 +577,7 @@ const SettingContents = ({ history, questionNum }) => {
                 </button>
             </section>
         )
-    }else if(questionNumber === 12) { // 초대장
+    }else if(questionNumber === 11) { // 초대장
         contents = (
             <div className="min-h-screen h-full relative">
                 <section style={{height: '120px'}} className="mt-5 flex flex-row justify-center items-center ">
@@ -687,9 +629,9 @@ const SettingContents = ({ history, questionNum }) => {
 
     
     return (
-        <div>
+        <>
             {contents}
-        </div>
+        </>
     )
 }
 export default SettingContents; 

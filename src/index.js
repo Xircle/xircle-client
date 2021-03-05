@@ -21,7 +21,7 @@ const rootReducer = combineReducers({
 
 const store = createStore(
   rootReducer,
-  composeEnhancers(applyMiddleware(thunk)) //리덕스에 미들웨어 사용시
+  composeEnhancers ? composeEnhancers(applyMiddleware(thunk)) : applyMiddleware(thunk) //리덕스에 미들웨어 사용시
 );
 
 ReactDOM.render(

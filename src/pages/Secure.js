@@ -30,7 +30,7 @@ const Secure = ({ history }) => {
                         <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
                             <img
                                 onClick={() => history.goBack()} 
-                                style={{width: '25px', height: '25px', cursor: 'pointer'}}
+                                style={{width: '25px', height: '25px', marginLeft: 10, cursor: 'pointer'}}
                                 src="/arrow-back-outline.svg"
                                 alt="back"
                             />
@@ -68,7 +68,7 @@ const Secure = ({ history }) => {
                                 </section>
                             </div>
                             <div style={{width: '300px', margin: '0 auto'}}>
-                                <button onClick={() => history.push('/phone-number')} className="w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white focus:text-white focus:bg-black focus:outline-none">
+                                <button onClick={() => history.push('/auth')} className="w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white focus:text-white focus:bg-black focus:outline-none">
                                     알겠습니다.
                                 </button>
 

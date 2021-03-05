@@ -50,7 +50,7 @@ const MyProfile = ({ history }) => {
 
         const fileReader = new FileReader();
         fileReader.readAsDataURL(__file);
-        fileReader.onload = e => { // async하게 다 읽었으면 실행 
+        fileReader.onload = e => { // async하게 다 읽었악면 실행 
             setMyProfileImgSrc(e.target.result);
         };
 
@@ -168,7 +168,7 @@ const MyProfile = ({ history }) => {
                             >
                                 <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
                                     <p className="mb-1 relative">@스타트업</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15}}>게시물 0개</button>
+                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, color: "#fff", opacity: 0.7}}>게시물 0개</button>
                                 </div>
                             </div>
                             <div 
@@ -181,7 +181,7 @@ const MyProfile = ({ history }) => {
                             >
                                 <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
                                     <p className="text-white w-full h-full inline-flex justify-center items-center">@맛집</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15}}>게시물 0개</button>
+                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
                                 </div>
                             </div>
                             <div 
@@ -194,7 +194,7 @@ const MyProfile = ({ history }) => {
                             >
                                 <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
                                     <p className="text-white w-full h-full inline-flex justify-center items-center">@애견인</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15}}>게시물 0개</button>
+                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
                                 </div>
                             </div>
                             <div
@@ -207,7 +207,7 @@ const MyProfile = ({ history }) => {
                             >
                                 <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
                                     <p className="text-white w-full h-full inline-flex justify-center items-center">@요리</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15}}>게시물 0개</button>
+                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
                                 </div>
                             </div>
                             <div
@@ -220,7 +220,7 @@ const MyProfile = ({ history }) => {
                             >
                                 <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
                                     <p className="text-white w-full h-full inline-flex justify-center items-center">@코딩</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15}}>게시물 0개</button>
+                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
                                 </div>
                             </div>
                             <div 
@@ -233,7 +233,7 @@ const MyProfile = ({ history }) => {
                             >
                                 <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
                                     <p className="text-white w-full h-full inline-flex justify-center items-center">@취업준비</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15}}>게시물 0개</button>
+                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
                                 </div>
                             </div>
                             <div 
@@ -246,7 +246,7 @@ const MyProfile = ({ history }) => {
                             >
                                 <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
                                     <p className="text-white w-full h-full inline-flex justify-center items-center">@로스쿨</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15}}>게시물 0개</button>
+                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
                                 </div>
                             </div>
                             <div 
@@ -259,7 +259,7 @@ const MyProfile = ({ history }) => {
                             >
                                 <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
                                     <p className="text-white w-full h-full inline-flex justify-center items-center">@대학원</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15}}>게시물 0개</button>
+                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
                                 </div>
                             </div>
                         </div>

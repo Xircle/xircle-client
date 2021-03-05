@@ -206,7 +206,7 @@ const InterestSetting = ({ history }) => {
         }
 
         dispatchRedux(actions.addInterest(state.interestArr));
-        history.push('/setting/7');
+        history.push('/setting/6');
     }, [state]);
     
     const { 

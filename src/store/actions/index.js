@@ -2,6 +2,7 @@ export {
     auth,
     authConfirm,
     errorInit,
+    loginSubmit,
 } from './Auth';
 
 export {

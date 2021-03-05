@@ -62,14 +62,16 @@ const Layout = ({ children, isIntro, invitement, num, footerNone, btnClicked, se
             {isIntro && !btnClicked ? (
                 <header>
                     <Headroom
+                        upTolerance={10}
+                        downTolerance={20}
                         style={{
                             position: 'fixed', 
                             zIndex: 200, 
                             backgroundColor: headerColor,
-                            WebkitTransition: 'all .4s ease-in-out',
-                            MozTransition: 'all .4s ease-in-out',
-                            OTransition: 'all .4s ease-in-out',
-                            transition: 'all .4s ease-in-out',
+                            WebkitTransition: 'all .2s ease-in-out',
+                            MozTransition: 'all .2s ease-in-out',
+                            OTransition: 'all .2s ease-in-out',
+                            transition: 'all .2s ease-in-out',
                         }}
                     >
                         <div className="flex flex-row items-center justify-between px-5 py-7">

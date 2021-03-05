@@ -41,18 +41,20 @@ export const auth = (email, univKor) => {
                     dispatch(authSuccess(email, univKor));
                 else {
                     const code = res.data.code;
+                    const errorMsg = res.data.message;
                     dispatch(authFail());
                     if(code === 450) {
                         // 여기서 dispatch 또해야함. 해당 이메일로 정보를 서버에서 가져와야함.
                         window.location.assign('/my-profile');
                     }else {
-                        alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                        alert(errorMsg);
                     }
                 }
             })
             .catch(err => {
                 console.log(err);
-                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                const errorMsg = err.data.message;
+                alert(errorMsg);
                 dispatch(authFail(err));
             })
     }
@@ -107,4 +109,55 @@ export const authConfirm = (email) => {
             })
     }
 }
+
+export const loginConfirmStart = () => {
+    return {
+        type: actionTypes.AUTH_CONFIRM_START,
+    }
+}
+export const loginConfirmFail = () => {
+    return {
+        type: actionTypes.AUTH_CONFIRM_FAIL,
+    }
+}
+export const loginConfirmSuccess = () => {
+    return {
+        type: actionTypes.AUTH_CONFIRM_SUCCESS,
+    }
+}
+export const loginConfirmInit = () => {
+    return {
+        type: actionTypes.AUTH_CONFIRM_INIT,
+    }
+}
+
+// Login
+export const loginSubmit = (email) => {
+    return dispatch => {
+        dispatch(loginConfirmStart());
+        const authData = {
+            email: email
+        };
+        Axios.post('/check/email', authData)
+            .then(res => {
+                console.log(res);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    dispatch(authConfirmSuccess());
+                    dispatch(authConfirmInit());
+                }
+                else {
+                    dispatch(authConfirmFail());
+                    dispatch(authConfirmInit());
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(authConfirmFail());
+                dispatch(authConfirmInit());
+                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+            })
+    }
+}
+
 
