@@ -1,11 +1,11 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import LoadingIndicator from 'react-loading-indicator';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import universitySwitcher from '../universitySwitcher';
 import Modal from './modal';
+import Spinner from 'react-spinner-material';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,18 +15,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ValidationTextFields({ history, type }) {
+export default function   ValidationTextFields({ history, type }) {
   const classes = useStyles();
   
-  
   const [isBtnDisabled, setIsBtnDisabled] = useState(true);
-  const [findBtnClicked, setFindBtnClicked] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [email, setEmail] = useState('');
 
   const dispatch = useDispatch();
-  const isLoading = useSelector(store => store.auth.loading);
 
+  const isLoading = useSelector(store => store.auth.loading);
+  const error = useSelector(store => store.auth.error);
   const emailRegex = /^[a-zA-Z0-9]([-_]?[a-zA-Z0-9])*@(korea.ac.kr|yonsei.ac.kr|snu.ac.kr|sogang.ac.kr|g.skku.edu|hanyang.ac.kr)$/;
+
+  useEffect(() => {
+    if(error === false) {
+      setShowModal(true);
+    }
+  }, [error]);
 
   const textChangeHandler = useCallback((event) => {
     event.preventDefault();
@@ -42,7 +48,7 @@ export default function ValidationTextFields({ history, type }) {
 
   const submitHandler = useCallback((event) => {
     event.preventDefault();
-    history.push('start');
+    // history.push('start');
     if(!email.match(emailRegex)) { // 먼저 필터링
       event.preventDefault();
       return alert('올바른 메일로 입력해주세요.');
@@ -54,6 +60,18 @@ export default function ValidationTextFields({ history, type }) {
     // redux 스토어에 dispatch
     dispatch(actions.auth(email, univKor));
   }, [email]);
+
+  const findSubmitHandler = useCallback((event) => {
+    event.preventDefault();
+    if(!email.match(emailRegex)) { // 먼저 필터링
+      event.preventDefault();
+      return alert('올바른 메일로 입력해주세요.');
+    }
+    
+    // redux 스토어에 dispatch
+    dispatch(actions.findAuth(email));
+  }, [email]);
+  
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
@@ -73,30 +91,34 @@ export default function ValidationTextFields({ history, type }) {
 
       {/* 로딩 인디케이터 */}
       {isLoading ? (
-      <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
-        <LoadingIndicator 
-            color={{red: 0, green: 0, blue: 0, alpha: 1}}
-            segmentWidth={2}
-        />
+      <div style={{height: '40px', position: 'relative'}}>
+        <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, 0)'}} className="flex flex-col items-center">
+            <Spinner 
+                size={10}
+                color={"#aaa"}
+            />
+            <p style={{marginTop: 10, fontSize: 12, whiteSpace: 'pre', color: "#8D8D8D"}}>인증메일을 보내고있습니다</p>
+        </div>
       </div>
-      ) : null}
+      ) : <div style={{height: '40px'}}></div>}
 
       {/* 전송 버튼 */}
       {type === 'auth' ? (
-      <button onClick={(e) => submitHandler(e)} style={{padding: "15px 0", margin: '80px 0 0'}} className="font-sans w-full rounded-lg mt-10 bg-gray-400 text-white hover:bg-gray-400 focus:outline-none">
+      <button onClick={(e) => submitHandler(e)} style={{padding: "15px 0", margin: '80px 0 0'}} className="font-sans w-full rounded-lg bg-gray-400 text-white hover:bg-gray-400 focus:outline-none">
         인증확인 전송
       </button>
-      ) : (
-      <button disabled={isBtnDisabled} onClick={(e) => {e.preventDefault(); setFindBtnClicked(true)}} style={{padding: "15px 0", margin: '80px 0 0'}} className="font-sans w-full rounded-lg mt-10 bg-gray-400 text-white hover:bg-gray-400 focus:outline-none">
+      ) : ( // type === 'find'
+      <button disabled={isBtnDisabled} onClick={(e) => findSubmitHandler(e)} style={{padding: "15px 0", margin: '80px 0 0'}} className="font-sans w-full rounded-lg mt-10 bg-gray-400 text-white hover:bg-gray-400 focus:outline-none">
         닉네임/비밀번호 찾기
       </button>
       )}
 
       {/* 모달 */}
-      <Modal show={findBtnClicked} clicked={() => setFindBtnClicked(false)}>
-        <div className="mb-5 py-5">
+      <Modal show={showModal} clicked={() => setShowModal(false)}>
+        <div className="py-5">
           <h1 className="text-xl mb-5">이메일을 확인해주세요!</h1>
           <p style={{color: '#aaa'}} className="text-base my-10">이메일로 기존 닉네임과 비밀번호를 <br/> 전송해드렸습니다.</p>
+          <p onClick={() => history.push('/login')} style={{cursor: 'pointer'}} >로그인하러가기</p>
         </div>
       </Modal>
       <div> {type === 'find' ? null : (
