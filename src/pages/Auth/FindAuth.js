@@ -13,22 +13,6 @@ const FindAuth = ({ history }) => {
     const dispatch = useDispatch();
 
     
-    // const passwordChangeHandler = useCallback((event) => {
-    //     console.log(event.target.value)
-    //     event.preventDefault();
-
-    //     const passwordText = event.target.value;
-
-    //     if(passwordText.length < 6 || passwordText.length > 10) {
-    //         setPasswordNameDescription('비밀번호는 6자리 이상 10자리 이하입니다.');
-    //         setIsBtnDisabled(true);
-    //     }else {
-    //         setPasswordNameDescription(null);
-    //         if(displayNameDescription === null)
-    //             setIsBtnDisabled(false);
-    //     }
-    // }, []);
-    
     const findSubmitHandler = useCallback((e) => {
         e.preventDefault();
         
@@ -58,7 +42,7 @@ const FindAuth = ({ history }) => {
                 </section>
                 <section className="px-10 mb-5">
                     <section className="text-center my-10">
-                        <ValidationButton type="find"/>
+                        <ValidationButton history={history} type="find"/>
                     </section>
                 </section>
             </section>
