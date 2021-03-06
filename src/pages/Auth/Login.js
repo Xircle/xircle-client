@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState }  from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../components/layout';
 import * as actions from '../../store/actions/index';
-import LoadingIndicator from 'react-loading-indicator';
+import Spinner from 'react-spinner-material';
 
 const Login = ({ history }) => {
     const [displayNameDescription, setDisplayNameDescription] = useState(null);
@@ -10,14 +10,19 @@ const Login = ({ history }) => {
     const [isBtnDisabled, setIsBtnDisabled] = useState(true);
 
     const isLoading = useSelector(store => store.auth.loading);
-    const isEmailSent = useSelector(store => store.auth.isEmailSent); //만약 토큰이 있으면 AUTH_SUCCESS 이므로
+    const errCode = useSelector(store => store.auth.errCode); //만약 토큰이 있으면 AUTH_SUCCESS 이므로
     const isConfirmed = useSelector(store => store.auth.isConfirmed);
     
     const displayRef = useRef();
-    const displayNameCheeckLoading = useSelector(store => store.user.displayNameUI.loading);
-    const displayNameError = useSelector(store => store.user.displayNameUI.error);
+    const passwordRef = useRef();
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(isConfirmed === true) {
+            history.push('/my-profile');
+        }
+    }, [isConfirmed]);
 
     const displayNameChangeHandler = useCallback((event) => {
         event.preventDefault();
@@ -35,11 +40,9 @@ const Login = ({ history }) => {
         }
     }, []);
     const passwordChangeHandler = useCallback((event) => {
-        console.log(event.target.value)
         event.preventDefault();
 
         const passwordText = event.target.value;
-
         if(passwordText.length < 6 || passwordText.length > 10) {
             setPasswordNameDescription('비밀번호는 6자리 이상 10자리 이하입니다.');
             setIsBtnDisabled(true);
@@ -53,11 +56,11 @@ const Login = ({ history }) => {
     // 수정
     const loginSubmitHandler = useCallback((e) => {
         e.preventDefault();
-        if(displayNameError !== null) // 리덕스에 있는데도 다시 제출하는건, 중복됐다는 거니까 ERROR_INIT
-            dispatch(actions.displayNameInit());
+        if(errCode !== null) // 리덕스에 errCode가 있는데도 다시 제출하는건, 문제가 있는거니까 ERROR_INIT하고 다시 Submit
+            dispatch(actions.loginInit());
         
-        // dispatch(actions.loginSubmit(displayRef.current.value));
-    }, [displayNameError]);
+        dispatch(actions.loginSubmit(displayRef.current.value, passwordRef.current.value));
+    }, [errCode]);
 
     return (
         <Layout headerNone footerNone={true}>
@@ -77,60 +80,46 @@ const Login = ({ history }) => {
                     <p style={{fontSize: '15px', color: "#C5C1C1", textAlign: 'left', margin: '20px auto', whiteSpace: 'pre'}}> XIRCLE을 이용해 주셔서 감사합니다. <br/> 연고링은 베타테스트단계로 <br/> 서울대 고려대 연세대 서강대 한양대 성균관대<br/> 학생들로만 진행중입니다.</p>
                 </section>
                 <section className="px-10 mb-5">
-                    {isEmailSent ? (
-                        <>
-                            {isLoading ? (
-                            <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
-                                <LoadingIndicator 
-                                    color={{red: 0, green: 0, blue: 0, alpha: 1}}
-                                    segmentWidth={2}
+                    <section className="text-center my-10">
+                        <form onSubmit={(e) => loginSubmitHandler(e)} autoComplete="off" noValidate>
+                            <div className="flex flex-col"> 
+                                <input 
+                                    type="text"
+                                    ref={displayRef}
+                                    placeholder="@닉네임을 적어주세요"
+                                    className="bg-gray-100 px-5 py-5"
+                                    autoFocus
+                                    onChange={(e) => displayNameChangeHandler(e)}
                                 />
+                                {displayNameDescription ? <p style={{color: 'red', textAlign: 'left', fontSize: 12, margin: '5px 0'}}>{displayNameDescription}</p> : <p style={{height: 17, margin: '5px 0'}}></p>}
+                                {errCode === 452 ? <p style={{color: 'red', margin: 0}}>[중복]사용자 이름 {displayRef.current.value}은 사용하실 수 없습니다.</p> : null}
+                                <input 
+                                    type="password"
+                                    ref={passwordRef}
+                                    placeholder="비밀번호를 적어주세요."
+                                    className="bg-gray-100 px-5 py-5"
+                                    onChange={(e) => passwordChangeHandler(e)}
+                                />
+                                {passwordDescription ? <p style={{color: 'red', textAlign: 'left', fontSize: 12, margin: '5px 0'}}>{passwordDescription}</p> : <p style={{height: 17, margin: '5px 0'}}></p>}
                             </div>
-                            ) : null}
-                            <button onClick={(e) => console.log(e)} className="font-sans w-full border-2 rounded-2xl px-5 py-3 mt-10 bg-black text-white  focus:outline-none">
-                                인증 후 클릭
-                            </button>
-                            <button onClick={(e) => console.log(e)} style={{color: "#949393"}} className="font-sans w-full border-2 rounded-2xl px-5 py-3 mt-3 bg-white focus:outline-none ">
-                                인증메일 재전송
-                            </button>
-                            <p style={{color: "#949393", margin: '30px', textAlign: 'center'}}>인증이 안되시나요?</p>
-                        </>
-                    ) : (
-                        <section className="text-center my-10">
-                            <form onSubmit={(e) => loginSubmitHandler(e)} autoComplete="off" noValidate>
-                                <div className="flex flex-col"> 
-                                    <input 
-                                        type="text"
-                                        placeholder="@닉네임을 적어주세요"
-                                        className="bg-gray-100 px-5 py-5"
-                                        autoFocus
-                                        onChange={(e) => displayNameChangeHandler(e)}
-                                    />
-                                    {displayNameDescription ? <p style={{color: 'red', textAlign: 'left', fontSize: 12, margin: '5px 0'}}>{displayNameDescription}</p> : <p style={{height: 17, margin: '5px 0'}}></p>}
-                                    <input 
-                                        type="password"
-                                        placeholder="비밀번호를 적어주세요."
-                                        className="bg-gray-100 px-5 py-5"
-                                        onChange={(e) => passwordChangeHandler(e)}
-                                    />
-                                    {passwordDescription ? <p style={{color: 'red', textAlign: 'left', fontSize: 12, margin: '5px 0'}}>{passwordDescription}</p> : <p style={{height: 17, margin: '5px 0'}}></p>}
-                                </div>
-                                {displayNameError & !displayNameCheeckLoading ? <p style={{color: 'red', margin: 0}}>[중복]사용자 이름 {displayRef.current.value}은 사용하실 수 없습니다.</p> : null}
-                                {displayNameCheeckLoading ? (
-                                    <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
-                                        <LoadingIndicator 
-                                            color={{red: 0, green: 0, blue: 0, alpha: 1}}
-                                            segmentWidth={2}
+                            
+                            {isLoading ? (
+                                <div style={{height: '40px', position: 'relative'}}>
+                                    <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: 0, transform: 'translate(-50%, 0)'}}>
+                                        <Spinner 
+                                            size={5}
+                                            color={"#aaa"}
                                         />
+                                        <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>로그인 중입니다..</p>
                                     </div>
-                                ) : null}
-                                <button disabled={isBtnDisabled} onClick={(e) => loginSubmitHandler(e)} style={{width: '100%', fontSize: 16, padding: "15px 0", margin: '40px 0 20px'}} className=" rounded-lg text-white bg-gray-400 focus:outline-none">
-                                    다음
-                                </button>
-                            </form>
-                            <p onClick={(e) => history.push('/find-auth')} style={{color: "#949393", cursor: 'pointer'}}>잊어버리셨나요?</p>
-                        </section>
-                    )}
+                                </div>
+                            ) : <div style={{height: '40px'}}></div>}
+                            <button disabled={isBtnDisabled} onClick={(e) => loginSubmitHandler(e)} style={{width: '100%', fontSize: 16, padding: "15px 0", margin: '40px 0 20px'}} className=" rounded-lg text-white bg-gray-400 focus:outline-none">
+                                다음
+                            </button>
+                        </form>
+                        <p onClick={(e) => history.push('/find-auth')} style={{color: "#949393", cursor: 'pointer'}}>잊어버리셨나요?</p>
+                    </section>
                 </section>
             </section>
         </Layout>
