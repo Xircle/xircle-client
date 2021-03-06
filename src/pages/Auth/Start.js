@@ -5,70 +5,100 @@ import * as actions from '../../store/actions/index';
 import LoadingIndicator from 'react-loading-indicator';
 
 const Login = ({ history }) => {
+    const [displayName, setDisplayName] = useState('');
+    const [pwd, setPwd] = useState('');
+    const [phoneNum, setPhoneNum] = useState('');
+
     const [displayNameDescription, setDisplayNameDescription] = useState(null);
     const [passwordDescription, setPasswordNameDescription] = useState(null);
     const [phoneNumberDescription, setPhoneNumberNameDescription] = useState(null);
     const [isBtnDisabled, setIsBtnDisabled] = useState(true);
 
-    const isLoading = useSelector(store => store.auth.loading);
-    const isConfirmed = useSelector(store => store.auth.isConfirmed);
-    
-    // const displayRef = useRef();
-    // const displayNameCheeckLoading = useSelector(store => store.user.displayNameUI.loading);
-    // const displayNameError = useSelector(store => store.user.displayNameUI.error);
+    const displayRef = useRef();
+    const passwordRef = useRef();
+    const phoneNumberRef = useRef();
 
+    const isLoading = useSelector(store => store.auth.loading);
+    const errCodeInRedux = useSelector(store => store.auth.errCode);
+    
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(errCodeInRedux === null) {
+            return null;
+        }else if(errCodeInRedux === 0) {
+            console.log('닉네임 생성 성공');
+            history.push('/setting/1')
+        }else if(errCodeInRedux === 452) {
+            setDisplayNameDescription(`[중복] ${displayRef.current.value}은 사용하실 수 없습니다.`);
+        }else {
+            alert("네트워크 혹은 서버에 일시적인 오류가 있습니다. 잠시 후에 다시 시도해주세요.")
+        }
+    }, [errCodeInRedux]);
 
     const displayNameChangeHandler = useCallback((event) => {
         event.preventDefault();
         const displayNameText = event.target.value;
+        setDisplayName(displayNameText);
+
         const displayNameRegex = /^@/;
         if(!displayNameText.match(displayNameRegex)) {
             setDisplayNameDescription('닉네임 맨앞에 @를 포함해주세요');
+            setIsBtnDisabled(true);
         }else {
             if(displayNameText.length < 4) {
                 setDisplayNameDescription('닉네임은 3자리 이상으로 해주세요.');
-            }
-            else {
+                setIsBtnDisabled(true);
+            }else {
                 setDisplayNameDescription(' ');
+                if(phoneNumberDescription === ' ' && passwordDescription === ' ')
+                    setIsBtnDisabled(false);
             }
         }
-    }, []);
+    }, [displayName, pwd, phoneNum]);
 
     const passwordChangeHandler = useCallback((event) => {
-        console.log(event.target.value)
         event.preventDefault();
 
         const passwordText = event.target.value;
-
+        setPwd(passwordText);
         if(passwordText.length < 6 || passwordText.length > 10) {
             setPasswordNameDescription('비밀번호는 6자리 이상 10자리 이하입니다.');
             setIsBtnDisabled(true);
         }else {
             setPasswordNameDescription(' ');
+            if(phoneNumberDescription === ' ' && displayNameDescription === ' ')
+                setIsBtnDisabled(false);
         }
-    }, []);
+    }, [displayName, pwd, phoneNum]);
 
     const phoneNumberChangeHandler = useCallback((event) => {
         const phoneText = event.target.value;
+        setPhoneNum(phoneText);
         if(phoneText.length !== 11) {
             setPhoneNumberNameDescription('전화번호를 올바르게 입력해주세요.');
+            setIsBtnDisabled(true);
         }else {
             setPhoneNumberNameDescription(' ');
-            setIsBtnDisabled(false);
+            if(displayNameDescription === ' ' && passwordDescription === ' ')
+                setIsBtnDisabled(false);
         }
-    }, []);
+    }, [displayName, pwd, phoneNum]);
     
     // 수정
-    const loginSubmitHandler = useCallback((e) => {
+    const joinSubmitHandler = useCallback((e) => {
         e.preventDefault();
         
-        history.push('/setting/1')
-        // dispatch(actions.loginSubmit(displayRef.current.value));
+        const displayNameText = displayRef.current.value;
+        const passwordText = passwordRef.current.value;
+        const phoneNumberText = phoneNumberRef.current.value;
+
+        console.log(displayNameText, passwordText, phoneNumberText)
+        dispatch(actions.joinSubmit(displayNameText, passwordText, phoneNumberText));
     }, []);
 
     return (
-        <Layout headerNone footerNone={true}>
+        <Layout headerNone footerNone>
             <div style={{height: '60px'}} className="flex flex-row items-center justify-between ">
             </div>
 
@@ -79,13 +109,14 @@ const Login = ({ history }) => {
                 </section>
                 <section className="px-10 mb-5">
                     <section className="text-center my-10">
-                        <form onSubmit={(e) => loginSubmitHandler(e)} autoComplete="off" noValidate>
+                        <form onSubmit={(e) => joinSubmitHandler(e)} autoComplete="off" noValidate>
                             <div className="flex flex-col"> 
                                 <input 
                                     type="text"
                                     placeholder="@사용자 이름(자유)"
                                     className="bg-gray-100 px-5 py-5"
                                     autoFocus
+                                    ref={displayRef}
                                     onChange={(e) => displayNameChangeHandler(e)}
                                 />
                                 {displayNameDescription ? <p style={{color: 'red', margin: '10px 0 10px 5px', whiteSpace: 'pre', fontSize: 12, textAlign: 'left'}}>{displayNameDescription}</p> : <p style={{color: "#C5C1C1", margin: '10px 0 10px 5px', whiteSpace: 'pre', fontSize: 12, textAlign: 'left'}}>@사용자이름에는 영어 대소문자, 숫자,밑줄 및 마침표만 사용해주세요.</p>}
@@ -93,6 +124,7 @@ const Login = ({ history }) => {
                                     type="password"
                                     placeholder="비밀번호"
                                     className="bg-gray-100 px-5 py-5"
+                                    ref={passwordRef}
                                     onChange={(e) => passwordChangeHandler(e)}
                                 />
                                 {passwordDescription ? <p style={{color: 'red', margin: '10px 0 10px 5px', whiteSpace: 'pre', fontSize: 12, textAlign: 'left'}}>{passwordDescription}</p> : <p style={{color: "#C5C1C1", margin: '10px 0 10px 5px', whiteSpace: 'pre', fontSize: 12, textAlign: 'left'}}>띄어쓰기 없는 6-10자리 영어 대소문자와 숫자 조합으로 입력해주세요.</p>}
@@ -100,20 +132,21 @@ const Login = ({ history }) => {
                                     type="text"
                                     placeholder="전화번호를 입력."
                                     className="bg-gray-100 px-5 py-5 mt-5"
+                                    ref={phoneNumberRef}
                                     onChange={(e) => phoneNumberChangeHandler(e)}
                                 />
                                 {phoneNumberDescription ? <p style={{color: 'red', margin: '10px 0 10px 5px', whiteSpace: 'pre', fontSize: 12, textAlign: 'left'}}>{phoneNumberDescription}</p> : <p style={{color: "#C5C1C1", margin: '10px 0 10px 5px', whiteSpace: 'pre', fontSize: 12, textAlign: 'left'}}>-없이 입력해주세요.</p>}
                                 
                             </div>
-                            {/* {displayNameCheeckLoading ? (
+                            {isLoading ? (
                                 <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
                                     <LoadingIndicator 
                                         color={{red: 0, green: 0, blue: 0, alpha: 1}}
                                         segmentWidth={2}
                                     />
                                 </div>
-                            ) : null} */}
-                            <button disabled={isBtnDisabled} onClick={(e) => loginSubmitHandler(e)} style={{width: '100%', fontSize: 16, padding: "15px 0", margin: '40px 0 20px'}} className=" rounded-lg text-white bg-gray-400 focus:outline-none">
+                            ) : null}
+                            <button disabled={isBtnDisabled} onClick={(e) => joinSubmitHandler(e)} style={{width: '100%', fontSize: 16, padding: "15px 0", margin: '40px 0 20px'}} className=" rounded-lg text-white bg-gray-400 focus:outline-none">
                                 다음
                             </button>
                         </form>
