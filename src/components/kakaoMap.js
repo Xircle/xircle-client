@@ -8,6 +8,8 @@ const KakaoMap = ({ history }) => {
   const [isMapSupported, setIsMapSupported] = useState(true);
   const [location, setLocation] = useState('');
   const [addr, setAddr] = useState('');
+  const [longitude, setLongitude] = useState(null);
+  const [latitude, setLatitude] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -27,10 +29,9 @@ const KakaoMap = ({ history }) => {
     }
 
     const finalLocation = addr || location;
-    console.log(finalLocation);
-    dispatch(actions.addLocation(finalLocation));
-    history.push('/setting/5'); 
-  }, [addr]);
+    dispatch(actions.addLocation(finalLocation, longitude, latitude));
+    history.push('/setting/2'); 
+  }, [addr, location, longitude, latitude]);
 
   const locationTextChangeHandler = useCallback((event) => {
     setLocation(event.target.value);
@@ -54,10 +55,13 @@ const KakaoMap = ({ history }) => {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
+            setLatitude(lat);
+            setLongitude(lon);
             const locPosition = new kakao.maps.LatLng(lat, lon); 
-            const message = '<div style="padding:5px;">내 현재 위치입니다.</div>'; 
             
-            displayMarker(locPosition, message);
+            displayMarker(locPosition);
+
+            // latitude, longitude로 현재 위치정보 반환하는 콜백함수.
             searchDetailAddrFromCoords({ lat: lat, lng: lon}, function(result, status) {
               if (status === kakao.maps.services.Status.OK) {
                 const fullAddr = result[0].address.address_name; 
@@ -90,9 +94,12 @@ const KakaoMap = ({ history }) => {
                 
                 const fullAddr = result[0].address.address_name; 
                 const newAddr = fullAddr.split(' ');
+                const displayAddr = '<p style="margin: 10px;"> ' + newAddr[0] + ' ' +  newAddr[1] + '   </p>';
                 setAddr(newAddr[0] + ' ' + newAddr[1])
 
-                const content = detailAddr;
+                setLongitude(mouseEvent.latLng.getLng());
+                setLatitude(mouseEvent.latLng.getLat());
+                const content = displayAddr;
     
                 // 마커를 클릭한 위치에 표시합니다 
                 marker.setPosition(mouseEvent.latLng);
