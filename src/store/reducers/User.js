@@ -13,7 +13,6 @@ const initialState = {
         loading: null,
         error: null
     },
-    phoneNumber: null,
     isPublic: null,
     isGraduate: null,
     gender: null,
@@ -21,11 +20,12 @@ const initialState = {
     job: null,
     adj: null,
     location: null,
+    lat: null,
+    lng: null,
     interestArr: [],
     articleImgSrc: null,
     articleText: null,
     articleTag: null,
-    displayName: null,
     introText: null,
     profileImgSrc: null,
 }
@@ -70,14 +70,16 @@ const reducer = (state=initialState, action) => {
         case actionTypes.ADD_LOCATION:
             return {
                 ...state,
-                location: action.location
+                location: action.location,
+                lng: action.lng,
+                lat: action.lat,
             }
         case actionTypes.ADD_INTEREST:
             return {
                 ...state,
                 interestArr: action.interestArr
             }
-        case actionTypes.SUBMIT_ARTICLE_IMGSRC_TO_AWS_START:
+        case actionTypes.SUBMIT_IMGSRC_TO_AWS_START:
             return {
                 ...state,
                 submitImgSrc: {
@@ -85,17 +87,29 @@ const reducer = (state=initialState, action) => {
                     loading: true
                 }
             }
-        case actionTypes.SUBMIT_ARTICLE_IMGSRC_TO_AWS_SUCCESS:
-            return {
-                ...state,
-                submitImgSrc: {
-                    ...state.submitImgSrc,
-                    loading: false,
-                    error: false,
-                },
-                articleImgSrc: action.imgAwsUrl
+        case actionTypes.SUBMIT_IMGSRC_TO_AWS_SUCCESS:
+            if(action.payloadType === 'article') {
+                return {
+                    ...state,
+                    submitImgSrc: {
+                        ...state.submitImgSrc,
+                        loading: false,
+                        error: false,
+                    },
+                    articleImgSrc: action.imgAwsUrl
+                }
+            } else {
+                return {
+                    ...state,
+                    submitImgSrc: {
+                        ...state.submitImgSrc,
+                        loading: false,
+                        error: false,
+                    },
+                    profileImgSrc: action.imgAwsUrl
+                }
             }
-        case actionTypes.SUBMIT_ARTICLE_IMGSRC_TO_AWS_FAIL:
+        case actionTypes.SUBMIT_IMGSRC_TO_AWS_FAIL:
             return {
                 ...state,
                 submitImgSrc: {
@@ -124,74 +138,10 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 articleTag: action.articleTag
             }
-        case actionTypes.DISPLAYNAME_START:
-            return {
-                ...state,
-                displayNameUI: {
-                    ...state.displayNameUI,
-                    loading: true
-                }
-            }
-        case actionTypes.DISPLAYNAME_FAIL:
-            return {
-                ...state,
-                displayNameUI: {
-                    ...state.displayNameUI,
-                    loading: false,
-                    error: true
-                }
-            }
-        case actionTypes.DISPLAYNAME_SUCCESS:
-            return {
-                ...state,
-                displayName: action.displayName,
-                displayNameUI: {
-                    ...state.displayNameUI,
-                    loading: false,
-                    error: false
-                }
-            }
-        case actionTypes.DISPLAYNAME_INIT:
-            return {
-                ...state,
-                displayNameUI: {
-                    ...state.displayNameUI,
-                    error: null
-                }
-            }
-            
         case actionTypes.ADD_INTRO_TEXT:
             return {
                 ...state,
                 introText: action.introText
-            }
-        case actionTypes.SUBMIT_PROFILE_IMGSRC_TO_AWS_START:
-            return {
-                ...state,
-                submitImgSrc: {
-                    ...state.submitImgSrc,
-                    loading: true
-                }
-            }
-        case actionTypes.SUBMIT_PROFILE_IMGSRC_TO_AWS_SUCCESS:
-            return {
-                ...state,
-                submitImgSrc: {
-                    ...state.submitImgSrc,
-                    loading: false,
-                    error: false,
-                },
-                profileImgSrc: action.imgAwsUrl
-            }
-        case actionTypes.SUBMIT_PROFILE_IMGSRC_TO_AWS_FAIL:
-            return {
-                ...state,
-                submitImgSrc: {
-                    ...state.submitImgSrc,
-                    loading: false,
-                    error: true,
-                },
-                profileImgSrc: action.imgAwsUrl
             }
         case actionTypes.SUBMIT_TO_SERVER_START:
             return {
@@ -217,6 +167,15 @@ const reducer = (state=initialState, action) => {
                     ...state.submitToServer,
                     loading: false,
                     error: false
+                }
+            }
+        case actionTypes.SUBMIT_TO_SERVER_INIT:
+            return {
+                ...state,
+                submitToServer: {
+                    ...state.submitToServer,
+                    loading: null,
+                    error: null
                 }
             }
         case actionTypes.UPDATE_PROFILE_IMG:

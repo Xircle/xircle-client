@@ -1,8 +1,12 @@
 export {
     auth,
-    authConfirm,
     errorInit,
+    authConfirm,
+    authConfirmInit,
+    joinSubmit,
     loginSubmit,
+    loginInit,
+    findAuth,
 } from './Auth';
 
 export {
@@ -17,8 +21,6 @@ export {
     submitArticleImgToAWS,
     addArticleText,
     addArticleTag,
-    displayName,
-    displayNameInit,
     addIntroText,
     addInterest,
     submitProfileImgToAWS,
