@@ -33,7 +33,7 @@ const Layout = ({ children, isIntro, invitement, num, footerNone, btnClicked, se
     
     return (
         <div id="layout" style={{backgroundColor: isIntro ? 'black' : "white"}} className="flex flex-col mx-auto md:w-full">
-            {num === '2' || num === '3' ? (
+            {num === '3' || num === '4' ? (
                 <aside>
                     <img
                         style={{width: '60px', height: '60px', position: 'fixed', right: 10, bottom: 10, cursor: 'pointer'}} 

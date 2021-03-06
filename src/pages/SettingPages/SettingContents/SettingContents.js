@@ -5,7 +5,6 @@ import Select from 'react-select';
 import { AgeSettingOptions } from '../../../model/person';
 import { Search } from 'semantic-ui-react'
 import { jobs, adjectives } from '../../../model/person';
-import TextFieldUI from '../../../components/UI/textFieldUI'
 import KakaoShareButton from '../../../components/KakaoShareButton';
 import { FacebookIcon, FacebookShareButton, TwitterShareButton, TwitterIcon, LineShareButton, LineIcon } from 'react-share';
 import Banner from '../../../components/banner';
@@ -20,16 +19,11 @@ const SettingContents = ({ history, questionNum }) => {
     const [isGraduateUniv, setGraduateUniv] = useState(null);
     const [job, setJob] = useState('');
     const [adj, setAdj] = useState('');
-    const [location, setLocation] = useState('');
     const [imgSrc, setImgSrc] = useState(null);
     
-    const displayRef = useRef();
-    const displayNameCheeckLoading = useSelector(store => store.user.displayNameUI.loading);
-    const displayNameError = useSelector(store => store.user.displayNameUI.error);
     const articleRef = useRef();
     const articleTagRef = useRef();
     const introRef = useRef();
-    const firstIntroText = '';
     const resume = useRef();
     const workPlace = useRef();
 
@@ -48,9 +42,11 @@ const SettingContents = ({ history, questionNum }) => {
     const submitImgSrcToAWSLoading = useSelector(store => store.user.submitImgSrc.loading);
     const submitImgSrcToAWSError = useSelector(store => store.user.submitImgSrc.error);
 
-    const phoneNumberInRedux = useSelector(store => store.auth.phoneNumber);
     const emailInRedux = useSelector(store => store.auth.email);
     const univInRedux = useSelector(store => store.auth.univ);
+    const phoneNumberInRedux = useSelector(store => store.auth.phoneNumber);
+    const displayNameInRedux = useSelector(store => store.auth.displayName);
+    const __pwdInRedux = useSelector(store => store.auth.__pwd);
     const isPublicInRedux = useSelector(store => store.user.isPublic);
     const isGraduateInRedux = useSelector(store => store.user.isGraduate);
     const genderInRedux = useSelector(store => store.user.gender);
@@ -58,11 +54,12 @@ const SettingContents = ({ history, questionNum }) => {
     const jobInRedux = useSelector(store => store.user.job);
     const adjInRedux = useSelector(store => store.user.adj);
     const locationInRedux = useSelector(store => store.user.location);
+    const latitudeInRedux = useSelector(store => store.user.lat);
+    const longitudeInRedux = useSelector(store => store.user.lng);
     const interestArrInRedux = useSelector(store => store.user.interestArr);
     const articleTextInRedux = useSelector(store => store.user.articleText);
     const articleTagInRedux = useSelector(store => store.user.articleTag);
     const articleImgSrcInRedux = useSelector(store => store.user.articleImgSrc);
-    const displayNameInRedux = useSelector(store => store.user.displayName);
     const introTextInRedux = useSelector(store => store.user.introText);
     const profileImgSrcInRedux = useSelector(store => store.user.profileImgSrc);
 
@@ -75,7 +72,7 @@ const SettingContents = ({ history, questionNum }) => {
         
     }, []);
 
-    // /setting/1
+    // /setting/2
     const UnivPublicChangeHandler = useCallback((e, { value }) => {
         if(value === 'public')
             setIsUnivPublic(true);
@@ -113,23 +110,21 @@ const SettingContents = ({ history, questionNum }) => {
         //저장
     }, []);
     
-    // /setting/2
+    // /setting/3
     const jobClickedHandler = useCallback((job) => {
         setJob(job);
         dispatch(actions.addJob(job));
-        history.push('/setting/3'); 
-        //저장
-    }, []);
-    
-    // /setting/3
-    const adjClickedHandler = useCallback((adjective) => {
-        setAdj(adjective);
-        dispatch(actions.addAdj(adjective));
         history.push('/setting/4'); 
         //저장
     }, []);
     
     // /setting/4
+    const adjClickedHandler = useCallback((adjective) => {
+        setAdj(adjective);
+        dispatch(actions.addAdj(adjective));
+        history.push('/setting/5'); 
+        //저장
+    }, []);
     
     
     // /setting/6
@@ -158,7 +153,7 @@ const SettingContents = ({ history, questionNum }) => {
         if(!imgSrc)
             return alert("사진을 선택해주세요.")
         // /img 라우터로 formData 올려서 S3에 이미지 업로드하고, URL 받아야함.
-        dispatch(actions.submitArticleImgToAWS(articleImg_formData));
+        dispatch(actions.submitArticleImgToAWS(articleImg_formData, "article"));
     }, [imgSrc, articleImg_formData]);
     
     useEffect(() => {
@@ -253,12 +248,12 @@ const SettingContents = ({ history, questionNum }) => {
             console.log(pair[0]+ ', ' + pair[1]); 
         }
 
-        dispatch(actions.submitProfileImgToAWS(profileImg_formData));
+        dispatch(actions.submitProfileImgToAWS(profileImg_formData, "profile"));
     }, [profileImgSrc, profileImg_formData]);
 
     useEffect(() => {
         const currentPath = window.location.pathname;
-        if(currentPath !== '/setting/10')
+        if(currentPath !== '/setting/9')
             return null;
         if(submitImgSrcToAWSError === true)
             return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
@@ -269,7 +264,7 @@ const SettingContents = ({ history, questionNum }) => {
     // /setting/10 || Submit to server
     useEffect(() => {
         if(submitToServerError === false) {
-            history.push('/setting/12');
+            history.push('/setting/11');
         }
         else if(submitToServerError === true) {
             history.push('/login');
@@ -280,20 +275,29 @@ const SettingContents = ({ history, questionNum }) => {
         const resumeText = resume.current.value;
         const workPlaceText = workPlace.current.value;
         dispatch(actions.submitToServer(
-            phoneNumberInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText
+            phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText
         ));
         
-    }, [phoneNumberInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
+    }, [phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
     
     // /setting/11
     const shareBtnClickedHandler = useCallback(() => {
         setShareClicked(!shareClicked);
     }, [shareClicked]);
     
-    
     const questionNumber = Number(questionNum);
     let contents = null;
     if(questionNumber === 1) {
+        contents = (
+            <section className="h-1/4 text-center px-3 mt-3">
+                <div className="px-3 py-5 mb-3">
+                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">위치 허용해주세요</h1>
+                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>고객님의 도시 정보까지만 표시하며 언제든지 <br/> 변경 가능해요. 프라이버시에 대해 걱정 하지 마세요!</p>
+                </div>
+                <KakaoMap history={history} />
+            </section>
+        )
+    }else if(questionNumber === 2) {
         contents = (
             <>
                 <section className="px-8 mt-8">
@@ -336,12 +340,12 @@ const SettingContents = ({ history, questionNum }) => {
                         onChange={(e) => dispatch(actions.addAge(e.value))}
                     />
                     <div className="flex flex-row justify-evenly">
-                        <button onClick={() => history.push('/setting/2')} className="font-sans border-2 w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
+                        <button onClick={() => history.push('/setting/3')} className="font-sans border-2 w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
                     </div>
                 </Modal>
             </>
         )
-    }else if(questionNumber === 2) {
+    }else if(questionNumber === 3) {
         contents = (
             <section className="text-center px-3 mt-3">
                 <div className="px-3 py-5 mb-3">
@@ -361,7 +365,7 @@ const SettingContents = ({ history, questionNum }) => {
                 </section>
             </section>
         )
-    }else if(questionNumber === 3) {
+    }else if(questionNumber === 4) {
         contents = (
             <section className="text-center px-3 mt-3">
                 <div className="px-3 py-5 mb-3">
@@ -382,16 +386,6 @@ const SettingContents = ({ history, questionNum }) => {
                         </article>
                     ))}
                 </section>
-            </section>
-        )
-    }else if(questionNumber === 4) {
-        contents = (
-            <section className="h-1/4 text-center px-3 mt-3">
-                <div className="px-3 py-5 mb-3">
-                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">위치 허용해주세요</h1>
-                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>고객님의 도시 정보까지만 표시하며 언제든지 <br/> 변경 가능해요. 프라이버시에 대해 걱정 하지 마세요!</p>
-                </div>
-                <KakaoMap history={history} />
             </section>
         )
     }else if(questionNumber === 5) {
@@ -424,12 +418,17 @@ const SettingContents = ({ history, questionNum }) => {
                         style={{marginLeft: '10px'}}
                     />
                     {submitImgSrcToAWSLoading ? (
-                        <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
-                            <LoadingIndicator 
-                                color={{red: 0, green: 0, blue: 0, alpha: 1}}
-                                segmentWidth={2}
-                            />
-                        </div>
+                        <>
+                            <div style={{height: '30px', left: '50%', transform: 'translate(-50%, 0)'}} className="absolute ">
+                                <div className="flex flex-col items-center">
+                                    <LoadingIndicator 
+                                        color={{red: 0, green: 0, blue: 0, alpha: 1}}
+                                        segmentWidth={2}
+                                    />
+                                    <p style={{marginTop: 5}}>업로드 중입니다</p>
+                                </div>
+                            </div>
+                        </>
                     ) : null}
                     <button onClick={(e) => uploadBtnHandler(e)} className="mt-16 w-full rounded-xl px-5 py-3 bg-gray-400 text-white focus:outline-none">
                         <p style={{wordBreak: "keep-all"}}>업로드 하기</p>

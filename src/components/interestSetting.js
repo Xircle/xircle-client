@@ -346,7 +346,7 @@ const InterestSetting = ({ history }) => {
                     <p className="text-white h-full inline-flex items-center">@대학원</p>
                 </div>
             </div>
-            <button onClick={(e) => interestSubmitHandler(e)} className="my-10 w-1/2 border-2 rounded-3xl px-5 py-3 bg-black text-white focus:outline-none">
+            <button onClick={(e) => interestSubmitHandler(e)} style={{width: '100%'}} className="my-10 rounded-lg px-5 py-3 bg-black text-white focus:outline-none">
                     다음
             </button>
         </>            
