@@ -4,6 +4,7 @@ import ValidationButton from '../../components/UI/validationButton';
 import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import Spinner from 'react-spinner-material';
+import universitySwitcher from '../../components/universitySwitcher';
 
 const Auth = ({ history }) => {
     const isLoading = useSelector(store => store.auth.loading);
@@ -37,27 +38,30 @@ const Auth = ({ history }) => {
         dispatch(actions.auth(emailInRedux, univInRedux));
     }, [emailInRedux]);
 
-    // POST /email 
+    // POST /email
     const confirmAuth = useCallback((event) => {
         event.preventDefault();
         
+        const index = emailInRedux.indexOf('@');
+        const univ = emailInRedux.slice(index+1); // 영어
+        const univKor = universitySwitcher(univ); //한국말
+
         const code = passwordRef.current.value;
-        dispatch(actions.authConfirm(emailInRedux, code));
+        dispatch(actions.authConfirm(emailInRedux, code, univKor));
     }, [emailInRedux]);
 
-    
     // POST /check/email 에서만 실행됨.
     useEffect(() => {
-        if(errCodeInRedux === 0) { // SUCCESS 시 실행
+        if(errCodeInRedux === null) {
+            return null;
+        }else if(errCodeInRedux === 0) { // SUCCESS 시 실행
             history.push('/start')
-        }
-        else if(errCodeInRedux === 450) {
+        }else if(errCodeInRedux === 450) {
             alert("이미 가입된 이메일입니다. 로그인 해주세요.");
             history.push('/login')
-        }
-        else if(errCodeInRedux === 453) {
-            alert("인증번호가 일치하지 않습니다.")
-        }else if(errCodeInRedux === 500){
+        }else if(errCodeInRedux === 453) {
+            alert("인증번호가 일치하지 않습니다. 보안상의 이유로 이전 인증번호는 더이상 유효하지 않으니 인증메일을 재전송해주세요.")
+        }else if(errCodeInRedux === 500) {
             alert("네트워크에 일시적인 오류가 생겼습니다. 잠시 후 다시 시도해주세요.")
         }
     }, [errCodeInRedux]);
@@ -100,7 +104,7 @@ const Auth = ({ history }) => {
                             <a href="http://pf.kakao.com/_kDxhtK" style={{color: "#949393", display: 'block', margin: '30px', textAlign: 'center'}}>인증이 안되시나요?</a>
                         </>
                     ) : (
-                        <ValidationButton type="auth" history={history}/>
+                        <ValidationButton confirmAuth={confirmAuth} type="auth" history={history}/>
                     )}
                 </section>
             </section>
