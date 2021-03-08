@@ -5,11 +5,11 @@ module.exports = {
     plugins: [
         tailwindcss('./tailwind.js'),
         require('autoprefixer'),
-        purgecss({
-            content: [
-                './src/**/*.js',
-                './public/index.html'
-            ]
-        })
+        // purgecss({
+        //     content: [
+        //         './src/**/*.js',
+        //         './public/index.html'
+        //     ]
+        // })
     ]
 }
