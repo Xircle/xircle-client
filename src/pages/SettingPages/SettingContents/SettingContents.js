@@ -24,8 +24,8 @@ const SettingContents = ({ history, questionNum }) => {
     const articleRef = useRef();
     const articleTagRef = useRef();
     const introRef = useRef();
-    const resume = useRef();
-    const workPlace = useRef();
+    const resumeRef = useRef();
+    const workPlaceRef = useRef();
 
     const [defaultHashTag, setDefaultHashTag] = useState('');
     const [profileImgSrc, setProfileImgSrc] = useState('');
@@ -37,11 +37,10 @@ const SettingContents = ({ history, questionNum }) => {
     const [genderClicked, setGenderClicked] = useState(false);
     const [shareClicked, setShareClicked] = useState(false);
     
-    const submitToServerLoading = useSelector(store => store.user.submitToServer.loading);
-    const submitToServerError = useSelector(store => store.user.submitToServer.error);
-    const submitImgSrcToAWSLoading = useSelector(store => store.user.submitImgSrc.loading);
-    const submitImgSrcToAWSError = useSelector(store => store.user.submitImgSrc.error);
-
+    const isLoading = useSelector(store => store.user.loading);
+    const hasError = useSelector(store => store.user.error);
+    const errCode = useSelector(store => store.user.errCode);
+    
     const emailInRedux = useSelector(store => store.auth.email);
     const univInRedux = useSelector(store => store.auth.univ);
     const phoneNumberInRedux = useSelector(store => store.auth.phoneNumber);
@@ -62,15 +61,123 @@ const SettingContents = ({ history, questionNum }) => {
     const articleImgSrcInRedux = useSelector(store => store.user.articleImgSrc);
     const introTextInRedux = useSelector(store => store.user.introText);
     const profileImgSrcInRedux = useSelector(store => store.user.profileImgSrc);
-
+    
     const dispatch = useDispatch();
     
     useEffect(() => {
-        // 새로고침 시 하나라도 없어지면 /login 페이지로 라우팅
-        // if(!emailInRedux || !genderInRedux || !ageInRedux || !jobInRedux || !adjInRedux || !locationInRedux || !articleTextInRedux || !articleImgSrcInRedux || !displayNameInRedux || !interestArrInRedux || !introTextInRedux || !profileImgSrcInRedux)
-        //     window.location.assign('/login');
-        
+        const currentPath = window.location.pathname;
+        switch(currentPath) {
+            case '/setting/1':
+                if(!emailInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/2':
+                if(!locationInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/3':
+                if(!isPublicInRedux || !isGraduateInRedux || !genderInRedux || !ageInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/4':
+                if(!jobInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/5':
+                if(!adjInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/6':
+                if(!interestArrInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/7':
+                if(!articleImgSrcInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/8':
+                if(!articleTextInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/9':
+                if(!introTextInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/10':
+                if(!profileImgSrcInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            case '/setting/11':
+                if(!emailInRedux) 
+                    return window.location.assign('/auth');
+                break;
+            default:
+                return null;
+        }
     }, []);
+
+    // 모든 서버로의 로딩 + /pre/user 할때 에러코드 리다이렉션.
+    useEffect(() => {
+        const currentPath = window.location.pathname;
+        switch (currentPath) {
+            case '/setting/6':
+                if(hasError)
+                    return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
+                else if(hasError === false) 
+                    return history.push('/setting/7')
+            case '/setting/8':
+                if(hasError)
+                    return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
+                else if(hasError === false) 
+                    return history.push('/setting/9')
+            case '/setting/10':
+                if(hasError) {
+                    switch (errCode) {
+                        case 410:
+                            return history.push('/auth');
+                        case 423 || 424 || 429 || 436 || 437:
+                            return history.push('/start');
+                        case 440 || 441 || 442 || 443:
+                            return history.push('/setting/1');
+                        case 413 || 414 || 415 || 416 || 432 || 433:
+                            return history.push('/setting/2');
+                        case 417 || 418:
+                            return history.push('/setting/3');
+                        case 419 || 420:
+                            return history.push('/setting/4');
+                        case 427:
+                            return history.push('/setting/5');
+                        case 438:
+                            return history.push('/setting/6');
+                        case 439:
+                            return history.push('/setting/7');
+                        case 431:
+                            return history.push('/setting/8');
+                        case 438:
+                            return history.push('/setting/6');
+                        case 439:
+                            return history.push('/setting/7');
+                        case 431:
+                            return history.push('/setting/8');
+                        case 421 || 422:
+                            return history.push('/setting/9');
+                        case 439:
+                            return history.push('/setting/10');
+                        case 431:
+                            return history.push('/setting/8');
+                    
+                        default:
+                            break;
+                    }
+                    return history.push('/auth');
+                }
+                else if(hasError === false) 
+                    return history.push('/setting/11')
+
+            default:
+                break;
+        }
+    }, [isLoading]);
 
     // /setting/2
     const UnivPublicChangeHandler = useCallback((e, { value }) => {
@@ -81,7 +188,6 @@ const SettingContents = ({ history, questionNum }) => {
     }, []);
 
     const UnivGraduateChangeHandler = useCallback((e, { value }) => {
-        console.log(value);
         if(value === 'graduate')
             setGraduateUniv(true);
         else
@@ -89,7 +195,6 @@ const SettingContents = ({ history, questionNum }) => {
     }, []);
 
     const radioSubmitHandler = useCallback(() => {
-        console.log(isUnivPublic, isGraduateUniv);
         dispatch(actions.addIsPublic(isUnivPublic))
         dispatch(actions.addIsGraduate(isGraduateUniv))
         
@@ -98,11 +203,11 @@ const SettingContents = ({ history, questionNum }) => {
     
     const WomanBtnClickedHandler = useCallback(() => {
         setGenderClicked(true);
-        dispatch(actions.addGender('woman'))
+        dispatch(actions.addGender('여자'))
     }, []);
     const ManBtnClickedHandler = useCallback(() => {
         setGenderClicked(true);
-        dispatch(actions.addGender('man'))
+        dispatch(actions.addGender('남자'))
     }, []);
     const NonBinaryBtnClickedHandler = useCallback(() => {
         setGenderClicked(true);
@@ -126,14 +231,12 @@ const SettingContents = ({ history, questionNum }) => {
         //저장
     }, []);
     
-    
     // /setting/6
     const uploadPhoto = useCallback((event) => {
         event.preventDefault();
         // file을 읽을 reader 객체 생성
         const files = event.target.files;
         const __file = files[0];
-        console.log(__file);
 
         // 미리보기용
         const fileReader = new FileReader();
@@ -152,20 +255,10 @@ const SettingContents = ({ history, questionNum }) => {
         event.preventDefault();
         if(!imgSrc)
             return alert("사진을 선택해주세요.")
-        // /img 라우터로 formData 올려서 S3에 이미지 업로드하고, URL 받아야함.
-        dispatch(actions.submitArticleImgToAWS(articleImg_formData, "article"));
+        // /img 라우터로 formData 올려서 S3에 이미지 업로드하고, URL받기 위한 액션.
+        dispatch(actions.submitImgToAWS(articleImg_formData, "article"));
     }, [imgSrc, articleImg_formData]);
     
-    useEffect(() => {
-        const currentPath = window.location.pathname;
-        if(currentPath !== '/setting/6')
-            return null;
-        if(submitImgSrcToAWSError)
-            return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
-        else if(submitImgSrcToAWSError === false)
-            history.push('/setting/7');
-    }, [submitImgSrcToAWSLoading]);
-
     // /setting/7
     const articleHashTagClickHandler = useCallback((clickedHashTag) => {
         let newHashTag = null;
@@ -208,19 +301,7 @@ const SettingContents = ({ history, questionNum }) => {
         history.push('/setting/8')
     }, []);
 
-
-    // setting/8
-    const introTextSubmitHandler = useCallback((event) => {
-        event.preventDefault();
-        const introText = introRef.current.value;
-        console.log(introText)
-        if(introText.length < 3)
-            return alert("3글자 이상 입력해주세요!");
-        dispatch(actions.addIntroText(introText));
-        history.push('/setting/9')
-    }, []);
-    
-    // /setting/9
+    // /setting/8
     const uploadProfileImg = useCallback((event) => {
         event.preventDefault();
         // file을 읽을 reader 객체 생성
@@ -243,48 +324,41 @@ const SettingContents = ({ history, questionNum }) => {
         if(!profileImgSrc)
             return alert("사진을 선택해주세요.");
 
-        console.log(profileImg_formData);
-        for (var pair of profileImg_formData.entries()) {
-            console.log(pair[0]+ ', ' + pair[1]); 
-        }
-
-        dispatch(actions.submitProfileImgToAWS(profileImg_formData, "profile"));
+        dispatch(actions.submitImgToAWS(profileImg_formData, "profile"));
     }, [profileImgSrc, profileImg_formData]);
 
-    useEffect(() => {
-        const currentPath = window.location.pathname;
-        if(currentPath !== '/setting/9')
-            return null;
-        if(submitImgSrcToAWSError === true)
-            return alert("서버에 일시적인 문제가 생겼습니다. 다시 시도해주세요.");
-        else if(submitImgSrcToAWSError === false)
-            history.push('/setting/10');
-    }, [submitImgSrcToAWSLoading]);
+    // setting/9
+    const introTextSubmitHandler = useCallback((event) => {
+        event.preventDefault();
+        const introText = introRef.current.value;
+        console.log(introText)
+        if(introText.length < 3)
+            return alert("3글자 이상 입력해주세요!");
+        dispatch(actions.addIntroText(introText));
+        history.push('/setting/10')
+    }, []);
 
-    // /setting/10 || Submit to server
-    useEffect(() => {
-        if(submitToServerError === false) {
-            history.push('/setting/11');
-        }
-        else if(submitToServerError === true) {
-            history.push('/login');
-        }
-    }, [submitToServerLoading])
-
+    // /setting/10
     const submitToServer = useCallback(() => {
-        const resumeText = resume.current.value;
-        const workPlaceText = workPlace.current.value;
+        const resumeText = resumeRef.current.value;
+        const workPlaceText = workPlaceRef.current.value;
         dispatch(actions.submitToServer(
-            phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText
+            phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText
         ));
         
-    }, [phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, emailInRedux, isPublicInRedux, isGraduateInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
+    }, [phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
     
+    // Go Back here.
+
+    useEffect(() => {
+
+    }, []);
+
     // /setting/11
     const shareBtnClickedHandler = useCallback(() => {
         setShareClicked(!shareClicked);
     }, [shareClicked]);
-    
+
     const questionNumber = Number(questionNum);
     let contents = null;
     if(questionNumber === 1) {
@@ -320,10 +394,10 @@ const SettingContents = ({ history, questionNum }) => {
                     <Modal show={publicOrNotClicked}>
                         <div className="mb-5">
                             <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
-                            <span style={{fontSize: '14px', color: '#5c5c5c'}}>학교를 공개하시겠습니까? 비공개 하시겠습니까?<br/> 공개여부는 언제든지 변경 가능합니다.</span>
+                            <span style={{fontSize: '14px', color: '#5c5c5c'}}>학교를 공개하시겠습니까? 비공개 하시겠습니까? 공개여부는 언제든지 변경 가능합니다.</span>
                         </div>
                         <RadioUI subject="privateOrNot" isFirstValue={isUnivPublic} changeHandler={UnivPublicChangeHandler}/>
-                        <p style={{color: "#cdcdcd", fontSize: 12, marginTop: 15}}>공개하면 더 많은 네트워킹이 가능해요 :)</p>
+                        <p style={{color: "#cdcdcd", fontSize: 12, margin: '15px 0'}}>공개하면 더 많은 네트워킹이 가능해요 :)</p>
                         <button onClick={() => radioSubmitHandler()} className="font-sans border-2 w-full rounded-3xl px-5 py-3 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
                     </Modal>
                 )}
@@ -392,7 +466,7 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="text-center px-3 my-5">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님 <br />요즘 무엇에 관심있으신가요?</h3>
+                    <h3 style={{whiteSpace: 'pre-line'}} className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님 요즘 무엇에 관심있으신가요?</h3>
                     <h5 className="text-left font-normal my-5 text-gray-400">관심사를 2개 이상 골라주세요. (필수) <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 @@@ 해보세요.</h5>
                     <p style={{color: "#8D8D8D", fontSize: 10, textAlign: 'left'}}>※런칭 후 추가 예정</p>
                 </div>
@@ -417,7 +491,7 @@ const SettingContents = ({ history, questionNum }) => {
                         onChange={(e) => uploadPhoto(e)}
                         style={{marginLeft: '10px'}}
                     />
-                    {submitImgSrcToAWSLoading ? (
+                    {isLoading ? (
                         <>
                             <div style={{height: '30px', left: '50%', transform: 'translate(-50%, 0)'}} className="absolute ">
                                 <div className="flex flex-col items-center">
@@ -471,25 +545,6 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 8) {
         contents = (
-            <section className="text-center px-5 my-5">
-                <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님의 한줄소개! </h3>
-                    <h5 className="text-left font-normal text-gray-400 my-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
-                </div>
-                <textarea 
-                    placeholder="ex. 안녕하세요. 저는 스타트업에 관심이 많은 대학생입니다. ㅎㅎ"
-                    ref={introRef}
-                    autoFocus
-                    style={{height: 250, border: '1px solid #ccc', backgroundColor: "#F7F7FA"}}
-                    className="my-3 px-3 py-5 w-full text-base rounded-xl placeholder-gray-300"
-                />
-                <button onClick={(e) => introTextSubmitHandler(e)} style={{width: '100%'}} className="my-5 rounded-lg px-5 py-3 bg-black text-white focus:outline-none">
-                    다음
-                </button>
-            </section>
-        )
-    }else if(questionNumber === 9) {
-        contents = (
             <section className="text-center px-3 mb-10">
                  <div className="px-3 py-5 mb-3">
                     <h3 className="text-left">[마지막] 프로필 사진을 올려주세요.</h3>
@@ -506,7 +561,7 @@ const SettingContents = ({ history, questionNum }) => {
                         accept="image/x-png,image/jpeg,image/gif"
                         onChange={(e) => uploadProfileImg(e)}
                     />
-                    {submitImgSrcToAWSLoading ? (
+                    {isLoading ? (
                         <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
                             <LoadingIndicator 
                                 color={{red: 0, green: 0, blue: 0, alpha: 1}}
@@ -518,6 +573,25 @@ const SettingContents = ({ history, questionNum }) => {
                         업로드 하기
                     </button>
                 </section>
+            </section>
+        )
+    }else if(questionNumber === 9) {
+        contents = (
+            <section className="text-center px-5 my-5">
+                <div className="px-3 py-5 mb-3">
+                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님의 한줄소개! </h3>
+                    <h5 className="text-left font-normal text-gray-400 my-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
+                </div>
+                <textarea 
+                    placeholder="ex. 안녕하세요. 저는 스타트업에 관심이 많은 대학생입니다. ㅎㅎ"
+                    ref={introRef}
+                    autoFocus
+                    style={{height: 250, border: '1px solid #ccc', backgroundColor: "#F7F7FA"}}
+                    className="my-3 px-3 py-5 w-full text-base rounded-xl placeholder-gray-300"
+                />
+                <button onClick={(e) => introTextSubmitHandler(e)} style={{width: '100%'}} className="my-5 rounded-lg px-5 py-3 bg-black text-white focus:outline-none">
+                    다음
+                </button>
             </section>
         )
     }else if(questionNumber === 10) { 
@@ -540,7 +614,7 @@ const SettingContents = ({ history, questionNum }) => {
                         />
                     </div>
                     <textarea 
-                        ref={resume}
+                        ref={resumeRef}
                         placeholder="인사이더스 1기 / 연고대창업학회 13기"
                         style={{height: '60px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
                         className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
@@ -556,14 +630,14 @@ const SettingContents = ({ history, questionNum }) => {
                     </div>
                     
                     <textarea 
-                        ref={workPlace}
+                        ref={workPlaceRef}
                         placeholder="삼성 / SKT / 카카오 / 네이버"
                         style={{height: '60px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
                         className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
                     </textarea>
                 </section>
                 <p style={{color: "#7C7C7C"}}>※ 추후 프로필 수정에서 추가 가능합니다</p>
-                {submitToServerLoading ? (
+                {isLoading ? (
                     <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
                         <LoadingIndicator 
                             color={{red: 0, green: 0, blue: 0, alpha: 1}}
@@ -596,7 +670,7 @@ const SettingContents = ({ history, questionNum }) => {
                         <a style={{color: "#8A8888"}} href="http://pf.kakao.com/_kDxhtK">XIRCLE 카카오톡 채널</a>
                     </div>
                 </section>
-                <section style={{transform: 'translate(-50%, 0)'}} className="absolute w-4/5 bottom-0 left-1/2">
+                <section style={{transform: 'translate(-50%, 0)', position: 'absolute', width: '80%', bottom: 0, left: '50%'}} className="absolute w-4/5 bottom-0 left-1/2">
                     <section style={{opacity: shareClicked ? 1 : 0, visibility: shareClicked ? 'visible' : 'hidden', transition: 'all .2s ease-in', marginBottom: '10px'}} className="mt-24 text-center">
                         <KakaoShareButton />
                         <FacebookShareButton url="https://2donny.github.io/">
