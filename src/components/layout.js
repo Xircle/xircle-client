@@ -49,10 +49,10 @@ const Layout = ({ children, isIntro, invitement, num, footerNone, btnClicked, se
                     <div className="relative flex flex-row justify-center items-center" style={{backgroundColor: "rgba(38, 38, 38, 0.8)", height: 64}}>
                         <p style={{color: 'white', margin: 0}}>XIRCLE 초대장 보내기</p>
                         <img 
-                            src="/close-outline.svg"
-                            alt="close"
+                            src="/x.svg"
+                            alt="x"
                             color="white"
-                            style={{width: 20, height: 20, position: 'absolute', right: 0, top: 0, backgroundColor: '#fff', cursor: 'pointer'}}
+                            style={{width: 30, height: 30, position: 'absolute', right: 0, top: 0,  cursor: 'pointer'}}
                             onClick={() => setIsInvitementClosed(true)}
                         />
                     </div>

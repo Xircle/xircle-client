@@ -99,7 +99,7 @@ const Intro = ({ history }) => {
                     <p style={{color: "#fff", marginBottom: 13, fontSize: 20}}>How?</p>
                     <p style={{color: "#fff", margin: "10px 0"}}>새내기분들 졸업생분들 모두 가능하세요.</p>
                     <p style={{color: "#fff", marginBottom: 13, fontSize: 13}}>베타테스트 단계로 서울대, 고려대(서울), 연세대(서울), 카이스트, 포스텍, 서강대, 성균관대, 한양대(서울)만을 대상으로 진행됩니다. </p>
-                    <p style={{color: '#2F51F0', fontSize: 13}}>[인증방법] 학교이메일 인증 / 이메일이 없다면 학생증으로 진행. <br/>  *  다른 학교 추후 확대 예정입니다. 공지는 INSTAGRAM</p>
+                    <p style={{color: '#4969ff', fontSize: 13}}>[인증방법] 학교이메일 인증 / 이메일이 없다면 학생증으로 진행. <br/>  *  다른 학교 추후 확대 예정입니다. 공지는 INSTAGRAM</p>
                   </div>
                 </div>
               </div>

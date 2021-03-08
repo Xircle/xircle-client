@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../components/layout';
 import * as actions from '../../store/actions/index';
 import Spinner from 'react-spinner-material';
+import { Link } from 'react-router-dom';
 
 const Login = ({ history }) => {
     const [displayNameDescription, setDisplayNameDescription] = useState(null);
@@ -19,11 +20,25 @@ const Login = ({ history }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(isConfirmed === true) {
+        if(isConfirmed === null) {
+            return null;
+        }else if(isConfirmed === true) {
             history.push('/my-profile');
+        }else {
+            return null;
         }
     }, [isConfirmed]);
 
+    useEffect(() => {
+        if(errCode === null) {
+            return null;
+        }else if(errCode === 455) {
+            setDisplayNameDescription('존재하지 않는 별명입니다.');
+        }else if(errCode === 456) {
+            setPasswordNameDescription("비밀번호 불일치");
+        }
+    }, [errCode]);
+    
     const displayNameChangeHandler = useCallback((event) => {
         event.preventDefault();
         const displayNameText = event.target.value;
@@ -53,24 +68,23 @@ const Login = ({ history }) => {
         }
     }, []);
     
-    // 수정
+    // 로그인 버튼 누를때
     const loginSubmitHandler = useCallback((e) => {
         e.preventDefault();
-        if(errCode !== null) // 리덕스에 errCode가 있는데도 다시 제출하는건, 문제가 있는거니까 ERROR_INIT하고 다시 Submit
-            dispatch(actions.loginInit());
         
         dispatch(actions.loginSubmit(displayRef.current.value, passwordRef.current.value));
-    }, [errCode]);
+    }, []);
 
     return (
         <Layout headerNone footerNone={true}>
             <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
-                <img
-                    onClick={() => history.goBack()} 
-                    style={{width: '25px', height: '25px', marginLeft: 10, cursor: 'pointer'}}
-                    src="/arrow-back-outline.svg"
-                    alt="back"
-                />
+                <Link to="/auth">
+                    <img
+                        style={{width: '25px', height: '25px', marginLeft: 10, cursor: 'pointer'}}
+                        src="/arrow-back-outline.svg"
+                        alt="back"
+                    />
+                </Link>
                 <a href='http://pf.kakao.com/_kDxhtK' style={{color: "#949393", cursor: 'pointer', marginRight: 30}}> 문의하기 </a>
             </nav>
 

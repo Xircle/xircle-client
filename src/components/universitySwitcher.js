@@ -1,5 +1,5 @@
 
-function universitySwitcher({ universityEng }){
+function universitySwitcher(universityEng){
     switch(universityEng) {
         case 'korea.ac.kr':
             return "고려대학교"

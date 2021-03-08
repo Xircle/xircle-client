@@ -22,7 +22,7 @@ const airpodEvent = ({ history }) => {
                 <div style={{width: '100%', height: '40vh', backgroundColor: '#ccc'}}>
 
                 </div>
-                <section style={{transform: 'translate(-50%, 0)', width: '80%'}} className="absolute bottom-0 left-1/2">
+                <section style={{position: 'absolute', bottom: 0, left: '50%', transform: 'translate(-50%, 0)', width: '80%'}}>
                     <button 
                         onClick={() => history.push('/my-profile')}
                         style={{ backgroundColor: '#F7F7FA', border: '1px solid #8D8D8D'}} 

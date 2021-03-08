@@ -7,7 +7,7 @@ const SettingContainer = ({ history, match }) => {
     const num = match.params.questionNum;
     return (
         <>
-        {num !== '12' ? (
+        {num !== '11' ? (
             <div className="w-full overflow-x-hidden">
                 <Layout num={num} headerNone footerNone>
                     <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">

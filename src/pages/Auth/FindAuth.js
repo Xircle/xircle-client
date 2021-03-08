@@ -6,23 +6,6 @@ import LoadingIndicator from 'react-loading-indicator';
 import ValidationButton from '../../components/UI/validationButton';
 
 const FindAuth = ({ history }) => {
-    
-    const isLoading = useSelector(store => store.auth.loading);
-    const isConfirmed = useSelector(store => store.auth.isConfirmed);
-    
-    const dispatch = useDispatch();
-
-    
-    const findSubmitHandler = useCallback((e) => {
-        e.preventDefault();
-        
-    }, []);
-
-    const forgotClickedHandler = useCallback((event) => {
-        event.preventDefault();
-
-    }, []);
-    
     return (
         <Layout headerNone footerNone={true}>
             <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">

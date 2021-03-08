@@ -93,7 +93,6 @@ const Login = ({ history }) => {
         const passwordText = passwordRef.current.value;
         const phoneNumberText = phoneNumberRef.current.value;
 
-        console.log(displayNameText, passwordText, phoneNumberText)
         dispatch(actions.joinSubmit(displayNameText, passwordText, phoneNumberText));
     }, []);
 
