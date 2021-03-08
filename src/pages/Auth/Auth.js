@@ -104,7 +104,7 @@ const Auth = ({ history }) => {
                             <a href="http://pf.kakao.com/_kDxhtK" style={{color: "#949393", display: 'block', margin: '30px', textAlign: 'center'}}>인증이 안되시나요?</a>
                         </>
                     ) : (
-                        <ValidationButton confirmAuth={confirmAuth} type="auth" history={history}/>
+                        <ValidationButton type="auth" history={history}/>
                     )}
                 </section>
             </section>
