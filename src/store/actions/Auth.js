@@ -1,4 +1,5 @@
 import * as actionTypes from './actionTypes';
+import { addProfileImgSrc, addIsPublic, addIsGraduate, addDidsplayName, addAge, addGender, addJob, addAdj, addLocation, addResume, addWorkPlace, addInterest, addUniv, addIntroText, }  from '../actions/User';
 import { Axios } from '../../axios-instance';
 
 export const authStart = () => {
@@ -7,11 +8,10 @@ export const authStart = () => {
     }
 }
 
-export const authSuccess = (email, univKor) => {
+export const authSuccess = (email) => {
     return {
         type: actionTypes.AUTH_SUCCESS,
         email: email,
-        univ: univKor
     }
 }
 
@@ -27,7 +27,7 @@ export const errorInit = () => {
     }
 }
 // Auth page, 이메일 보내기
-export const auth = (email, univKor) => {
+export const auth = (email) => {
     return dispatch => {
         dispatch(authStart());
         const authData = {
@@ -38,10 +38,15 @@ export const auth = (email, univKor) => {
                 console.log(res);
                 const isSuccess = res.data.success;
                 if(isSuccess)
-                    dispatch(authSuccess(email, univKor));
+                    dispatch(authSuccess(email));
                 else {
                     const errCode = res.data.code;
-                    dispatch(authFail(errCode));
+                    if(errCode === 451) {
+                        alert("이메일 전송을 실패했습니다 다시 보내주세요.");
+                    }else if(errCode === 450) {
+                        alert("이미 가입된 이메일입니다 로그인해주세요.");
+                    }
+                    dispatch(authFail());
                     dispatch(errorInit());
                 }
             })
@@ -67,9 +72,10 @@ export const authConfirmFail = (errCode) => {
         errCode,
     }
 }
-export const authConfirmSuccess = () => {
+export const authConfirmSuccess = (univKor) => {
     return {
         type: actionTypes.AUTH_CONFIRM_SUCCESS,
+        univ: univKor,
     }
 }
 export const authConfirmInit = () => {
@@ -78,7 +84,7 @@ export const authConfirmInit = () => {
     }
 }
 
-export const authConfirm = (email, code) => {
+export const authConfirm = (email, code, univKor) => {
     return dispatch => {
         dispatch(authConfirmStart());
         const authData = {
@@ -90,7 +96,7 @@ export const authConfirm = (email, code) => {
                 console.log(res);
                 const isSuccess = res.data.success;
                 if(isSuccess) {
-                    dispatch(authConfirmSuccess());
+                    dispatch(authConfirmSuccess(univKor));
                     dispatch(authConfirmInit());
                 }else {
                     const errCode = res.data.code;
@@ -102,65 +108,6 @@ export const authConfirm = (email, code) => {
             .catch(err => {
                 console.log(err);
                 dispatch(authConfirmFail(err.code));
-                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
-            })
-    }
-}
-
-// Login 페이지, submit 하기
-export const loginStart = () => {
-    return {
-        type: actionTypes.LOGIN_START,
-    }
-}
-export const loginFail = (errCode) => {
-    return {
-        type: actionTypes.LOGIN_FAIL,
-        errCode,
-    }
-}
-export const loginSuccess = (displayName) => {
-    return {
-        type: actionTypes.LOGIN_SUCCESS,
-        displayName,
-    }
-}
-export const loginInit = () => {
-    return {
-        type: actionTypes.LOGIN_INIT,
-    }
-}
-export const loginSubmit = (displayName, password) => {
-    return dispatch => {
-        dispatch(loginStart());
-        const authData = {
-            displayName,
-            password,
-        };
-        console.log(authData);
-        Axios.post('/login', authData)
-            .then(res => {
-                console.log(res);
-                const isSuccess = res.data.success;
-                if(isSuccess) {
-                    dispatch(loginSuccess(displayName));
-                }else {
-                    const errCode = res.data.data;
-                    console.log(errCode);
-                    dispatch(loginFail(errCode));
-                    if(errCode === 455) {
-                        alert("존재하지 않는 별명입니다.");
-                    }else if(errCode === 456) {
-                        alert("올바른 비밀번호를 입력해주세요.")
-                    }else {
-                        console.log('잘못된 에러코드입니다.');
-                    }
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                dispatch(loginFail(err));
-                dispatch(loginInit());
                 alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
             })
     }
@@ -202,24 +149,22 @@ export const findAuth = (email) => {
                 if(isSuccess) {
                     dispatch(findAuthSuccess());
                 }else {
-                    const errCode = res.data.data;
+                    const errCode = res.data.code;
                     console.log(errCode);
                     dispatch(findAuthFail(errCode));
-                    if(errCode === 457) {
-                        alert("가입되지 않은 이메일입니다.");
+                    dispatch(findAuthInit());
+                    if(errCode == 457) {
+                        alert("가입되지 않은 이메일입니다.")
                     }else if(errCode === 451) {
-                        console.log('이메일 전송실패.')
-                        alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
-                    }else {
-                        console.log('잘못된 에러코드입니다.');
+                        alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 잠시 후에 다시 시도해주세요');
                     }
                 }
             })
             .catch(err => {
-                const errCode = err;
-                dispatch(findAuthFail());
+                const errCode = err.data.code;
+                dispatch(findAuthFail(errCode));
                 dispatch(findAuthInit());
-                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 잠시 후에 다시 시도해주세요');
             })
     }
 }
@@ -276,6 +221,122 @@ export const joinSubmit = (displayName, wpd, phoneNumber) => {
                 dispatch(joinInit());
                 alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
             })
+    }
+}
+
+// Login 페이지, submit 하기
+export const loginStart = () => {
+    return {
+        type: actionTypes.LOGIN_START,
+    }
+}
+export const loginFail = (errCode) => {
+    return {
+        type: actionTypes.LOGIN_FAIL,
+        errCode,
+    }
+}
+export const loginSuccess = (displayName, token) => {
+    return {
+        type: actionTypes.LOGIN_SUCCESS,
+        displayName,
+        token,
+    }
+}
+export const loginInit = () => {
+    return {
+        type: actionTypes.LOGIN_INIT,
+    }
+}
+export const loginSubmit = (displayName, password) => {
+    return dispatch => {
+        dispatch(loginStart());
+        const authData = {
+            displayName,
+            password,
+        };
+        Axios.post('/login', authData)
+            .then(res => {
+                console.log(res);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    const token = res.data.data.token;
+                    dispatch(loginSuccess(displayName, token));
+                    localStorage.setItem('tk', token);
+                    dispatch(getUser(token));
+                }else {
+                    const errCode = res.data.code;
+                    console.log(errCode);
+                    dispatch(loginFail(errCode));
+                    dispatch(loginInit());
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(loginFail(err));
+                dispatch(loginInit());
+                alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 다시 시도해주세요');
+            })
+    }
+}
+
+// (** User 스토어의 액션들) 
+// /my-profile 페이지. 토큰받아서 GET /user/profile 
+export const getUserStart = () => {
+    return {
+        type: actionTypes.GET_USER_START,
+    }
+}
+export const getUserSuccess = (profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, hashtagCount ) => {
+    return dispatch => {
+        console.log(profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, hashtagCount);
+        dispatch(addProfileImgSrc(profileImgSrc));
+        dispatch(addIsGraduate(isGraduate));
+        dispatch(addIsPublic(isPublic));
+        dispatch(addAdj(adj));
+        dispatch(addJob(job));
+        dispatch(addGender(gender));
+        dispatch(addDidsplayName(displayNameInUser));
+        dispatch(addUniv(university));
+        dispatch(addLocation(location));
+        dispatch(addAge(age));
+        dispatch(addResume(resume));
+        dispatch(addWorkPlace(workPlace));
+        dispatch(addIntroText(introText));
+        dispatch(addInterest(hashtagCount));
+        dispatch({type: actionTypes.GET_USER_SUCCESS});
+    }
+}
+export const getUserFail = () => {
+    return {
+        type: actionTypes.GET_USER_FAIL,
+    }
+}
+export const getUser = (token) => {
+    return dispatch => {
+        dispatch(getUserStart());
+
+        Axios.get('/user/profile', {
+            headers: {
+                'access-token': `${token}`
+            }
+        })
+        .then(res => {
+            console.log(res);
+            const isSuccess = res.data.success;
+            if(isSuccess) {
+                const { profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace,  introText, hashtagCount } = res.data.data;
+                dispatch(getUserSuccess(profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, hashtagCount));
+            }else {
+                dispatch(getUserFail());
+                alert(res.data.message);
+                window.location.href = 'auth';
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            alert("죄송합니다 서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 로그인해주세요.");
+        })
     }
 }
 
