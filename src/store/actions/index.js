@@ -7,6 +7,7 @@ export {
     loginSubmit,
     loginInit,
     findAuth,
+    getUser,
 } from './Auth';
 
 export {
@@ -18,12 +19,11 @@ export {
     addJob,
     addAdj,
     addLocation,
-    submitArticleImgToAWS,
+    submitImgToAWS,
     addArticleText,
     addArticleTag,
     addIntroText,
     addInterest,
-    submitProfileImgToAWS,
     submitToServer,
     updateProfileImg,
     updateProfileImgToServer

@@ -10,9 +10,12 @@ const initialState = {
     // 공통(start)
     displayName: null,
     __pwd: null,
-    error: null,
+    errorInAuth: null,
     errCode: null,
     loading: null,
+    
+    // 로그인 성공 후
+    token: null,
 }
 
 const reducer = (state=initialState, action) => {
@@ -28,20 +31,20 @@ const reducer = (state=initialState, action) => {
                 email: action.email,
                 univ: action.univ,
                 loading: false,
-                isEmailSent: true
+                isEmailSent: true,
+                errorInAuth: false,
             }
         case actionTypes.AUTH_FAIL:
             return {
                 ...state,
-                error: true,
+                errorInAuth: true,
                 loading: false,
             }
         case actionTypes.ERROR_INIT:
             return {
                 ...state,
-                error: null,
+                errorInAuth: null,
                 loading: null,
-                isEmailSent: null
             }
         case actionTypes.AUTH_CONFIRM_START:
             return {
@@ -53,6 +56,7 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 loading: false,
                 isConfirmed: true,
+                univ: action.univ,
                 errCode: 0,
             }
         case actionTypes.AUTH_CONFIRM_FAIL:
@@ -79,20 +83,22 @@ const reducer = (state=initialState, action) => {
                 loading: false,
                 isConfirmed: true,
                 displayName: action.displayName,
+                token: action.token,
+                errCode: 0
             }
         case actionTypes.LOGIN_FAIL:
             return {
                 ...state,
                 loading: false,
                 isConfirmed: false,
-                errCode: action.errCode
+                errCode: action.errCode,
             }
         case actionTypes.LOGIN_INIT:
             return {
                 ...state,
                 loading: null,
                 isConfirmed: null,
-                errCode: null
+                errCode: null,
             }
         case actionTypes.FIND_AUTH_START:
             return {
@@ -103,6 +109,7 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 loading: false,
+                errCode: 0
             }
         case actionTypes.FIND_AUTH_FAIL:
             return {

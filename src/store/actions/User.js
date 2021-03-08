@@ -2,6 +2,13 @@ import * as actionTypes from './actionTypes';
 import { Axios } from '../../axios-instance';
 
 
+// GET시 /user/profile를 리덕스에 담기위한 액션.
+export const addProfileImgSrc = (profileImgSrc) => {
+    return {
+        type: actionTypes.ADD_PROFILE_IMG_SRC,
+        profileImgSrc,
+    }
+}
 export const addPhoneNumber = (phoneNumber) => {
     return {
         type: actionTypes.ADD_PHONE_NUMBER,
@@ -20,10 +27,22 @@ export const addIsGraduate = (isGraduate) => {
         isGraduate,
     }
 }
+export const addDidsplayName = (displayNameInUser) => {
+    return {
+        type: actionTypes.ADD_DISPLAY_NAME,
+        displayNameInUser,
+    }
+}
 export const addGender = (gender) => {
     return {
         type: actionTypes.ADD_GENDER,
         gender,
+    }
+}
+export const addUniv = (univ) => {
+    return {
+        type: actionTypes.ADD_UNIV,
+        univ,
     }
 }
 export const addAge = (age) => {
@@ -45,13 +64,36 @@ export const addAdj = (adj) => {
         adj,
     }
 }
-
 export const addLocation = (location, lng, lat) => {
     return {
         type: actionTypes.ADD_LOCATION,
         location,
         lng,
         lat
+    }
+}
+export const addResume = (resume) => {
+    return {
+        type: actionTypes.ADD_RESUME,
+        resume,
+    }
+}
+export const addWorkPlace = (workPlace) => {
+    return {
+        type: actionTypes.ADD_WORKPLACE,
+        workPlace,
+    }
+}
+export const addIntroText = (introText) => {
+    return {
+        type: actionTypes.ADD_INTRO_TEXT,
+        introText,
+    }
+}
+export const addInterest = (interestArr) => {
+    return {
+        type: actionTypes.ADD_INTEREST,
+        interestArr,
     }
 }
 
@@ -80,59 +122,30 @@ export const submitImgToAWSInit = () => {
     }
 }
 
-export const submitArticleImgToAWS = (articleImg_formData, payloadType) => {
+export const submitImgToAWS = (Img_formData, type) => {
     return dispatch => {
         dispatch(submitImgToAWSStart());
 
-        Axios.post('/img', articleImg_formData)
-            .then(res => {
-                console.log(res);
-                const imgAwsUrl = res.data.data;
-                const isSuccess = res.data.success;
-                if(isSuccess) {
-                    console.log(payloadType)
-                    dispatch(submitImgToAWSSuccess(imgAwsUrl, payloadType))
-                    dispatch(submitImgToAWSInit())
-                }else {
-                    dispatch(submitImgToAWSFail())
-                    dispatch(submitImgToAWSInit())
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                dispatch(submitImgToAWSFail());
-                dispatch(submitImgToAWSInit())
-            })
-    }
-}
-// ----
-
-// Submit proflieImgSrc to AWS S3
-export const submitProfileImgToAWS = (profileImg_formData, type) => {
-    return dispatch => {
-        dispatch(submitImgToAWSStart());
-
-        Axios.post('/img', profileImg_formData)
+        Axios.post('/img', Img_formData)
             .then(res => {
                 console.log(res);
                 const imgAwsUrl = res.data.data;
                 const isSuccess = res.data.success;
                 if(isSuccess) {
                     dispatch(submitImgToAWSSuccess(imgAwsUrl, type))
-                    dispatch(submitImgToAWSInit())
+                    dispatch(submitImgToAWSInit());
                 }else {
                     dispatch(submitImgToAWSFail())
-                    dispatch(submitImgToAWSInit())
+                    dispatch(submitImgToAWSInit());
                 }
             })
-            .catch(err => {{
+            .catch(err => {
                 console.log(err);
-                dispatch(submitImgToAWSFail())
-            }})
+                dispatch(submitImgToAWSFail());
+                dispatch(submitImgToAWSInit());
+            })
     }
 }
-// -----
-
 export const addArticleText = (articleText) => {
     return {
         type: actionTypes.ADD_ARTICLE_TEXT,
@@ -146,22 +159,6 @@ export const addArticleTag = (articleTag) => {
     }
 }
 
-export const addInterest = (interestArr) => {
-    return {
-        type: actionTypes.ADD_INTEREST,
-        interestArr,
-    }
-}
-
-
-export const addIntroText = (introText) => {
-    return {
-        type: actionTypes.ADD_INTRO_TEXT,
-        introText,
-    }
-}
-
-
 // SubmitToServer
 export const submitToServerStart = () => {
     return {
@@ -169,14 +166,17 @@ export const submitToServerStart = () => {
     }
 }
 
-export const submitToServerSuccess = () => {
+export const submitToServerSuccess = (resume, workPlace) => {
     return {
         type: actionTypes.SUBMIT_TO_SERVER_SUCCESS,
+        resume,
+        workPlace,
     }
 }
-export const submitToServerFail = () => {
+export const submitToServerFail = (errCode) => {
     return {
         type: actionTypes.SUBMIT_TO_SERVER_FAIL,
+        errCode,
     }
 }
 export const submitToServerInit = () => {
@@ -215,9 +215,10 @@ export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInR
                 console.log(res);
                 const isSuccess = res.data.success;
                 if(isSuccess)
-                    dispatch(submitToServerSuccess());
-                else {
-                    dispatch(submitToServerFail());
+                    dispatch(submitToServerSuccess(resumeText, workPlaceText));
+                else{
+                    const errCode = res.data.code;
+                    dispatch(submitToServerFail(errCode));
                     dispatch(submitToServerInit());
                     alert(res.data.message);
                 }
