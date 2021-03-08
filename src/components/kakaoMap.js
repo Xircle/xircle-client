@@ -15,6 +15,14 @@ const KakaoMap = ({ history }) => {
 
   useEffect(() => {
     mapScript();
+    
+    return () => {
+      setIsMapSupported(true);
+      setLocation(null);
+      setAddr(null);
+      setLongitude(null);
+      setLatitude(null);
+    }
   }, [])
 
   // 콜백 함수
@@ -36,7 +44,6 @@ const KakaoMap = ({ history }) => {
   const locationTextChangeHandler = useCallback((event) => {
     setLocation(event.target.value);
   }, []);
-
 
   // 런타임에 실행
   const mapScript = () => {
