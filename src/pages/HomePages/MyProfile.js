@@ -1,20 +1,13 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../components/layout';
 import * as actions from '../../store/actions/index';
-import interest_1 from '../../images/interest_1.svg';
-import interest_2 from '../../images/interest_2.svg';
-import interest_3 from '../../images/interest_3.svg';
-import interest_4 from '../../images/interest_4.svg';
-import interest_5 from '../../images/interest_5.svg';
-import interest_6 from '../../images/interest_6.svg';
-import interest_7 from '../../images/interest_7.svg';
-import interest_8 from '../../images/interest_8.svg';
-import interest_9 from '../../images/interest_9.svg';
-import interest_10 from '../../images/interest_10.svg';
-import interest_11 from '../../images/interest_11.svg';
-import interest_12 from '../../images/interest_12.svg';
 import Modal from '../../components/UI/modal';
+import interest2UrlNumber from '../../components/interest2UrlNumber';
+import startup from '../../images/interest_startup.svg';
+import coding from '../../images/interest_coding.svg';
+import lawschool from '../../images/interest_lawschool.svg';
+import airpod from '../../images/interest_airpod.svg';
 
 const selectedTab = {
     backgroundColor: 'black',
@@ -24,14 +17,32 @@ const notSelectedTab = {
     backgroundColor: 'white',
     color: "#8D8D8D"
 }
+
 const MyProfile = ({ history }) => {
+    const { isPublic, isGraduate, displayNameInUser, gender, univInUser, age, job, adj, location, interestArr, articleImgSrc, introText, profileImgSrc, resume, workPlace } = useSelector(store => store.user);
+    const { displayName, univ } = useSelector(store => store.auth);
+    
     const [pageNum, setPageNum] = useState(2);
-    const [myProfileImgSrc, setMyProfileImgSrc] = useState('/UserImage/User4.png');
+    const [interestNum, setInterestNum] = useState(0);
+    const [myProfileImgSrc, setMyProfileImgSrc] = useState(profileImgSrc);
     const [anyThingClicked, setAnyThingClicked] = useState(false);
     
-    const { isPublic, isGraduate, gender, age, job, adj, location, articleImgSrc, displayName, introText, profileImgSrc, resume, workPlace } = useSelector(store => store.user);
+    const newArr = interest2UrlNumber(interestArr);
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        if(displayName && univ && gender && age && job && adj && location && interestArr && articleImgSrc && introText && profileImgSrc)
+            return null;
+        const storedToken = localStorage.getItem('tk');
+        if(storedToken) {
+            dispatch(actions.getUser(storedToken));
+        }else {
+            alert("로그인 해주세요.");
+            window.location.href = "auth";
+        }
+    }, []);
+
+    // 프로필이미지 업데이트
     const updateProfile = useCallback((event) => {
         event.preventDefault();
         const reader = new FileReader();
@@ -64,25 +75,9 @@ const MyProfile = ({ history }) => {
         contents = (
             <div style={{paddingTop: 10}} className="h-screen relative">
                 <section>
-                    <section onClick={() => setAnyThingClicked(true)} style={{transform: 'translate(-50%, 0)'}} className="absolute left-1/2 top-1/4">
-                        <img 
-                            style={{width: 122, height: 122, margin: '0 auto'}}
-                            src="add-circle-outline.svg"
-                            alt="add"
-                        />
-                        <p style={{fontSize: 10, textAlign: 'center', whiteSpace: 'pre'}}>[개발중] 3월 12일부터 게시글을 올릴 수 있습니다. <br/> 일기장처럼 사용가능해요! <br/> 게시글 event도 있을 예정입니당 ^^  </p>
+                    <section onClick={() => setAnyThingClicked(true)} style={{position: 'absolute', left: '50%', top: '25%', transform: 'translate(-50%, 0)'}}>
+                        <p style={{fontSize: 20, textAlign: 'center', whiteSpace: 'pre'}}>Xircle은 이런 가치를 제공합니다.</p>
                     </section>
-                    <div style={{height: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', justifyItems: 'center'}}>
-                        <div 
-                            style={{
-                                margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40, borderRadius: '100%', 
-                                backgroundSize: 'cover', backgroundImage: `url(${interest_7})`
-                            }} 
-                            className="cursor-pointer"
-                            onClick={() => setAnyThingClicked(true)}
-                        >
-                        </div>
-                    </div>
                 </section>
                 
             </div>
@@ -95,8 +90,8 @@ const MyProfile = ({ history }) => {
                 {/* 프로필 사진 */}
                     <div className="relative">
                         <img 
-                            style={{width: 228, height: 228, borderRadius: 114, backgroundColor: 'gray', margin: '0 auto', objectFit: 'cover'}}
-                            src={myProfileImgSrc}
+                            style={{width: 228, height: 228, borderRadius: 114, backgroundColor: 'white', margin: '0 auto', objectFit: 'cover'}}
+                            src={profileImgSrc}
                         />
                         <input className="focus:outline-none" style={{position: 'absolute', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 228, height: 228, borderRadius: 114, cursor: 'pointer'}} type="file" onChange={(e) => profileImgChangeHandler(e)} />
                     </div>
@@ -105,29 +100,30 @@ const MyProfile = ({ history }) => {
                     <div className="mt-3">
                         <div className="text-center">
                             <p style={{color: "#8D8D8D", fontSize: 11}} className="text-sm cursor-pointer" onClick={() => history.push('/developer-profile')}>XIRCLE 개발자 프로필 구경하기</p>
-                            <h3 style={{fontSize: 20, fontWeight: '600', margin: '5px 0'}}>패션러버 스타트업CEO <span style={{fontSize: 18, fontWeight: 'lighter'}}>@2donny</span></h3>
+                            <h3 style={{fontSize: 20, fontWeight: '600', margin: '5px 0'}}>{adj} {job} <span style={{fontSize: 18, fontWeight: 'lighter'}}>{displayName || displayNameInUser}</span></h3>
                         </div>
-                        <div className="flex flex-row justify-center">
-                            <div style={{height: 25, backgroundColor: '#CCF6FF', margin: '0 2px 0 0'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'bolder', padding: '7px'}}>남</p></div>
-                            <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'bolder', padding: '7px'}}>고려대학교 재학중</p></div>
-                            <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'bolder', padding: '7px'}}>서울특별시 성북구</p></div>
-                            <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'bolder', padding: '7px'}}>20중반</p></div>
+                        <div className={`flex flex-row justify-center`}>
+                            <div style={{height: 25, backgroundColor: '#CCF6FF', margin: '0 2px 0 0'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{gender}</p></div>
+                            {isPublic ? <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{univ || univInUser} {isGraduate ? "졸업" : "재학중"}</p></div> : null}
+                            <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{location}</p></div>
+                            <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{age}</p></div>
                         </div>
-                        <p className="text-sm">{introText}</p>
                     </div>
 
                     {/* 직장, 한줄소개 */}
                     <ul className="mt-14">
+                        {workPlace ? (
                         <li className="flex flex-row text-sm mb-2">
                             <img 
                                 style={{width: 15, height: 15}}
                                 src="/company.svg"
                                 alt="company"
                             />
-                            <p className="font-extrabold mx-2 my-0">XIRCLE</p><span>운영중</span>
+                            <p className="font-extrabold mx-2 my-0">{workPlace}</p><span>재직중</span>
                         </li>
+                        ) : null}
                         <li className="flex flex-row text-sm mb-2">
-                            <p className="">개발공부하는 학생입니다. 개발 TALK 하실분들 환영 ✨</p>
+                            <p className="">{introText}</p>
                         </li>
                         <li className="flex flex-row items-center my-3 ">
                             <img 
@@ -135,133 +131,88 @@ const MyProfile = ({ history }) => {
                                 src="/activity.svg"
                                 alt="activity"
                             />
-                            <p className="font-sans" style={{color: "#8D8D8D", fontSize: 13, marginLeft: 5}}>XIRCLE 창업멤버</p>
+                            <p className="font-sans" style={{color: "#8D8D8D", fontSize: 13, marginLeft: 5}}>{resume}</p>
                         </li>
                     </ul>
                 </section>
 
+                {/* Album Navigation */}
+                <section className="flex flex-row items-center justify-around mt-1">
+                    <button 
+                        style={interestNum === 0 ? selectedTab : notSelectedTab}
+                        className="px-5 py-3 m-0 rounded-3xl focus:outline-none"
+                        onClick={() => setInterestNum(0)}
+                    >
+                        X-terest
+                    </button>
+                    <button 
+                        style={interestNum === 1 ? selectedTab : notSelectedTab}
+                        className="px-5 py-3 rounded-3xl focus:outline-none"
+                        onClick={() => setInterestNum(1)}
+                    > 스타트업
+                    </button>
+                    <button 
+                        style={interestNum === 2 ? selectedTab : notSelectedTab}
+                        className="px-5 py-3 rounded-3xl focus:outline-none"
+                        onClick={() => setInterestNum(2)}
+                    > 코딩
+                    </button>
+                    <button 
+                        style={interestNum === 3 ? selectedTab : notSelectedTab}
+                        className="px-5 py-3 rounded-3xl focus:outline-none"
+                        onClick={() => setInterestNum(3)}
+                    > 로스쿨
+                    </button>
+                </section>
+
+
                 {/* Album Container */}
                 <section style={{minHeight: '300px', height: '100%', padding: '20px 0', margin: '10px 0', backgroundColor: "#F7F7FA"}}>
                     <section className="relative">
-                        <div style={{position: 'absolute', top: -37, right: 30, borderRadius: 12.5}}>
-                            <button
-                                onClick={() => history.push('/event')} 
-                                className="flex flex-row items-center px-5 py-3 text-white rounded-3xl bg-black focus:outline-none"
-                            > 
-                                <div style={{width: 4, height: 4, backgroundColor: 'red', borderRadius: 4}}></div>
-                                <p className="font-sans" style={{fontSize: 10, fontWeight: 300, margin: '0 0 0 5px'}}>에어팟PRO 이벤트 참여하기</p>
-                                <img
-                                    style={{width: 42, height: 42, position: 'absolute', right: -10, top: -20}}
-                                    src="airpod_tilt.svg"
-                                    alt="airpod"
-                                />
-                            </button>
-                        </div>
+                        <ul className="grid grid-cols-2">
+                            {newArr.map((interest, id) => (
+                            <li
+                                key={id}
+                                style={{ margin: 5, backgroundColor: "#fff", borderRadius: 15, backgroundSize: 'cover', backgroundImage: `url(${interest.url})`, height: 300 }} 
+                                className={`col-span-1 ${interest.rowSpan} cursor-pointer`}
+                                onClick={() => setAnyThingClicked(true)}
+                            >
+                                <div onClick={() => setAnyThingClicked(true)} className="relative h-full text-white flex flex-col justify-center items-center">
+                                    <p style={{fontSize: 18, fontFamily: 'sans-serif'}} className="mb-1 relative">@{interest.title}</p>
+                                    <img 
+                                        style={{width: 30, height: 30}}
+                                        src="/person_img.svg"
+                                        alt="person"
+                                    />
+                                </div>
+                            </li>
+                            ))}
+                            <li 
+                                style={{
+                                    margin: 5, backgroundColor: "#fff", borderRadius: 15, 
+                                    backgroundColor: '#000', overflow: 'hidden',
+                                    height: 140, color: '#fff'
+                                }} 
+                                className="col-span-2 row-span-1 cursor-pointer relative"
+                                onClick={() => setAnyThingClicked(true)}
+                            >
+                                <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
+                                    <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                                    <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
+                                    <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                                    <div style={{ height: 50, width: 50, position: 'absolute', bottom: -3, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
+                                </div>
+                                <div 
+                                    onClick={() => setAnyThingClicked(true)} 
+                                    className="relative h-full text-white flex justify-center items-center"
+                                >
+                                    <p className="mb-1 relative"></p>
+                                </div>
+                            </li>
+                        </ul>
+
                         <div style={{height: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', justifyItems: 'center'}}>
-                            <div 
-                                style={{
-                                    margin: 3, width: 100, height: 100,  backgroundColor: "#FFEAEA", borderRadius: 40, borderRadius: '100%', 
-                                    backgroundSize: 'cover', backgroundImage: `url(${interest_7})`
-                                }} 
-                                className="cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
-                                    <p className="mb-1 relative">@스타트업</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, color: "#fff", opacity: 0.7}}>게시물 0개</button>
-                                </div>
-                            </div>
-                            <div 
-                                style={{
-                                    margin: 3, width: 100, height: 100,  backgroundColor: "#FFEAEA", borderRadius: 40, borderRadius: '100%', 
-                                    backgroundSize: 'cover', backgroundImage: `url(${interest_3})`
-                                }} 
-                                className="cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
-                                    <p className="text-white w-full h-full inline-flex justify-center items-center">@맛집</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
-                                </div>
-                            </div>
-                            <div 
-                                style={{
-                                    margin: 3, width: 100, height: 100,  borderRadius: 40, borderRadius: '100%', 
-                                    backgroundSize: 'cover', backgroundImage: `url(${interest_10})`
-                                }} 
-                                className="cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
-                                    <p className="text-white w-full h-full inline-flex justify-center items-center">@애견인</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
-                                </div>
-                            </div>
-                            <div
-                                style={{
-                                    margin: 3, width: 100, height: 100, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                                    backgroundSize: 'cover', backgroundImage: `url(${interest_4})`
-                                }} 
-                                className="cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
-                                    <p className="text-white w-full h-full inline-flex justify-center items-center">@요리</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
-                                </div>
-                            </div>
-                            <div
-                                style={{
-                                    margin: 3, width: 100, height: 100, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                                    backgroundSize: 'cover', backgroundImage: `url(${interest_5})`
-                                }} 
-                                className="cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
-                                    <p className="text-white w-full h-full inline-flex justify-center items-center">@코딩</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
-                                </div>
-                            </div>
-                            <div 
-                                style={{
-                                    margin: 3, width: 100, height: 100,  backgroundColor: "#FFEAEA", borderRadius: 40,borderRadius: '100%', 
-                                    backgroundSize: 'cover', backgroundImage: `url(${interest_11})`
-                                }} 
-                                className="cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
-                                    <p className="text-white w-full h-full inline-flex justify-center items-center">@취업준비</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
-                                </div>
-                            </div>
-                            <div 
-                                style={{
-                                    margin: 3, width: 100, height: 100,  borderRadius: 40, borderRadius: '100%', 
-                                    backgroundSize: 'cover', backgroundImage: `url(${interest_2})`
-                                }} 
-                                className="cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
-                                    <p className="text-white w-full h-full inline-flex justify-center items-center">@로스쿨</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
-                                </div>
-                            </div>
-                            <div 
-                                style={{
-                                    margin: 3, width: 100, height: 100,  borderRadius: 40,borderRadius: '100%', 
-                                    backgroundSize: 'cover', backgroundImage: `url(${interest_1})`
-                                }} 
-                                className="cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div onClick={() => setAnyThingClicked(true)} className="relative text-white w-full h-full flex justify-center items-center">
-                                    <p className="text-white w-full h-full inline-flex justify-center items-center">@대학원</p>
-                                    <button className="absolute" style={{padding: '3px 5px', bottom: 20, fontSize: 3, border: '1px solid #fff', borderRadius: 15, opacity: 0.9}}>게시물 0개</button>
-                                </div>
-                            </div>
+                            
                         </div>
                     </section>
                 </section>
@@ -286,13 +237,13 @@ const MyProfile = ({ history }) => {
                         className="px-5 py-3 m-0 rounded-3xl focus:outline-none"
                         onClick={() => setPageNum(1)}
                     >
-                        게시물
+                        <p style={{fontFamily: 'serif', fontWeight: 'bolder'}}>XIRCLE</p>
                     </button>
                     <button 
                         style={pageNum === 2 ? selectedTab : notSelectedTab}
                         className="px-5 py-3 rounded-3xl focus:outline-none"
                         onClick={() => setPageNum(2)}
-                    > @2donny{displayName}
+                    > {displayName || displayNameInUser}
                     </button>
                     <button 
                         style={pageNum === 3 ? selectedTab : notSelectedTab}
