@@ -1,6 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../store/actions/index';
+import Spinner from 'react-spinner-material';
 
 const { kakao } = window;
 
@@ -10,6 +11,9 @@ const KakaoMap = ({ history }) => {
   const [addr, setAddr] = useState('');
   const [longitude, setLongitude] = useState(null);
   const [latitude, setLatitude] = useState(null);
+  const [isLoading ,setIsLoading] = useState(true);
+
+  const addrRef = useRef();
 
   const dispatch = useDispatch();
 
@@ -49,17 +53,17 @@ const KakaoMap = ({ history }) => {
   const mapScript = () => {
       const container = document.getElementById('map'); 
       const options = {
-        center: new kakao.maps.LatLng(0, 0),
+        center: new kakao.maps.LatLng(37.585568, 127.029391),
         level: 5
       };
-
       const map = new kakao.maps.Map(container, options);
       let marker = null;
       const geocoder = new kakao.maps.services.Geocoder();
       const infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
       
-      if (navigator.geolocation) {
+      if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
+            console.log('hi')
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             setLatitude(lat);
@@ -76,10 +80,26 @@ const KakaoMap = ({ history }) => {
                 setAddr(newAddr[0] + ' ' + newAddr[1]);
               }
             });
-          });
+          }, (err) => { // error 콜백함수
+            console.log(err.message);
+            if(err.code === err.PERMISSION_DENIED) {
+              console.log('permission denied');
+              setIsMapSupported(false);
+              setIsLoading(false);
+            } else if(err.code === err.TIMEOUT) {
+              console.log('Time out')
+              setIsMapSupported(false);
+              setIsLoading(false);
+            } else {
+              console.log('something made error')
+              setIsMapSupported(false);
+              setIsLoading(false);
+            }
+          }, { timeout: 5000 });
       } else{
           alert("현 브라우저에서 Geolocation을 지원하지 않습니다.");
           setIsMapSupported(false);
+          setIsLoading(false);
       }
       
       // 지도에 마커와 인포윈도우를 표시하는 함수입니다
@@ -94,6 +114,8 @@ const KakaoMap = ({ history }) => {
 
       // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
       kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        if(isLoading)
+          return null;
         searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
                 let detailAddr = !!result[0].road_address ? result[0].road_address.address_name : '';
@@ -101,7 +123,7 @@ const KakaoMap = ({ history }) => {
                 
                 const fullAddr = result[0].address.address_name; 
                 const newAddr = fullAddr.split(' ');
-                const displayAddr = '<p style="margin: 10px;"> ' + newAddr[0] + ' ' +  newAddr[1] + '   </p>';
+                const displayAddr = '<p style="margin: 10px;"> ' + newAddr[0] + ' ' +  newAddr[1] + ' ' + newAddr[2] + '</p>';
                 setAddr(newAddr[0] + ' ' + newAddr[1])
 
                 setLongitude(mouseEvent.latLng.getLng());
@@ -129,9 +151,18 @@ const KakaoMap = ({ history }) => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div style={{opacity: isLoading ? 0.5 : 1, zIndex: 900}} className="flex flex-col items-center h-full relative">
+      
       {isMapSupported ? (
-      <div id="map" style={{ width: '80%', height: 300}}></div>
+      <div id="map" style={{ width: '80%', height: 300}}>
+        {isLoading ? (
+            <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, 0)'}}>
+                <Spinner
+                    color="blue"
+                />
+            </div>
+        ) : null}
+      </div>
       ) : null}
 
       <div style={{marginTop: 20}} className="h-full flex flex-row justify-center items-center pt-5">
@@ -142,6 +173,7 @@ const KakaoMap = ({ history }) => {
             placeholder="거주지"
             className="bg-gray-100 px-5 py-3"
             value={addr}
+            ref={addrRef}
             onChange={(e) => locationTextChangeHandler(e)}
             style={{width: 190}}
           />

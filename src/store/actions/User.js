@@ -1,7 +1,6 @@
 import * as actionTypes from './actionTypes';
 import { Axios } from '../../axios-instance';
 
-
 // GET시 /user/profile를 리덕스에 담기위한 액션.
 export const addProfileImgSrc = (profileImgSrc) => {
     return {
@@ -146,16 +145,13 @@ export const submitImgToAWS = (Img_formData, type) => {
             })
     }
 }
-export const addArticleText = (articleText) => {
+
+export const addArticleContents = (articleText, articleInterestArr, articleTagArr) => {
     return {
-        type: actionTypes.ADD_ARTICLE_TEXT,
+        type: actionTypes.ADD_ARTICLE_CONTENTS,
         articleText,
-    }
-}
-export const addArticleTag = (articleTag) => {
-    return {
-        type: actionTypes.ADD_ARTICLE_HASHTAG,
-        articleTag,
+        articleInterestArr,
+        articleTagArr
     }
 }
 
@@ -166,11 +162,12 @@ export const submitToServerStart = () => {
     }
 }
 
-export const submitToServerSuccess = (resume, workPlace) => {
+export const submitToServerSuccess = (resume, workPlace, token) => {
     return {
         type: actionTypes.SUBMIT_TO_SERVER_SUCCESS,
         resume,
         workPlace,
+        token,
     }
 }
 export const submitToServerFail = (errCode) => {
@@ -184,7 +181,7 @@ export const submitToServerInit = () => {
         type: actionTypes.SUBMIT_TO_SERVER_FAIL,
     }
 }
-export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInRedux, passwordInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText) => {
+export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInRedux, passwordInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleInterestArrInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText) => {
     return dispatch => {
         dispatch(submitToServerStart());
         const userData = {
@@ -207,6 +204,7 @@ export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInR
             password: passwordInRedux,
             email: emailInRedux,
             articleImgSrc: articleImgSrcInRedux, 
+            articleInterestArr: articleInterestArrInRedux, 
             articleText: articleTextInRedux, 
             articleTag: articleTagInRedux,
         };
@@ -214,8 +212,9 @@ export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInR
             .then(res => {
                 console.log(res);
                 const isSuccess = res.data.success;
+                const token = res.data.data.token;
                 if(isSuccess)
-                    dispatch(submitToServerSuccess(resumeText, workPlaceText));
+                    dispatch(submitToServerSuccess(resumeText, workPlaceText, token));
                 else{
                     const errCode = res.data.code;
                     dispatch(submitToServerFail(errCode));
@@ -232,6 +231,74 @@ export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInR
     }
 }
 
+// GetInterestArticle
+export const getInterestArticleStart = () => {
+    return {
+        type: actionTypes.GET_INTEREST_ARTICLE_START,
+    }
+}
+
+export const getInterestArticleSuccess = (interest, articleContent, articleImgSrc) => {
+    return {
+        type: actionTypes.GET_INTEREST_ARTICLE_SUCCESS,
+        interest,
+        articleContent,
+        articleImgSrc,
+    }
+}
+export const getInterestArticleFail = (errCode) => {
+    return {
+        type: actionTypes.GET_INTEREST_ARTICLE_FAIL,
+    }
+}
+export const getInterestArticleInit = () => {
+    return {
+        type: actionTypes.GET_INTEREST_ARTICLE_INIT,
+    }
+}
+export const getInterestArticle = (interest, tokenInUser, articleInProfile) => {
+    return dispatch => {
+        dispatch(getInterestArticleStart());
+        
+        let isOverlapped = false;
+        for(let i = 0 ; i < articleInProfile.length; i++) {
+            if(articleInProfile[i].interest === interest) {
+                isOverlapped = true;
+                break;
+            }
+        }
+        if(isOverlapped)
+            return null;
+        
+        Axios.get(`/user/profile/post?interest=${interest}`, {
+            headers: {
+                'access-token': `${tokenInUser}`
+            }
+        })
+            .then(res => {
+                console.log(res);
+                const { articleContent, articleImgSrc } = res.data.data;
+                console.log(articleContent, articleImgSrc);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    dispatch(getInterestArticleSuccess(interest, articleContent, articleImgSrc));
+                }
+                else{
+                    const errCode = res.data.code;
+                    dispatch(getInterestArticleFail(errCode));
+                    dispatch(getInterestArticleInit());
+                    alert(res.data.message);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(getInterestArticleFail());
+                dispatch(getInterestArticleInit());
+                alert('네트워크 오류입니다.');
+            })
+    }
+}
+// -------
 
 export const updateProfileImg = (updatedProfileImg) => {
     return {
@@ -246,3 +313,4 @@ export const updateProfileImgToServer = (updatedProfileImg) => {
         // 서버에 보내기
     }
 }
+

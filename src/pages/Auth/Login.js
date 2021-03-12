@@ -38,7 +38,7 @@ const Login = ({ history }) => {
             setPasswordNameDescription("비밀번호 불일치");
         }
     }, [errCode]);
-    
+
     const displayNameChangeHandler = useCallback((event) => {
         event.preventDefault();
         const displayNameText = event.target.value;
@@ -101,6 +101,7 @@ const Login = ({ history }) => {
                                     type="text"
                                     ref={displayRef}
                                     placeholder="@닉네임을 적어주세요"
+                                    defaultValue="@"
                                     className="bg-gray-100 px-5 py-5"
                                     autoFocus
                                     onChange={(e) => displayNameChangeHandler(e)}

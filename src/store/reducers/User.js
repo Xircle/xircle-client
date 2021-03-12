@@ -1,10 +1,11 @@
 import * as actionTypes from '../actions/actionTypes';
 
-const initialState = {
+export const initialState = {
     loading: null,
     error: null,
     errCode: null,
     // data
+    token: null,
     isPublic: null,
     isGraduate: null,
     displayNameInUser: null,
@@ -19,12 +20,17 @@ const initialState = {
     interestArr: [],
     articleImgSrc: null,
     articleText: null,
-    articleTag: null,
+    articleInterestArr: [],
+    articleTagArr: [],
     introText: null,
     profileImgSrc: null,
     resume: null,
     workPlace: null,
+    // article
+    articleInProfile: [],
+    articleIsLoading: null,
 }
+// article[ {interest: "스타트업", articleContent: "창업은 어려워", articleImgSrc: "https://~~~.com"}, ]
 
 const reducer = (state=initialState, action) => {
     switch(action.type) {
@@ -133,15 +139,12 @@ const reducer = (state=initialState, action) => {
                 loading: null,
                 error: null,
             }
-        case actionTypes.ADD_ARTICLE_TEXT:
+        case actionTypes.ADD_ARTICLE_CONTENTS:
             return {
                 ...state,
-                articleText: action.articleText
-            }
-        case actionTypes.ADD_ARTICLE_HASHTAG:
-            return {
-                ...state,
-                articleTag: action.articleTag
+                articleText: action.articleText,
+                articleInterestArr: action.articleInterestArr,
+                articleTagArr: action.articleTagArr
             }
         case actionTypes.ADD_INTRO_TEXT:
             return {
@@ -167,6 +170,7 @@ const reducer = (state=initialState, action) => {
                 error: false,
                 resume: action.resume,
                 workPlace: action.workPlace,
+                token: action.token,
             }
         case actionTypes.SUBMIT_TO_SERVER_INIT:
             return {
@@ -188,12 +192,55 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 loading: false,
+                token: action.token
             }
         case actionTypes.GET_USER_FAIL:
             return {
                 ...state,
                 loading: false,
                 error: true
+            }
+        case actionTypes.GET_INTEREST_ARTICLE_START:
+            return {
+                ...state,
+                articleIsLoading: true
+            }
+        case actionTypes.GET_INTEREST_ARTICLE_SUCCESS:
+            const { interest, articleContent, articleImgSrc } = action;
+
+            const newArticleArr = JSON.parse(JSON.stringify(state.articleInProfile)) //깊은복사
+            if(!articleContent || !articleImgSrc) { // 없으면 추가안함
+                newArticleArr.push({
+                    interest,
+                });
+                return {
+                    ...state,
+                    articleIsLoading: false,
+                    articleInProfile: newArticleArr
+                }
+            }
+
+            newArticleArr.push({
+                interest,
+                articleContent,
+                articleImgSrc
+            })
+            return {
+                ...state,
+                articleIsLoading: false,
+                articleInProfile: newArticleArr,
+            }
+        case actionTypes.GET_INTEREST_ARTICLE_FAIL:
+            return {
+                ...state,
+                articleIsLoading: false,
+                error: true,
+            }
+        case actionTypes.GET_INTEREST_ARTICLE_INIT:
+            return {
+                ...state,
+                error: null,
+                articleIsLoading: null
             }
         default:
             return state

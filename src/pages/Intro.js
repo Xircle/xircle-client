@@ -93,7 +93,7 @@ const Intro = ({ history }) => {
                 <div style={{paddingLeft: 80}} className="w-full relative">
                   <div className="px-6 mt-16 mb-10">
                     <p style={{color: "#fff", marginBottom: 13, fontSize: 20}}>What is XIRCLE?</p>
-                    <p style={{color: 'white'}}>취향과 성향이 잘 맞는 사람과 대화하며 <br/> 네트워킹 할 수 있는 상위대학기반소셜소통 서비스입니다.</p>
+                    <p style={{color: 'white'}}>취향과 성향이 잘 맞는 사람과 대화하며 <br/> 네트워킹 할 수 있는 대학기반소셜소통 서비스입니다.</p>
                   </div>
                   <div className="px-6 my-0">
                     <p style={{color: "#fff", marginBottom: 13, fontSize: 20}}>How?</p>
@@ -301,7 +301,7 @@ const Intro = ({ history }) => {
               {/* 내용 */}
               <div className="px-4">
                 <h1 style={{fontSize: 35, color: "white", fontWeight: 'bold', lineHeight: '3.5rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>지금, XIRCLE <br /> 사전신청을 <br/> 해야 하는 이유 </h1> 
-                <h5 style={{fontSize: 14, color: '#2F51F0', lineHeight: 2}}>사전신청하면 에어팟이 공짜 <br/> 이벤트 자세히 보기 &gt; </h5>
+                <h5 style={{fontSize: 14, color: '#2F51F0', lineHeight: 2}}>사전신청하면 에어팟이 공짜 <br/> 이벤트 자세히 보기 </h5>
                 <p style={{color: 'white'}}>현재 베타테스트 단계로 <br/> 서울대, 고려대(서울), 연세대(서울), <br/> 카이스트, 포스텍, 서강대, 성균관대, 한양대(서울)만을 <br/> 대상으로 진행됩니다. </p>
                 <div>
                   <img 
@@ -322,7 +322,7 @@ const Intro = ({ history }) => {
             <div style={{padding: '60px 20px'}}>
               {/* 내용 */}
               <div className="px-4">
-                <h1 style={{color: "#2F51F0", fontSize: 35, fontWeight: 'bold', lineHeight: '3.5rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>XIRCLE Q&A </h1> 
+                <h1 style={{color: "#2F51F0", fontSize: 35, fontWeight: 'bold', lineHeight: '3.5rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>XIRCLE QNA </h1> 
                 <div className='mt-10'>
                   <h2 style={{fontSize: 20, margin: 0, fontWeight: 'bold', lineHeight: '3.5rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>XIRCLE 소개팅앱인가요? </h2> 
                   <div style={{color: "#7C7C7C", marginTop: 5 }}>

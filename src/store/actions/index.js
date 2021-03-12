@@ -20,11 +20,17 @@ export {
     addAdj,
     addLocation,
     submitImgToAWS,
-    addArticleText,
-    addArticleTag,
+    addArticleContents,
     addIntroText,
     addInterest,
     submitToServer,
+    getInterestArticle,
+    getInterestArticleInit,
     updateProfileImg,
     updateProfileImgToServer
 } from './User';
+
+export {
+    getFriend,
+    getFriendArticle,
+} from './Friend';

@@ -10,13 +10,14 @@ import {createStore, applyMiddleware, compose, combineReducers} from 'redux';
 import thunk from 'redux-thunk';
 import authReducer from './store/reducers/Auth';
 import userReducer from './store/reducers/User';
+import friendReducer from './store/reducers/Friend';
 
-const composeEnhancers = process.env.NODE_ENV === 'development' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
-
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__;
 
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
+  friend: friendReducer,
 })
 
 const store = createStore(

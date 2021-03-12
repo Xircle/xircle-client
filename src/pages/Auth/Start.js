@@ -20,9 +20,15 @@ const Login = ({ history }) => {
 
     const isLoading = useSelector(store => store.auth.loading);
     const errCodeInRedux = useSelector(store => store.auth.errCode);
+    const email = useSelector(store => store.auth.email);
     
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        // Goback when refreshing
+        if(!email)
+            window.location.replace('auth');
+    }, []);
     useEffect(() => {
         if(errCodeInRedux === null) {
             return null;
@@ -41,7 +47,7 @@ const Login = ({ history }) => {
         const displayNameText = event.target.value;
         setDisplayName(displayNameText);
 
-        const displayNameRegex = /^@/;
+        const displayNameRegex = /^@[a-zA-Z0-9-_]/;
         if(!displayNameText.match(displayNameRegex)) {
             setDisplayNameDescription('닉네임 맨앞에 @를 포함해주세요');
             setIsBtnDisabled(true);
@@ -115,6 +121,7 @@ const Login = ({ history }) => {
                                     placeholder="@사용자 이름(자유)"
                                     className="bg-gray-100 px-5 py-5"
                                     autoFocus
+                                    defaultValue="@"
                                     ref={displayRef}
                                     onChange={(e) => displayNameChangeHandler(e)}
                                 />
@@ -129,7 +136,7 @@ const Login = ({ history }) => {
                                 {passwordDescription ? <p style={{color: 'red', margin: '10px 0 10px 5px', whiteSpace: 'pre', fontSize: 12, textAlign: 'left'}}>{passwordDescription}</p> : <p style={{color: "#C5C1C1", margin: '10px 0 10px 5px', whiteSpace: 'pre', fontSize: 12, textAlign: 'left'}}>띄어쓰기 없는 6-10자리 영어 대소문자와 숫자 조합으로 입력해주세요.</p>}
                                 <input 
                                     type="text"
-                                    placeholder="전화번호를 입력."
+                                    placeholder="전화번호 입력"
                                     className="bg-gray-100 px-5 py-5 mt-5"
                                     ref={phoneNumberRef}
                                     onChange={(e) => phoneNumberChangeHandler(e)}

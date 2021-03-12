@@ -1,17 +1,17 @@
 import React, { useState, useReducer, useCallback} from 'react';
-import { useDispatch} from 'react-redux';
-import interest_1 from '../images/interest_1.svg';
-import interest_2 from '../images/interest_2.svg';
-import interest_3 from '../images/interest_3.svg';
-import interest_4 from '../images/interest_4.svg';
-import interest_5 from '../images/interest_5.svg';
-import interest_6 from '../images/interest_6.svg';
-import interest_7 from '../images/interest_7.svg';
-import interest_8 from '../images/interest_8.svg';
-import interest_9 from '../images/interest_9.svg';
-import interest_10 from '../images/interest_10.svg';
-import interest_11 from '../images/interest_11.svg';
-import interest_12 from '../images/interest_12.svg';
+import { useDispatch } from 'react-redux';
+import graduateSchool from '../images/setting/interest_1.svg';
+import startUp from '../images/setting/startup.svg';
+import friend from '../images/setting/friend.svg';
+import meet from '../images/setting/meet.svg';
+import dogLover from '../images/setting/interest_10.svg';
+import game from '../images/setting/game.svg';
+import coding from '../images/setting/interest_5.svg';
+import fashion from '../images/setting/interest_12.svg';
+import health from '../images/setting/interest_8.svg';
+import art from '../images/setting/art.svg';
+import jobFinder from '../images/setting/interest_11.svg';
+import lawSchool from '../images/setting/interest_2.svg';
 
 import * as actions from '../store/actions/index';
 
@@ -35,10 +35,10 @@ function reducer(state, action) {
         case 'MUKBANG_CLICKED':
             newArr = state.interestArr.slice(); 
             if(state.mukBangClicked) {
-                const index = newArr.findIndex(el => el === '맛집');
+                const index = newArr.findIndex(el => el === '술/맛집탐방');
                 newArr.splice(index, 1);
             }else {
-                newArr.push('맛집')
+                newArr.push('술/맛집탐방')
             }
             return {
                 ...state,
@@ -58,18 +58,18 @@ function reducer(state, action) {
                 dogLoverClicked: !state.dogLoverClicked,
                 interestArr: newArr
             };
-        case 'COOKING_CLICKED':
+        case 'FRIEND_CLICKED':
             newArr = state.interestArr.slice(); // swallow copy
 
-            if(state.cookingClicked) { // false이면 => true가 될테니, 배열에 추가
-                const index = newArr.findIndex(el => el === '요리');
+            if(state.friendClicked) { // false이면 => true가 될테니, 배열에 추가
+                const index = newArr.findIndex(el => el === '동네친구');
                 newArr.splice(index, 1);
             }else {
-                newArr.push('요리')
+                newArr.push('동네친구')
             }
             return {
                 ...state,
-                cookingClicked: !state.cookingClicked,
+                friendClicked: !state.friendClicked,
                 interestArr: newArr
             };
         case 'CODING_CLICKED':
@@ -111,30 +111,30 @@ function reducer(state, action) {
                 healthClicked: !state.healthClicked,
                 interestArr: newArr
             };
-        case 'BOARDGAME_CLICKED':
+        case 'GAME_CLICKED':
             newArr = state.interestArr.slice(); 
-            if(state.boardGameClicked){
-                const index = newArr.findIndex(el => el === '보드게임');
+            if(state.gameClicked){
+                const index = newArr.findIndex(el => el === '게임');
                 newArr.splice(index, 1);
             }else {
-                newArr.push('보드게임')
+                newArr.push('게임')
             }
             return {
                 ...state,
-                boardGameClicked: !state.boardGameClicked,
+                gameClicked: !state.gameClicked,
                 interestArr: newArr
             };
-        case 'MUSIC_CLICKED':
+        case 'ART_CLICKED':
             newArr = state.interestArr.slice();
-            if(state.musicClicked) {
-                const index = newArr.findIndex(el => el === '음악');
+            if(state.artClicked) {
+                const index = newArr.findIndex(el => el === '예술');
                 newArr.splice(index, 1);
             }else {
-                newArr.push('음악')
+                newArr.push('예술')
             }
             return {
                 ...state,
-                musicClicked: !state.musicClicked,
+                artClicked: !state.artClicked,
                 interestArr: newArr
             };
         case 'PREPARE_CLICKED':
@@ -187,14 +187,15 @@ const InterestSetting = ({ history }) => {
         startUpClicked: false,
         mukBangClicked: false,
         dogLoverClicked: false,
-        cookingClicked: false,
+        friendClicked: false,
         codingClicked: false,
         fashionClicked: false,
         healthClicked: false,
-        boardGameClicked: false,
-        healthClicked: false,
-        healthClicked: false,
-        healthClicked: false,
+        gameClicked: false,
+        artClicked: false,
+        prepareClicked: false,
+        graduateSchoolClicked: false,
+        lawSchoolClicked: false,
         interestArr: [],
     });
 
@@ -213,12 +214,12 @@ const InterestSetting = ({ history }) => {
         startUpClicked,
         mukBangClicked, 
         dogLoverClicked,
-        cookingClicked, 
+        friendClicked, 
         codingClicked,
         fashionClicked,
         healthClicked,
-        boardGameClicked, 
-        musicClicked,
+        gameClicked, 
+        artClicked,
         prepareClicked,
         graduateSchoolClicked,
         lawSchoolClicked,
@@ -229,7 +230,7 @@ const InterestSetting = ({ history }) => {
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40, borderRadius: '100%', 
-                        border: startUpClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_7})`
+                        border: startUpClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${startUp})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "STARTUP_CLICKED"})}
@@ -239,16 +240,16 @@ const InterestSetting = ({ history }) => {
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40,borderRadius: '100%', 
-                        border: mukBangClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_3})`}} 
+                        border: mukBangClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${meet})`}} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "MUKBANG_CLICKED"})}
                 >
-                    <p className="text-white h-full inline-flex items-center">@맛집</p>
+                    <p className="text-white h-full inline-flex items-center">@술/맛집탐방</p>
                 </div>
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  borderRadius: 40, borderRadius: '100%', 
-                        border: dogLoverClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_10})`
+                        border: dogLoverClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${dogLover})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "DOGLOVER_CLICKED"})}
@@ -258,17 +259,17 @@ const InterestSetting = ({ history }) => {
                 <div
                     style={{
                         margin: 5, width: 90, height: 90, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                        border: cookingClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_4})`
+                        border: friendClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${friend})`
                     }} 
                     className="cursor-pointer"
-                    onClick={() => dispatch({type: "COOKING_CLICKED"})}
+                    onClick={() => dispatch({type: "FRIEND_CLICKED"})}
                 >
-                    <p className="text-white h-full inline-flex items-center">@요리</p>
+                    <p className="text-white h-full inline-flex items-center">@동네친구</p>
                 </div>
                 <div
                     style={{
                         margin: 5, width: 90, height: 90, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                        border: codingClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_5})`
+                        border: codingClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${coding})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "CODING_CLICKED"})}
@@ -278,7 +279,7 @@ const InterestSetting = ({ history }) => {
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  borderRadius: 40,borderRadius: '100%', 
-                        border: fashionClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_12})`
+                        border: fashionClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${fashion})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "FASHION_CLICKED"})}
@@ -288,7 +289,7 @@ const InterestSetting = ({ history }) => {
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  borderRadius: 40,borderRadius: '100%', 
-                        border: healthClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_8})`
+                        border: healthClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${health})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "HEALTH_CLICKED"})}
@@ -298,27 +299,27 @@ const InterestSetting = ({ history }) => {
                 <div
                     style={{
                         margin: 5, width: 90, height: 90, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                        border: boardGameClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_9})`
+                        border: gameClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${game})`
                     }} 
                     className="cursor-pointer"
-                    onClick={() => dispatch({type: "BOARDGAME_CLICKED"})}
+                    onClick={() => dispatch({type: "GAME_CLICKED"})}
                 >
-                    <p className="text-white h-full inline-flex items-center">@보드게임</p>
+                    <p className="text-white h-full inline-flex items-center">@게임</p>
                 </div>
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  borderRadius: 40, borderRadius: '100%', 
-                        border: musicClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_6})`
+                        border: artClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${art})`
                     }} 
                     className="cursor-pointer"
-                    onClick={() => dispatch({type: "MUSIC_CLICKED"})}
+                    onClick={() => dispatch({type: "ART_CLICKED"})}
                 >
-                    <p className="text-white h-full inline-flex items-center">@음악</p>
+                    <p className="text-white h-full inline-flex items-center">@예술</p>
                 </div>
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40,borderRadius: '100%', 
-                        border: prepareClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_11})`
+                        border: prepareClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${jobFinder})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "PREPARE_CLICKED"})}
@@ -328,7 +329,7 @@ const InterestSetting = ({ history }) => {
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  borderRadius: 40, borderRadius: '100%', 
-                        border: lawSchoolClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_2})`
+                        border: lawSchoolClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${lawSchool})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "LAWSCHOOL_CLICKED"})}
@@ -338,7 +339,7 @@ const InterestSetting = ({ history }) => {
                 <div 
                     style={{
                         margin: 5, width: 90, height: 90,  borderRadius: 40,borderRadius: '100%', 
-                        border: graduateSchoolClicked && '7px solid orange', backgroundSize: 'cover', backgroundImage: `url(${interest_1})`
+                        border: graduateSchoolClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${graduateSchool})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "GRADUATESCHOOL_CLICKED"})}

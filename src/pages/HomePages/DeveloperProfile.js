@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import Layout from '../../components/layout';
 import Modal from '../../components/UI/modal';
-import startup from '../../images/interest_startup.svg';
-import coding from '../../images/interest_coding.svg';
-import lawschool from '../../images/interest_lawschool.svg';
-import airpod from '../../images/interest_airpod.svg';
+import startup from '../../images/my-profile/startUp.svg';
+import coding from '../../images/my-profile/coding.svg';
+import lawschool from '../../images/my-profile/lawSchool.svg';
+import airpod from '../../images/my-profile/airpod.svg';
+import ide from '../../images/developer-profile/IDE.svg';
+import moyaho from '../../images/developer-profile/moyaho.svg';
 
 const selectedTab = {
     backgroundColor: 'black',
@@ -79,118 +81,74 @@ const DeveloperProfile = ({ history }) => {
                     </ul>
                 </section>
 
+                {/* Album Navigation */}
+                <section className="flex flex-row items-center justify-start mt-1">
+                    <button 
+                        style={selectedTab}
+                        className="px-5 py-3 mx-3 rounded-3xl focus:outline-none"
+                    >
+                        <p style={{margin: '0px 5px'}}>XIRCLE</p>
+                    </button>
+                </section>
+
                 {/* Album Container */}
-                <section style={{minHeight: '300px', height: '100%', padding: '20px 0', margin: '10px 0', backgroundColor: "#F7F7FA"}}>
-                    <section className="relative">
-                        <div style={{position: 'absolute', top: -37, right: 30, borderRadius: 12.5}}>
-                            <button
-                                onClick={() => history.push('/event')} 
-                                className="flex flex-row items-center px-5 py-3 text-white rounded-3xl bg-black focus:outline-none"
-                            > 
-                                <div style={{width: 4, height: 4, backgroundColor: 'red', borderRadius: 4}}></div>
-                                <p className="font-sans" style={{fontSize: 10, fontWeight: 300, margin: '0 0 0 5px'}}>에어팟PRO 이벤트 참여하기</p>
-                                <img
-                                    style={{width: 42, height: 42, position: 'absolute', right: -10, top: -20}}
-                                    src="airpod_tilt.svg"
-                                    alt="airpod"
-                                />
-                            </button>
-                        </div>
-                        <ul className="grid grid-cols-2">
-
-                            <li 
-                                style={{
-                                    margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                                    backgroundSize: 'cover', backgroundImage: `url(${startup})`,
-                                    height: 310
-                                }} 
-                                className="row-span-2 cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div 
-                                    onClick={() => setAnyThingClicked(true)} 
-                                    style={{height: '100%'}}
-                                    className="relative text-white flex flex-col justify-center items-center"
-                                >
-                                    <p style={{fontSize: 18, fontFamily: 'sans-serif'}} className="mb-1 relative">@스타트업</p>
-                                    <img 
-                                        style={{width: 30, height: 30}}
-                                        src="/person_img.svg"
-                                        alt="person"
-                                    />
-                                </div>
-                            </li>
-
-                            <li 
-                                style={{
-                                    margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                                    backgroundColor: '#000', overflow: 'hidden',
-                                    height: 140, color: '#fff'
-                                }} 
-                                className="row-span-1 cursor-pointer relative"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                                    <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
-                                    <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                                    <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
-                                    <div style={{ height: 50, width: 50, position: 'absolute', bottom: -3, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                                </div>
-                                <div 
-                                    onClick={() => setAnyThingClicked(true)} 
-                                    className="relative text-white flex justify-center items-center"
-                                    style={{height: '100%'}}
-                                >
-                                    <p className="mb-1 relative"></p>
-                                </div>
-                            </li>
-
-                            <li 
-                                style={{
-                                    margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                                    backgroundSize: 'cover', backgroundImage: `url(${coding})`,
-                                    height: 160
-                                }} 
-                                className="row-span-1 cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div 
-                                    onClick={() => setAnyThingClicked(true)} 
-                                    className="relative text-white flex flex-col justify-center items-center"
-                                    style={{height: '100%'}}
-                                >
-                                    <p style={{fontSize: 18, fontFamily: 'sans-serif'}} className="mb-1 relative">@코딩</p>
-                                    <img 
-                                        style={{width: 30, height: 30}}
-                                        src="/person_img.svg"
-                                        alt="person"
-                                    />
-                                </div>
-                            </li>
-                            <li 
-                                style={{
-                                    margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                                    backgroundSize: 'cover', backgroundImage: `url(${lawschool})`,
-                                    height: 300
-                                }} 
-                                className="col-span-2 cursor-pointer"
-                                onClick={() => setAnyThingClicked(true)}
-                            >
-                                <div 
-                                    onClick={() => setAnyThingClicked(true)} 
-                                    className="relative text-white flex flex-col justify-center items-center"
-                                    style={{height: '100%'}}
-                                >
-                                    <p style={{fontSize: 18, fontFamily: 'sans-serif'}} className="mb-1 relative">@로스쿨</p>
-                                    <img 
-                                        style={{width: 30, height: 30}}
-                                        src="/person_img.svg"
-                                        alt="person"
-                                    />
-                                </div>
-                            </li>
-                        </ul>
-                    </section>
+                <section style={{minHeight: '500px', height: '100%', padding: '20px 0', margin: '10px 0', backgroundColor: "#F7F7FA"}}>
+                    <ul className="flex flex-row justify-evenly flex-wrap">
+                        <li 
+                            style={{
+                                backgroundImage: `url(${ide})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover',
+                                margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
+                                backgroundColor: '#000', overflow: 'hidden',
+                                width: '45%', height: 281, color: '#fff'
+                            }} 
+                            className="cursor-pointer"
+                        >
+                            <div style={{zIndex: 10, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#fff", fontSize: 14, fontWeight: 500, fontFamily: 'sans-serif', lineHeight: '20px'}}>
+                                    코로나에는 
+                                    새로운 네트워킹 
+                                    XIRCLE ❤️
+                                </p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                        <li 
+                            style={{
+                                margin: 5, backgroundColor: "#fff", borderRadius: 15, 
+                                backgroundColor: '#000', overflow: 'hidden',
+                                width: '45%', height: 111, color: '#fff'
+                            }} 
+                            className="cursor-pointer relative"
+                            onClick={() => history.push('event')}
+                        >
+                            <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
+                                <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                                <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
+                                <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                                <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
+                            </div>
+                        </li>
+                        <li 
+                            style={{
+                                backgroundImage: `url(${moyaho})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover',
+                                margin: 5, backgroundColor: "#fff", borderRadius: 15, 
+                                backgroundColor: '#000', overflow: 'hidden',
+                                width: '45%', height: 111, color: '#fff'
+                            }} 
+                            className="cursor-pointer relative"
+                        >
+                        </li>
+                        <li 
+                            style={{
+                                margin: 10, backgroundColor: "#DEDEDE", borderRadius: 15, overflow: 'hidden',
+                                width: '45%', height: 160, color: '#fff',
+                                transform: 'translate(0, -170px)'
+                            }} 
+                            className="cursor-pointer relative flex flex-row justify-center items-center"
+                        >
+                            <a href="https://www.instagram.com/ykring_official/" style={{color: "#fff"}}>XIRCLE 인스타그램</a>
+                        </li>
+                    </ul>
                 </section>
             </>
         )

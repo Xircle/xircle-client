@@ -287,9 +287,9 @@ export const getUserStart = () => {
         type: actionTypes.GET_USER_START,
     }
 }
-export const getUserSuccess = (profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, hashtagCount ) => {
+export const getUserSuccess = (token, profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr ) => {
     return dispatch => {
-        console.log(profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, hashtagCount);
+        console.log(profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr);
         dispatch(addProfileImgSrc(profileImgSrc));
         dispatch(addIsGraduate(isGraduate));
         dispatch(addIsPublic(isPublic));
@@ -303,8 +303,8 @@ export const getUserSuccess = (profileImgSrc, adj, job, displayNameInUser, gende
         dispatch(addResume(resume));
         dispatch(addWorkPlace(workPlace));
         dispatch(addIntroText(introText));
-        dispatch(addInterest(hashtagCount));
-        dispatch({type: actionTypes.GET_USER_SUCCESS});
+        dispatch(addInterest(interestArr));
+        dispatch({type: actionTypes.GET_USER_SUCCESS, token: token});
     }
 }
 export const getUserFail = () => {
@@ -325,17 +325,17 @@ export const getUser = (token) => {
             console.log(res);
             const isSuccess = res.data.success;
             if(isSuccess) {
-                const { profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace,  introText, hashtagCount } = res.data.data;
-                dispatch(getUserSuccess(profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, hashtagCount));
+                const { profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace,  introText, interestArr } = res.data.data;
+                dispatch(getUserSuccess(token, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr));
             }else {
                 dispatch(getUserFail());
                 alert(res.data.message);
-                window.location.href = 'auth';
+                // window.location.href = 'auth';
             }
         })
         .catch(err => {
             console.log(err);
-            alert("죄송합니다 서버에 일시적인 오류가 발생했습니다. 잠시 후 다시 로그인해주세요.");
+            alert("네트워크 오류입니다.");
         })
     }
 }

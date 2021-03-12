@@ -44,7 +44,7 @@ const Layout = ({ children, isIntro, invitement, num, footerNone, btnClicked, se
                 </aside>
             ) : null}
 
-            {invitement && !isInvitementClosed ? (
+            {/* {invitement && !isInvitementClosed ? (
                 <aside id="invitement">
                     <div className="relative flex flex-row justify-center items-center" style={{backgroundColor: "rgba(38, 38, 38, 0.8)", height: 64}}>
                         <p style={{color: 'white', margin: 0}}>XIRCLE 초대장 보내기</p>
@@ -57,7 +57,7 @@ const Layout = ({ children, isIntro, invitement, num, footerNone, btnClicked, se
                         />
                     </div>
                 </aside>
-            ) : null}
+            ) : null} */}
 
             {isIntro && !btnClicked ? (
                 <header>

@@ -1,6 +1,6 @@
 import * as actionTypes from '../actions/actionTypes';
 
-const initialState = {
+export const initialState = {
     // 첫 인증 auth
     email: null,
     phoneNumber: null,
@@ -153,7 +153,6 @@ const reducer = (state=initialState, action) => {
                 error: null,
                 errCode: null
             }
-            
         default:
             return state;
     }
