@@ -330,7 +330,7 @@ export const getUser = (token) => {
             }else {
                 dispatch(getUserFail());
                 alert(res.data.message);
-                // window.location.href = 'auth';
+                window.location.href = 'auth';
             }
         })
         .catch(err => {

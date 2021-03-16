@@ -122,6 +122,7 @@ export const submitImgToAWSInit = () => {
 }
 
 export const submitImgToAWS = (Img_formData, type) => {
+    
     return dispatch => {
         dispatch(submitImgToAWSStart());
 
@@ -213,8 +214,10 @@ export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInR
                 console.log(res);
                 const isSuccess = res.data.success;
                 const token = res.data.data.token;
-                if(isSuccess)
+                if(isSuccess) {
                     dispatch(submitToServerSuccess(resumeText, workPlaceText, token));
+                    localStorage.setItem('tk', token);
+                }
                 else{
                     const errCode = res.data.code;
                     dispatch(submitToServerFail(errCode));
@@ -278,7 +281,6 @@ export const getInterestArticle = (interest, tokenInUser, articleInProfile) => {
             .then(res => {
                 console.log(res);
                 const { articleContent, articleImgSrc } = res.data.data;
-                console.log(articleContent, articleImgSrc);
                 const isSuccess = res.data.success;
                 if(isSuccess) {
                     dispatch(getInterestArticleSuccess(interest, articleContent, articleImgSrc));

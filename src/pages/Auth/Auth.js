@@ -68,7 +68,9 @@ const Auth = ({ history }) => {
     
     return (
         <Layout headerNone footerNone={true}>
-            <div style={{height: '60px'}} className="flex flex-row items-center justify-between "></div>
+            <div style={{height: '60px'}} className="flex flex-row items-center justify-between ">
+                <p onClick={() => history.push('/login')} style={{color: "#4700FF", margin: '20px 0', width: '95%', textAlign: 'right', cursor: 'pointer'}}>로그인하기</p>
+            </div>
             <section className="mb-10">
                 <section style={{padding: '10px 30px'}} className="text-center mt-5">
                     <h1 style={{textAlign: 'left', marginBottom: '5px', fontSize: '24px'}} className="text-2xl text-left">{isEmailSent ? '인증번호 입력' : '이메일 인증'}</h1>

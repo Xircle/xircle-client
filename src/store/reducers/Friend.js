@@ -69,7 +69,9 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 loading: null,
-                error: null
+                error: null,
+                articleIsLoading: null,
+                articleInFriend: [],
             }
         case actionTypes.GET_FRIEND_ARTICLE_START:
             return {

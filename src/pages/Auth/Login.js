@@ -91,7 +91,7 @@ const Login = ({ history }) => {
             <section className="mb-10">
                 <section style={{padding: '10px 30px'}} className="text-center mt-5">
                     <h1 style={{textAlign: 'left', marginBottom: '5px', fontSize: '24px'}} className="text-2xl text-left">로그인</h1>
-                    <p style={{fontSize: '15px', color: "#C5C1C1", textAlign: 'left', margin: '20px auto', whiteSpace: 'pre'}}> XIRCLE을 이용해 주셔서 감사합니다. <br/> 연고링은 베타테스트단계로 <br/> 서울대 고려대 연세대 서강대 한양대 성균관대<br/> 학생들로만 진행중입니다.</p>
+                    <p style={{fontSize: '15px', color: "#C5C1C1", textAlign: 'left', margin: '20px auto', whiteSpace: 'pre'}}> XIRCLE을 이용해 주셔서 감사합니다. <br/> 사전신청을 안했다면 사전신청을 먼저 진행해주세요.</p>
                 </section>
                 <section className="px-10 mb-5">
                     <section className="text-center my-10">

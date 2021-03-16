@@ -26,8 +26,7 @@ export default function ValidationTextFields({ confirmAuth, history, type }) {
 
     const isLoading = useSelector(store => store.auth.loading);
     const errCode = useSelector(store => store.auth.errCode);
-    const emailRegex = /^[a-zA-Z0-9]([-_]?[a-zA-Z0-9])*@(korea.ac.kr|yonsei.ac.kr|snu.ac.kr|sogang.ac.kr|g.skku.edu |skku.edu|hanyang.ac.kr)$/;
-
+    const emailRegex = /^[a-zA-Z0-9]([-_]?[a-zA-Z0-9])*@(korea.ac.kr|yonsei.ac.kr|snu.ac.kr|sogang.ac.kr|g.skku.edu|skku.edu|hanyang.ac.kr)$/;
 
     useEffect(() => {
       if(errCode === 0) {
@@ -87,8 +86,8 @@ export default function ValidationTextFields({ confirmAuth, history, type }) {
 
         {/* 로딩 인디케이터 */}
         {isLoading ? (
-        <div style={{height: '40px', position: 'relative'}}>
-          <div style={{position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, 0)'}} className="flex flex-col items-center">
+        <div style={{height: '40px', margin: '20px 0'}}>
+          <div className="flex flex-col items-center">
               <Spinner 
                   size={10}
                   color={"#aaa"}
@@ -100,7 +99,7 @@ export default function ValidationTextFields({ confirmAuth, history, type }) {
 
         {/* 전송 버튼 */}
         {type === 'auth' ? (
-        <button onClick={(e) => submitHandler(e)} style={{padding: "15px 0", margin: '80px 0 0'}} className="font-sans w-full rounded-lg bg-gray-400 text-white hover:bg-gray-400 focus:outline-none">
+        <button onClick={(e) => submitHandler(e)} style={{padding: "15px 0", margin: '20px 0 0'}} className="font-sans w-full rounded-lg bg-gray-400 text-white hover:bg-gray-400 focus:outline-none">
           인증확인 전송
         </button>
         ) : ( // type === 'find'
@@ -117,8 +116,9 @@ export default function ValidationTextFields({ confirmAuth, history, type }) {
             <p onClick={() => history.push('/login')} style={{cursor: 'pointer'}} >로그인하러가기</p>
           </div>
         </Modal>
+
         <div> {type === 'find' ? null : (
-          <p onClick={() => history.push('/login')} style={{color: "#949393", margin: '20px 0', textAlign: 'center', cursor: 'pointer'}}>로그인하러가기</p>)}
+          <p onClick={() => window.location.href = 'http://pf.kakao.com/_kDxhtK'} style={{color: "#949393", margin: '20px 0', textAlign: 'center', cursor: 'pointer'}}>학교이메일을 잊어버렸어요</p>)}
         </div>
       </form>
     )

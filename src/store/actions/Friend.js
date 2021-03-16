@@ -24,6 +24,7 @@ export const getFriendInit = () => {
 }
 export const getFriend = (token) => {
     return dispatch => {
+        dispatch(getFriendInit());
         dispatch(getFriendStart());
 
         Axios.get('/randomUser/profile', {
@@ -41,7 +42,7 @@ export const getFriend = (token) => {
                 dispatch(getFriendFail());
                 dispatch(getFriendInit());
                 alert(res.data.message);
-                // window.location.href = 'my-profile';
+                window.location.href = 'my-profile';
             }
         })
         .catch(err => {
