@@ -27,7 +27,7 @@ const KakaoMap = ({ history }) => {
       setLongitude(null);
       setLatitude(null);
     }
-  }, [])
+  }, [isLoading])
 
   // 콜백 함수
   const locationBtnHandler = useCallback((event) => {
@@ -50,7 +50,7 @@ const KakaoMap = ({ history }) => {
   }, []);
 
   // 런타임에 실행
-  const mapScript = () => {
+  const mapScript = useCallback(() => {
       const container = document.getElementById('map'); 
       const options = {
         center: new kakao.maps.LatLng(37.585568, 127.029391),
@@ -63,7 +63,6 @@ const KakaoMap = ({ history }) => {
       
       if(navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-            console.log('hi')
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             setLatitude(lat);
@@ -95,7 +94,7 @@ const KakaoMap = ({ history }) => {
               setIsMapSupported(false);
               setIsLoading(false);
             }
-          }, { timeout: 5000 });
+          }, { timeout: 8000 });
       } else{
           alert("현 브라우저에서 Geolocation을 지원하지 않습니다.");
           setIsMapSupported(false);
@@ -110,6 +109,7 @@ const KakaoMap = ({ history }) => {
           }); 
           // 지도 중심좌표를 접속위치로 변경합니다
           map.setCenter(locPosition);      
+          setIsLoading(false);
       }
 
       // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
@@ -125,12 +125,13 @@ const KakaoMap = ({ history }) => {
                 const newAddr = fullAddr.split(' ');
                 const displayAddr = '<p style="margin: 10px;"> ' + newAddr[0] + ' ' +  newAddr[1] + ' ' + newAddr[2] + '</p>';
                 setAddr(newAddr[0] + ' ' + newAddr[1])
-
                 setLongitude(mouseEvent.latLng.getLng());
                 setLatitude(mouseEvent.latLng.getLat());
                 const content = displayAddr;
     
                 // 마커를 클릭한 위치에 표시합니다 
+                if(!marker)
+                  return alert("새로고침 해주세요!");
                 marker.setPosition(mouseEvent.latLng);
                 marker.setMap(map);
     
@@ -148,13 +149,13 @@ const KakaoMap = ({ history }) => {
           else
             geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
       }
-  }
+  }, [isLoading]);
 
   return (
     <div style={{opacity: isLoading ? 0.5 : 1, zIndex: 900}} className="flex flex-col items-center h-full relative">
       
       {isMapSupported ? (
-      <div id="map" style={{ width: '80%', height: 300}}>
+      <div onClick={(e) => e.preventDefault()} id="map" style={{ width: '80%', height: 300}}>
         {isLoading ? (
             <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, 0)'}}>
                 <Spinner
