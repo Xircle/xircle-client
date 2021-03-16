@@ -16,7 +16,7 @@ const AirpodEvent = React.lazy(() => import('./pages/HomePages/AirpodEvent'));
 const App = () => {
   return (
     <React.Fragment>
-      <Suspense fallback={<div className="h-screen flex flex-row justify-center items-center" ><img style={{width: "200px", height: "200px"}} src="/yk-logo.png" /></div>}>
+      <Suspense fallback={<div className="h-screen flex flex-row justify-center items-center" ><img style={{width: "200px", height: "200px"}} alt="splash" src="/Logo/Xircle_Logo.svg" /></div>}>
         <Switch>
             <Route path="/event" component={AirpodEvent} exact/>
             <Route path="/developer-profile" component={DeveloperProfile} exact/>
