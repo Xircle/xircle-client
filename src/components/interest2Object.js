@@ -33,7 +33,7 @@ export function interest2Index(interest){
             return 8
         case "취업준비":
             return 9
-        case "로스쿨":
+        case "수험생":
             return 10
         case "대학원":
             return 11
@@ -101,7 +101,7 @@ export function interest2Object(interestArr){
                     ...interest,
                     url: jobfinder,
                 }
-            case "로스쿨": 
+            case "수험생": 
                 return {
                     ...interest,
                     url: lawschool,

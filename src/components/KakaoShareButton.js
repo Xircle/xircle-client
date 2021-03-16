@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 
 export const createKakaoButton = (btnId) => {
-  const kakao = window.Kakao
+  const kakao = window.Kakao;
   if (!kakao.isInitialized()) { //중복 방지
     // 두번째 step 에서 가져온 javascript key 를 이용하여 initialize
     kakao.init(process.env.REACT_APP_KAKAO_KEY)
@@ -11,32 +11,32 @@ export const createKakaoButton = (btnId) => {
     container: btnId,
     objectType: 'feed',
     content: {
-      title: '연고링',
-      description: '#대학생 #친구 #청춘 #20대',
+      title: 'Xircle',
+      description: '새로운 네트워킹 클럽, Xircle',
       imageUrl: process.env.REACT_APP_FETCH_IMAGE_URL,
       link: {
-        mobileWebUrl: 'https://2donny.github.io/',
-        webUrl: 'https://2donny.github.io/',
+        mobileWebUrl: 'https://xircle.org/',
+        webUrl: 'https://xircle.org/',
       },
     },
     social: {
-      likeCount: 133,
-      commentCount: 255,
-      sharedCount: 333,
+      likeCount: 193,
+      commentCount: 215,
+      sharedCount: 103,
     },
     buttons: [
       {
         title: '웹으로 보기',
         link: {
-          mobileWebUrl: 'https://2donny.github.io/',
-          webUrl: 'https://2donny.github.io/',
+          mobileWebUrl: 'https://xircle.org/',
+          webUrl: 'https://xircle.org/',
         },
       },
       {
         title: '앱으로 보기',
         link: {
-          mobileWebUrl: "https://2donny.github.io/",
-          webUrl: 'https://2donny.github.io/',
+          mobileWebUrl: "https://xircle.org/",
+          webUrl: 'https://xircle.org/',
         },
       },
     ],
@@ -51,7 +51,7 @@ const KakaoShareButton = () => {
   return (
     <div style={{display: 'inline'}}>
       <button id="kakao-link-btn">
-        <img style={{width: '64px', height: '64px', borderRadius: '120px', objectFit: 'contain'}} src="/kakao.png" alt="kakao-share-icon" />
+        <img style={{width: '64px', height: '64px', borderRadius: '120px', objectFit: 'cover'}} src="/setting/kakao.svg" alt="kakao-share-icon" />
       </button>
     </div>
   )

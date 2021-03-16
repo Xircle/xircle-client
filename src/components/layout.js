@@ -68,7 +68,7 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
                     /> */}
                 </aside>
             ) : null}
-            <Modal show={isWriteClicked} clicked={() => setIsWriteClicked(false)} >
+            <Modal show={isWriteClicked} clicked={() => setIsWriteClicked(false)} type="directInput">
                 <img 
                     onClick={() => setIsWriteClicked(false)}
                     style={{width: 25, height: 25, margin: '0 0 0 auto'}}
@@ -80,6 +80,7 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
                         name="directInput"
                         id="directInput"
                         ref={directRef}
+                        autoFocus
                         placeholder="회원님은 어떤 사람인가요? 직접입력해보세요."
                         style={{height: '100px', backgroundColor: "#F7F7FA", textAlign: 'center'}}
                         className="my-10 px-3 py-5 w-full text-base placeholder-gray-300">

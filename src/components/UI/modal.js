@@ -3,7 +3,13 @@ import Backdrop from './backdrop';
 
 let memoizedModal = null;
 
-const Modal = ({ children, show, clicked }) => {
+const Modal = ({ children, show, clicked, type }) => {
+    let top;
+    if(type === 'directInput') {
+        top = '10%';
+    }else {
+        top = '30%';
+    }
     return (
         <div className="w-full">
             <Backdrop show={show} clicked={clicked}/>
@@ -21,7 +27,7 @@ const Modal = ({ children, show, clicked }) => {
                         backgroundColor: 'white',
                         padding: '36px',
                         left: `calc(50% - 170px)`,
-                        top: '30%',
+                        top: top,
                         boxSizing: 'border-box',
                         transition: 'all .3s ease-out',
                         transform: show ? 'scale(1)' : 'scale(0.5)',

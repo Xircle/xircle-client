@@ -153,10 +153,10 @@ function reducer(state, action) {
         case 'LAWSCHOOL_CLICKED':
             newArr = state.interestArr.slice(); 
             if(state.lawSchoolClicked){
-                const index = newArr.findIndex(el => el === '로스쿨');
+                const index = newArr.findIndex(el => el === '수험생');
                 newArr.splice(index, 1);
             }else {
-                newArr.push('로스쿨')
+                newArr.push('수험생')
             }
             return {
                 ...state,
@@ -227,15 +227,15 @@ const InterestSetting = ({ history }) => {
     return (
         <>
             <div style={{height: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', justifyItems: 'center'}}>
-                <div 
+                <div
                     style={{
-                        margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40, borderRadius: '100%', 
-                        border: startUpClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${startUp})`
+                        margin: 5, width: 90, height: 90, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
+                        border: friendClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${friend})`
                     }} 
                     className="cursor-pointer"
-                    onClick={() => dispatch({type: "STARTUP_CLICKED"})}
+                    onClick={() => dispatch({type: "FRIEND_CLICKED"})}
                 >
-                    <p className="text-white h-full inline-flex items-center">@스타트업</p>
+                    <p className="text-white h-full inline-flex items-center">@동네친구</p>
                 </div>
                 <div 
                     style={{
@@ -256,15 +256,15 @@ const InterestSetting = ({ history }) => {
                 >
                     <p className="text-white h-full inline-flex items-center">@애견인</p>
                 </div>
-                <div
+                <div 
                     style={{
-                        margin: 5, width: 90, height: 90, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                        border: friendClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${friend})`
+                        margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40, borderRadius: '100%', 
+                        border: startUpClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${startUp})`
                     }} 
                     className="cursor-pointer"
-                    onClick={() => dispatch({type: "FRIEND_CLICKED"})}
+                    onClick={() => dispatch({type: "STARTUP_CLICKED"})}
                 >
-                    <p className="text-white h-full inline-flex items-center">@동네친구</p>
+                    <p className="text-white h-full inline-flex items-center">@스타트업</p>
                 </div>
                 <div
                     style={{
@@ -334,7 +334,7 @@ const InterestSetting = ({ history }) => {
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "LAWSCHOOL_CLICKED"})}
                 >
-                    <p className="text-white h-full inline-flex items-center">@로스쿨</p>
+                    <p className="text-white h-full inline-flex items-center">@수험생</p>
                 </div>
                 <div 
                     style={{
