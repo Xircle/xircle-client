@@ -7,7 +7,6 @@ import { Search } from 'semantic-ui-react'
 import { jobs, adjectives } from '../../../model/person';
 import KakaoShareButton from '../../../components/KakaoShareButton';
 import { FacebookIcon, FacebookShareButton, TwitterShareButton, TwitterIcon, LineShareButton, LineIcon } from 'react-share';
-import Banner from '../../../components/banner';
 import LoadingIndicator from 'react-loading-indicator';
 import RadioUI from '../../../components/UI/RadioUI';
 import InterestSetting from '../../../components/interestSetting';
@@ -70,54 +69,54 @@ const SettingContents = ({ history, questionNum }) => {
     
     useEffect(() => {
         const currentPath = window.location.pathname;
-        // switch(currentPath) {
-        //     case '/setting/1':
-        //         if(!emailInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/2':
-        //         if(!locationInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/3':
-        //         if(!isPublicInRedux || !isGraduateInRedux || !genderInRedux || !ageInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/4':
-        //         if(!jobInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/5':
-        //         if(!adjInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/6':
-        //         if(!interestArrInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/7':
-        //         if(!articleImgSrcInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/8':
-        //         if(!articleTextInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/9':
-        //         if(!introTextInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/10':
-        //         if(!profileImgSrcInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/11':
-        //         if(!emailInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     default:
-        //         return null;
-        // }
+        switch(currentPath) {
+            case '/setting/1':
+                if(!emailInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/2':
+                if(!locationInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/3':
+                if(!isPublicInRedux || !isGraduateInRedux || !genderInRedux || !ageInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/4':
+                if(!jobInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/5':
+                if(!adjInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/6':
+                if(!interestArrInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/7':
+                if(!articleImgSrcInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/8':
+                if(!articleTextInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/9':
+                if(!introTextInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/10':
+                if(!profileImgSrcInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/11':
+                if(!emailInRedux) 
+                    return window.location.replace('auth');
+                break;
+            default:
+                return null;
+        }
         return () => {
             setDefaultArticleHashTag('');
         }
@@ -276,31 +275,13 @@ const SettingContents = ({ history, questionNum }) => {
     
     // /setting/7
     const articleHashTagClickHandler = useCallback((clickedHashTag) => {
-        let newHashTag = null;
-        if(defaultArticleHashTag) {
-            // 동일 태그 클릭 제한
-            let success = true; 
-            if(defaultArticleHashTag.includes(clickedHashTag)) {
-                success = false;
-            }
-            if(!success)
-                return null;
+        const newHashTag = '@' + clickedHashTag;
 
-            // 최대 갯수 제한
-            const interestCnt = interestArrInRedux.length; // 등록한 관심사 갯수
-            const articleTagCnt = defaultArticleHashTag.split(' ').length;
-            if(interestCnt === articleTagCnt)
-                return null;
-            newHashTag = defaultArticleHashTag + ` @${clickedHashTag}`;
-        }
-        else
-            newHashTag = '@' + clickedHashTag;
         setDefaultArticleHashTag(newHashTag);
     }, [defaultArticleHashTag]);
 
     const articleSubmitHandler = useCallback((event) => {
         event.preventDefault();
-        
         // 1) articleText
         const articleText = articleRef.current.value;
         if(articleText.length < 3)
@@ -308,6 +289,12 @@ const SettingContents = ({ history, questionNum }) => {
         if(defaultArticleHashTag.length < 1) 
             return alert("게시물 관심사를 적어도 하나 선택해주세요.");
         
+        // 2) (필수) interestArr @ 빼서 저장
+        const articleInterestArray = defaultArticleHashTag.split(" ");
+        const articleInterestArr = articleInterestArray.map(el => {
+            return el.replace('@', '');
+        });
+
         if(articleTagRef.current.value) { // articleTagRef => "@hello @hi @무야호"
             const articleTagText = articleTagRef.current.value.trim();
             let articleTagArr = articleTagText.split(" ");  // articleTagArr = ["@hello", "@hi", "@무야호"]
@@ -324,18 +311,13 @@ const SettingContents = ({ history, questionNum }) => {
             if(!isSuccess) 
                 return null;
 
-            // 2) @ 빼서 저장
-            const articleInterestArray = defaultArticleHashTag.split(" ");
-            const articleInterestArr = articleInterestArray.map(el => {
-                return el.replace('@', '');
-            });
-
             // 3) 성공했으면 @ 빼서 저장 ['hello', 'hi', '무야호']
             articleTagArr = articleTagArr.map(tag => {
                 return tag.replace('@', '');
             });
-
             dispatch(actions.addArticleContents(articleText, articleInterestArr, articleTagArr));
+        }else { // articleTag 사용안했을 때도 고려
+            dispatch(actions.addArticleContents(articleText, articleInterestArr, []));
         }
         history.push('/setting/8')
     }, [defaultArticleHashTag]);
@@ -374,7 +356,6 @@ const SettingContents = ({ history, questionNum }) => {
     const introTextSubmitHandler = useCallback((event) => {
         event.preventDefault();
         const introText = introRef.current.value;
-        console.log(introText)
         if(introText.length < 3)
             return alert("3글자 이상 입력해주세요!");
         dispatch(actions.addIntroText(introText));
@@ -423,7 +404,7 @@ const SettingContents = ({ history, questionNum }) => {
                     <Modal show={graduateOrNotClicked}>
                         <div className="mb-5">
                             <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
-                            <span style={{fontSize: '14px', color: '#5c5c5c'}}>재학중이신가요? 졸업을 하셨나요? </span>
+                            <span style={{fontSize: '12px', color: '#5c5c5c'}}>재학중이신가요?  졸업을 하셨나요? </span>
                         </div>
                         <RadioUI subject="graduateOrNot" changeHandler={UnivGraduateChangeHandler}/>
                     </Modal>
@@ -431,7 +412,7 @@ const SettingContents = ({ history, questionNum }) => {
                     <Modal show={publicOrNotClicked}>
                         <div className="mb-5">
                             <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
-                            <span style={{fontSize: '14px', color: '#5c5c5c'}}>학교를 공개하시겠습니까? 비공개 하시겠습니까? 공개여부는 언제든지 변경 가능합니다.</span>
+                            <span style={{fontSize: '12px', color: '#5c5c5c', whiteSpace: 'pre-line'}}>학교를 공개하시겠습니까? 비공개 하시겠습니까? <br/> 공개여부는 언제든지 변경 가능합니다.</span>
                         </div>
                         <RadioUI subject="privateOrNot" isFirstValue={isUnivPublic} changeHandler={UnivPublicChangeHandler}/>
                         <p style={{color: "#cdcdcd", fontSize: 12, margin: '15px 0'}}>공개하면 더 많은 네트워킹이 가능해요 :)</p>
@@ -489,7 +470,7 @@ const SettingContents = ({ history, questionNum }) => {
                         size="big"
                         className="text-left ml-2"
                     />
-                    <p style={{marginLeft: '10px'}}>{job ? job : null}</p>
+                    <p style={{marginLeft: '10px'}}>{job || jobInRedux}</p>
                 </div>
                 <section className="my-3 px-2">
                     {adjectives.map((adj, id) => (
@@ -504,7 +485,7 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="text-center px-3 my-5">
                 <div className="px-3 py-5 mb-3">
-                    <h3 style={{whiteSpace: 'pre-line'}} className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님 요즘 무엇에 관심있으신가요?</h3>
+                    <h3 style={{whiteSpace: 'pre-line'}} className="text-left text-3xl font-light">{adjInRedux || adj} {jobInRedux || job} {displayNameInRedux}님 요즘 무엇에 관심있으신가요?</h3>
                     <h5 className="text-left font-normal my-5 text-gray-400">관심사를 2개 이상 골라주세요. (필수) <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 @@@ 해보세요.</h5>
                     <p style={{color: "#8D8D8D", fontSize: 10, textAlign: 'left'}}>※런칭 후 추가 예정</p>
                 </div>
@@ -515,13 +496,13 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="min-h-screen text-center px-3 my-3 mb-10">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left">관심사에 맞는 자신의 이야기를 한가지만 사진과 함께 적어보세요! </h3>
-                    <p style={{color: "#B3B3B3", textAlign: 'left'}}>ex.오늘 먹은 음식 / 오늘의 일기 </p>
+                    <h3 className="text-left">관심사에 맞는 자신의 이야기를 한가지만 사진과 함께 적어보세요! [사진] </h3>
+                    <p style={{color: "#B3B3B3", textAlign: 'left'}}>ex.오늘 먹은 음식 / 오늘 한 스터디 </p>
                 </div>
                 <section className="mt-5">
                     <div style={{position: 'relative'}}>
                         <img 
-                            style={{width: 300, height: 300, margin: '0 auto', borderRadius: 180, objectFit: 'cover'}} 
+                            style={{width: 300, height: 300, margin: '0 auto', borderRadius: 180, objectFit: 'fill'}} 
                             src={imgSrc ? imgSrc : "/camera.svg"} 
                         />
                         <input 
@@ -555,14 +536,19 @@ const SettingContents = ({ history, questionNum }) => {
     }else if(questionNumber === 7) {
         contents = (
             <section className="text-center px-5 my-5">
-                <Banner />
+                <img 
+                    src="/setting/airpod_banner.svg"
+                    alt="banner"
+                    width='100%'
+                    height='100%'
+                />  
                 <textarea 
                     name="articleText"
                     id="articleText"
                     ref={articleRef}
                     placeholder="첫 번째 글을 작성해 보세요. 비방/욕설은 삼가해주세요."
                     style={{height: '250px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
-                    className="mt-10 px-3 py-5 w-full text-base placeholder-gray-300">
+                    className="mt-5 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
                 <textarea
                     id="articleTag"
@@ -601,9 +587,10 @@ const SettingContents = ({ history, questionNum }) => {
                 <section className="mt-5">
                     <div style={{position: 'relative'}}>
                         <img 
-                            style={{width: 300, height: 300, margin: '0 auto', borderRadius: 180, objectFit: 'cover'}} 
+                            style={{width: 300, height: 300, margin: '0 auto', borderRadius: 150, objectFit: 'fill'}} 
                             src={profileImgSrc ? profileImgSrc : "/camera.svg"} 
                         />
+                        {!profileImgSrc ? <p style={{color: "#C4C4C4", fontSize: 12, position: 'absolute', top: '70%', left: '50%', width: '100%', transform: 'translate(-50%, 0)', whiteSpace: 'pre-line'}}>사전신청기간에는 수정이 불가하니,<br/> 프로필 사진은 조금 더 신중하게 선택해주세요!</p> : null}
                         <input 
                             style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 300, height: 300, borderRadius: 150, cursor: 'pointer'}} 
                             type="file" 
@@ -708,47 +695,45 @@ const SettingContents = ({ history, questionNum }) => {
         )
     }else if(questionNumber === 11) { // 초대장
         contents = (
-            <div className="min-h-screen h-full relative">
-                <section style={{height: '120px'}} className="mt-5 flex flex-row justify-center items-center ">
-                    <p style={{fontSize: 36, fontWeight: 300}}>XIRCLE</p>
+            <div style={{position: 'relatve'}} className="h-full flex flex-col justify-centerrelative">
+                <section style={{marginTop: 100}}>
+                    <section style={{height: '100px'}} className="mt-5 flex flex-row justify-center items-center ">
+                        <p style={{fontSize: 48, fontWeight: 800}}>XIRCLE</p>
+                    </section>
+                    <section style={{height: '220px'}} className=" text-center pt-5">
+                        <h1 style={{fontSize: 20}} className="mb-3 px-10">연고링 회원가입 및 사전신청을 해주셔서 대단히 감사합니다.</h1>
+                        <p style={{fontSize: 14, lineHeight: 1.4}} className="px-10 pt-5 text-lg text-gray-500">
+                        정식 서비스는 4월 10일날 시작됩니다. <br/>
+                        초대장을 보내면 더 많은 친구들과 네트워킹이 가능해요!  
+                        </p>
+                    </section>
                 </section>
-                <section style={{height: '220px'}} className=" text-center pt-5">
-                    <h1 style={{fontSize: 20}} className="mb-3 px-10">연고링 회원가입 및 사전신청을 해주셔서 대단히 감사합니다.</h1>
-                    <p style={{fontSize: 14}} className="px-10 pt-5 text-lg text-gray-500">
-                    정식 서비스는 3월 21일날 시작됩니다. <br/>
-                    초대장을 보내면 더 많은 친구들과 네트워킹이 가능해요!  
-                    </p>
-                </section>
-                <section className="text-center">
-                    <p>공지 및 문의</p>
-                    <div className="flex flex-col">
-                        <a style={{color: "#8A8888"}} href="https://www.instagram.com/ykring_official/">XIRCLE 인스타그램</a>
-                        <a style={{color: "#8A8888"}} href="http://pf.kakao.com/_kDxhtK">XIRCLE 카카오톡 채널</a>
-                    </div>
-                </section>
-                <section style={{transform: 'translate(-50%, 0)', position: 'absolute', width: '80%', bottom: 0, left: '50%'}} className="absolute w-4/5 bottom-0 left-1/2">
-                    <section style={{opacity: shareClicked ? 1 : 0, visibility: shareClicked ? 'visible' : 'hidden', transition: 'all .2s ease-in', marginBottom: '10px'}} className="mt-24 text-center">
-                        <KakaoShareButton />
-                        <FacebookShareButton url="https://2donny.github.io/">
-                            <FacebookIcon round/>
-                        </FacebookShareButton>
-                        <TwitterShareButton url="https://2donny.github.io/">
-                            <TwitterIcon round/>
-                        </TwitterShareButton>
-                        <LineShareButton url="https://2donny.github.io/">
-                            <LineIcon round/>
-                        </LineShareButton>
+                <section style={{position: 'absolute', width: '100%', maxWidth: '400px', margin: '0 auto', textAlign: 'center', bottom: 10}}>
+                    <section style={{width: '80%', height: '100%', margin: '0 auto'}}>
+                        <section style={{opacity: shareClicked ? 1 : 0, visibility: shareClicked ? 'visible' : 'hidden', transition: 'all .2s ease-in', marginBottom: '10px'}} className="mt-5 text-center">
+                            <KakaoShareButton />
+                            <FacebookShareButton url="https://xircle.org">
+                                <FacebookIcon round/>
+                            </FacebookShareButton>
+                            <TwitterShareButton url="https://xircle.org">
+                                <TwitterIcon round/>
+                            </TwitterShareButton>
+                            <LineShareButton url="https://xircle.org">
+                                <LineIcon round/>
+                            </LineShareButton>
+                        </section>
                     </section>
                     <button 
                         onClick={() => shareBtnClickedHandler()}  
-                        style={{ backgroundColor: '#F7F7FA', border: '1px solid #8D8D8D'}} 
-                        className="w-full rounded-lg py-3 text-black focus:outline-none"
+                        style={{ backgroundColor: '#F7F7FA', border: '1px solid #8D8D8D', width: '90%'}} 
+                        className="rounded-lg py-3 text-black focus:outline-none"
                     > XIRCLE 초대장 보내기 </button>
                     <button 
                         onClick={() => history.push('/my-profile')} 
-                        style={{backgroundColor: '#F7F7FA', border: '1px solid #8D8D8D'}} 
+                        style={{backgroundColor: '#F7F7FA', border: '1px solid #8D8D8D', width: '90%'}} 
                         className="w-full rounded-lg py-3 mt-3 mb-10 text-black focus:outline-none"
-                    > 넘어가기 </button>
+                    > 넘어가기 
+                    </button>
                 </section>
             </div>
         )

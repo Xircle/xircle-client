@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../components/layout';
 import * as actions from '../../store/actions/index';
 import Modal from '../../components/UI/modal';
-import { interest2Index, interest2Object} from '../../components/interest2Object';
+import { interest2Object } from '../../components/interest2Object';
 import airpod from '../../images/my-profile/airpod.svg';
 import ageGenerator from '../../components/ageGenerator';
 import Spinner from 'react-spinner-material';
+import { createKakaoButton } from '../../components/KakaoShareButton';
 
 let articleDispatchingCnt = [
     null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -77,16 +78,20 @@ const MyProfile = ({ history }) => {
         // 하나라도 없으면 
         const storedToken = localStorage.getItem('tk');
         const tokenInRedux = token;
-        console.log('storedToken : ', storedToken);
-        console.log('tokenInRedux : ', tokenInRedux);
         if(storedToken) {
+            if(newArr.length > 0) {
+                if(!newArr[0].count)
+                    return dispatch(actions.getUser(tokenInRedux || storedToken));
+            }
             if(interestArr.length !== 0) { // 이게 하나라도 있으면 전부 다 있다고 가정
                 return null;
             }
-            if(tokenInRedux) // (/pre/user로 온 유저) 리덕스에 토큰이 있으면 서버로 보낼 때, 그 토큰으로 보내기
+            if(tokenInRedux) { // (/pre/user로 온 유저) 리덕스에 토큰이 있으면 서버로 보낼 때, 그 토큰으로 보내기
                 return dispatch(actions.getUser(tokenInRedux));
-            else // 리덕스에 토큰이 없으면, 로컬스토리지 토큰으로 보내기.
+            } 
+            else { // 리덕스에 토큰이 없으면, 로컬스토리지 토큰으로 보내기.
                 return dispatch(actions.getUser(storedToken));
+            } 
         }else {
             alert("로그인 해주세요.");
             window.location.href = "auth";
@@ -149,15 +154,35 @@ const MyProfile = ({ history }) => {
                         </div>
                     </li>
                     ))}
+                    <li 
+                        id="kakao-invitement"
+                        onClick={() => createKakaoButton('#kakao-invitement')}
+                        style={{
+                            margin: 5, backgroundColor: "#fff", borderRadius: 15,
+                            width: '45%', height: 281, transform: 'translate(0, -53px)'
+                        }} 
+                        className="cursor-pointer relative flex flex-col justify-center items-center"
+                    >
+                        <img 
+                            style={{width: 70, height: 70}}
+                            src="/profile/message.svg"
+                            alt="message"
+                        />
+                        <p>XIRCLE 초대장 보내기</p>
+                    </li>
+                    <li 
+                        style={{
+                            margin: 5, backgroundColor: "#F7F7FA",
+                            width: '45%'
+                        }} 
+                    >
+                    </li>
                 </ul>
             )
         }else if(selectedInterest === '스타트업') { // @스타트업 관심사 누를 때
             articleDispatchingCnt[1]++;
             if(articleDispatchingCnt[1] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '스타트업');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("스타트업", token, articleArrInProfile));
@@ -168,10 +193,8 @@ const MyProfile = ({ history }) => {
             let fetchedArticleContent = {};
             if(articleIsLoading === false) { // fetch된 후
                 foundObj = articleArrInProfile.find(el => el.interest === '스타트업');
-                console.log(foundObj);
                 if(!foundObj)
                     return null;
-                console.log('expected');
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
             }
@@ -200,7 +223,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -234,13 +256,9 @@ const MyProfile = ({ history }) => {
                 )
             );
         }else if(selectedInterest === '술/맛집탐방') { // @술/맛집탐방 관심사 누를 때
-            console.log('isLoading ? ', articleIsLoading);
             articleDispatchingCnt[2]++;
             if(articleDispatchingCnt[2] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '술/맛집탐방');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("술/맛집탐방", token, articleArrInProfile));
@@ -255,7 +273,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -282,7 +299,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -317,10 +333,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '동네친구') { // @동네친구 관심사 누를 때
             articleDispatchingCnt[3]++;
             if(articleDispatchingCnt[3] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '동네친구');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("동네친구", token, articleArrInProfile));
@@ -334,7 +347,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -361,7 +373,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -396,10 +407,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '코딩') { // @코딩 관심사 누를 때
             articleDispatchingCnt[4]++;
             if(articleDispatchingCnt[4] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '코딩');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("코딩", token, articleArrInProfile));
@@ -413,7 +421,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -440,7 +447,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -475,10 +481,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '애견인') { // @애견인 관심사 누를 때
             articleDispatchingCnt[5]++;
             if(articleDispatchingCnt[5] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '애견인');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("애견인", token, articleArrInProfile));
@@ -492,7 +495,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -519,7 +521,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -554,10 +555,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '패션') { // @패션 관심사 누를 때
             articleDispatchingCnt[6]++;
             if(articleDispatchingCnt[6] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '패션');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("패션", token, articleArrInProfile));
@@ -571,7 +569,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -598,7 +595,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -633,10 +629,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '예술') { // @예술 관심사 누를 때
             articleDispatchingCnt[7]++;
             if(articleDispatchingCnt[7] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '예술');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("예술", token, articleArrInProfile));
@@ -650,7 +643,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -677,7 +669,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -712,10 +703,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '게임') { // @게임 관심사 누를 때
             articleDispatchingCnt[8]++;
             if(articleDispatchingCnt[8] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '게임');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("게임", token, articleArrInProfile));
@@ -729,7 +717,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -756,7 +743,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -791,10 +777,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '헬스') { // @헬스 관심사 누를 때
             articleDispatchingCnt[9]++;
             if(articleDispatchingCnt[9] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '헬스');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("헬스", token, articleArrInProfile));
@@ -808,7 +791,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -835,7 +817,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -870,10 +851,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '취업준비') { // @취업준비 관심사 누를 때
             articleDispatchingCnt[10]++;
             if(articleDispatchingCnt[10] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '취업준비');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("취업준비", token, articleArrInProfile));
@@ -887,7 +865,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -914,7 +891,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -946,27 +922,23 @@ const MyProfile = ({ history }) => {
                 </ul>
                 )
             );
-        }else if(selectedInterest === '로스쿨') { // @로스쿨 관심사 누를 때
+        }else if(selectedInterest === '수험생') { // @수험생 관심사 누를 때
             articleDispatchingCnt[11]++;
             if(articleDispatchingCnt[11] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '로스쿨');
-                console.log(foundObjInRedux); 
+                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '수험생');
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
-                dispatch(actions.getInterestArticle("로스쿨", token, articleArrInProfile));
+                dispatch(actions.getInterestArticle("수험생", token, articleArrInProfile));
             }
             let foundObj = {};
             let fetchedArticleImgSrc = {};
             let fetchedArticleContent = {};
             if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '로스쿨');
+                foundObj = articleArrInProfile.find(el => el.interest === '수험생');
                 if(!foundObj)
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -993,7 +965,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -1028,10 +999,7 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '대학원') { // @대학원 관심사 누를 때
             articleDispatchingCnt[12]++;
             if(articleDispatchingCnt[12] === 1) { // 최초 한번만 http 통신하기
-                console.log('dispatching!!');
-                console.log('articleIsLoading : ', articleIsLoading)
                 const foundObjInRedux = articleArrInProfile.find(el => el.interest === '대학원');
-                console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
                 dispatch(actions.getInterestArticle("대학원", token, articleArrInProfile));
@@ -1045,7 +1013,6 @@ const MyProfile = ({ history }) => {
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -1072,7 +1039,6 @@ const MyProfile = ({ history }) => {
                                             position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
                                         }} 
                                         className="cursor-pointer"
-                                        onClick={() => console.log('2')}
                                     >
                                     </li>
                                     <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -1145,7 +1111,6 @@ const MyProfile = ({ history }) => {
                         <p style={{fontSize: 20, textAlign: 'center', whiteSpace: 'pre'}}>Xircle은 이런 가치를 제공합니다.</p>
                     </section>
                 </section>
-                
             </div>
         )
     } else if(pageNum === 2) {
@@ -1171,13 +1136,13 @@ const MyProfile = ({ history }) => {
                     {/* 프로필 사진 */}
                         <div className="relative">
                             <img 
-                                style={{width: 228, height: 228, borderRadius: 114, backgroundColor: 'white', margin: '0 auto', objectFit: 'cover'}}
+                                style={{width: 198, height: 198, borderRadius: 114, backgroundColor: 'white', margin: '0 auto', objectFit: 'cover'}}
                                 src={profileImgSrc}
                             />
                             {/* <input className="focus:outline-none" style={{position: 'absolute', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 228, height: 228, borderRadius: 114, cursor: 'pointer'}} type="file" onChange={(e) => profileImgChangeHandler(e)} /> */}
                             <img
                                 onClick={() => history.push('friend-profile')}
-                                style={{position: 'absolute', right: '1%', top: '50%', cursor: 'pointer'}} 
+                                style={{position: 'absolute', right: '6%', top: '50%', cursor: 'pointer'}} 
                                 src="/profile/arrow_right_outline.svg"
                                 alt="arrow"
                             />
@@ -1200,27 +1165,27 @@ const MyProfile = ({ history }) => {
                         {/* 직장, 활동이력, 한줄소개 */}
                         <ul style={{marginTop: 30}}>
                             {workPlace ? (
-                            <li className="flex flex-row text-sm">
+                            <li className="flex flex-row items-center">
                                 <img 
                                     style={{width: 15, height: 15}}
                                     src="/company.svg"
                                     alt="company"
                                 />
-                                <p className="font-extrabold mx-2 my-0">{workPlace}</p><span>재직중</span>
+                                <p style={{margin: "0px 5px 0 10px"}} className="font-extrabold my-0">{workPlace}</p><span>재직중</span>
                             </li>
                             ) : null}
                             {resume ? (
-                            <li className="flex flex-row text-sm my-3">
+                            <li className="flex flex-row items-center my-3">
                                 <img 
                                     style={{width: 15, height: 15}}
                                     src="/activity.svg"
                                     alt="company"
                                 />
-                                <p className="mx-2 my-0">{resume}</p>
+                                <p style={{margin: "0px 5px 0 10px"}} className="my-0">{resume}</p>
                             </li>
                             ) : null}
-                            <li className="flex flex-row text-sm mb-2">
-                                <p className="">{introText}</p>
+                            <li className="flex flex-row mb-2">
+                                <p>{introText}</p>
                             </li>
                         </ul>
                     </section>
@@ -1229,7 +1194,7 @@ const MyProfile = ({ history }) => {
                 {/* Album Navigation */}
                 {isLoading ? <div style={{height: 40}}></div> : (
 
-                <section className="flex flex-row items-center justify-start mt-1">
+                <section style={{marginTop: 20}} className="flex flex-row items-center justify-start">
                     <button 
                         style={selectedInterest === 'x' || selectedInterest === null ? selectedTab : notSelectedTab}
                         className="px-5 py-3 mx-3 rounded-3xl focus:outline-none"
@@ -1298,25 +1263,25 @@ const MyProfile = ({ history }) => {
         alert('존재하지 않는 페이지입니다.')
     }
     return (
-        <Layout invitement footerNone>
+        <Layout history={history} invitement footerNone>
             
             {isLoading ? (
                 <header style={{margin: "20px 0 35px 0"}}>
-                <section className="flex flex-row items-center justify-around mt-1">
-                    <div style={{width: 87}}></div>
-                    <button 
-                        style={selectedTab}
-                        className="px-5 py-3 rounded-3xl focus:outline-none"
-                    ><p style={{fontSize: 12, fontWeight: 300}}>대학생들의 새로운 네트워크 </p>
-                    </button>
-                    <button 
-                        style={notSelectedTab}
-                        className="px-5 py-3 rounded-3xl focus:outline-none"
-                    >
-                        Xircle
-                    </button>
-                </section>
-            </header>
+                    <section className="flex flex-row items-center justify-around mt-1">
+                        <div style={{width: 87}}></div>
+                        <button 
+                            style={selectedTab}
+                            className="px-5 py-3 rounded-3xl focus:outline-none"
+                        ><p style={{fontSize: 12, fontWeight: 300}}>대학생들의 새로운 네트워크 </p>
+                        </button>
+                        <button 
+                            style={notSelectedTab}
+                            className="px-5 py-3 rounded-3xl focus:outline-none"
+                        >
+                            Xircle
+                        </button>
+                    </section>
+                </header>
             ): (
             pageNum === 3 ? (
                 <img 
@@ -1327,19 +1292,24 @@ const MyProfile = ({ history }) => {
             ) : (
             <header style={{margin: "20px 0 35px 0"}}>
                 <section className="flex flex-row items-center justify-around mt-1">
-                    <div style={{width: 87}}></div>
+                    <div style={{width: 87}}>
+                        <p style={{fontWeight: 600, textAlign: 'center'}}>XIRCLE</p>
+                    </div>
                     <button 
                         style={pageNum === 2 ? selectedTab : notSelectedTab}
-                        className="px-5 py-3 rounded-3xl focus:outline-none"
+                        className="px-5 py-2 rounded-3xl focus:outline-none"
                         onClick={() => setPageNum(2)}
                     ><p style={{fontSize: 18, fontWeight: 300}}>{displayName || displayNameInUser}</p>
                     </button>
                     <button 
                         style={pageNum === 3 ? selectedTab : notSelectedTab}
-                        className="px-5 py-3 rounded-3xl focus:outline-none"
+                        className="px-5 rounded-3xl focus:outline-none"
                         onClick={() => setPageNum(3)}
                     >
-                        사용방법
+                        <img
+                            src="/profile/waytouse.svg"
+                            style={{width: 45, height: 45}}
+                        />
                     </button>
                 </section>
             </header>

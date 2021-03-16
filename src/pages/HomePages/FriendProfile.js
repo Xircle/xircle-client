@@ -6,6 +6,7 @@ import { interest2Index, interest2Object} from '../../components/interest2Object
 import airpod from '../../images/my-profile/airpod.svg';
 import ageGenerator from '../../components/ageGenerator';
 import Spinner from 'react-spinner-material';
+import Modal from '../../components/UI/modal';
 
 let articleDispatchingCnt = [
     null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -59,6 +60,7 @@ const FriendProfile = ({ history }) => {
     const [pageNum, setPageNum] = useState(2);
     const [selectedInterest, setSelectedInterest] = useState(null); //관심사 네비게이션에서 선택된 관심사. (1, 스타트업) (2, 동네친구) ..등등
     // const [myProfileImgSrc, setMyProfileImgSrc] = useState(profileImgSrc);
+    const [anyThingClicked, setAnyThingClicked] = useState(false);
     const [naviContents, setNaviContents] = useState(null);
     const [articleClicked, setArticleClicked] = useState(false);
 
@@ -75,13 +77,17 @@ const FriendProfile = ({ history }) => {
     
     const newArr = interest2Object(interestArr);
     useEffect(() => {
+        console.log('friend profile rendering!');
         const tokenInRedux = token;
         if(!tokenInRedux) { // 토큰이 없는 상태라면(refreshing) /my-profile로 리다이렉션
             history.push('/my-profile');
         }else {
             if(userId)  // 리덕스에 있으면 http 통신 금지
                 return null;
+            
             dispatch(actions.getFriend(tokenInRedux));
+            setSelectedInterest('x');
+            setArticleClicked(false);
         }
     }, []);
 
@@ -141,6 +147,7 @@ const FriendProfile = ({ history }) => {
                         </div>
                     </li>
                     ))}
+                    <li style={{ width: '45%', margin: 5}}></li>
                 </ul>
             )
         }else if(selectedInterest === '스타트업') { // @스타트업 관심사 누를 때
@@ -309,6 +316,7 @@ const FriendProfile = ({ history }) => {
             );
         }else if(selectedInterest === '동네친구') { // @동네친구 관심사 누를 때
             articleDispatchingCnt[3]++;
+            console.log(articleDispatchingCnt[3]);
             if(articleDispatchingCnt[3] === 1) { // 최초 한번만 http 통신하기
                 console.log('dispatching!!');
                 console.log('articleIsLoading : ', articleIsLoading)
@@ -329,6 +337,7 @@ const FriendProfile = ({ history }) => {
                 fetchedArticleContent = foundObj.articleContent;
                 console.log(fetchedArticleImgSrc)
             }
+            console.log('here')
             setNaviContents(
                 articleIsLoading ? (
                     <div style={{height: 100, position: 'relative'}}>
@@ -562,9 +571,9 @@ const FriendProfile = ({ history }) => {
                 foundObj = articleArrInFriend.find(el => el.interest === '패션');
                 if(!foundObj)
                     return null;
+                console.log(foundObj);
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
                 fetchedArticleContent = foundObj.articleContent;
-                console.log(fetchedArticleImgSrc)
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -939,22 +948,22 @@ const FriendProfile = ({ history }) => {
                 </ul>
                 )
             );
-        }else if(selectedInterest === '로스쿨') { // @로스쿨 관심사 누를 때
+        }else if(selectedInterest === '수험생') { // @수험생 관심사 누를 때
             articleDispatchingCnt[11]++;
             if(articleDispatchingCnt[11] === 1) { // 최초 한번만 http 통신하기
                 console.log('dispatching!!');
                 console.log('articleIsLoading : ', articleIsLoading)
-                const foundObjInRedux = articleArrInFriend.find(el => el.interest === '로스쿨');
+                const foundObjInRedux = articleArrInFriend.find(el => el.interest === '수험생');
                 console.log(foundObjInRedux); 
                 if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
                     return null;
-                dispatch(actions.getFriendArticle(token, userId, "로스쿨"));
+                dispatch(actions.getFriendArticle(token, userId, "수험생"));
             }
             let foundObj = {};
             let fetchedArticleImgSrc = {};
             let fetchedArticleContent = {};
             if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInFriend.find(el => el.interest === '로스쿨');
+                foundObj = articleArrInFriend.find(el => el.interest === '수험생');
                 if(!foundObj)
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
@@ -1165,13 +1174,13 @@ const FriendProfile = ({ history }) => {
                         <div className="relative">
 
                             <img 
-                                style={{width: 228, height: 228, borderRadius: 114, backgroundColor: 'white', margin: '0 auto', objectFit: 'cover'}}
+                                style={{width: 198, height: 198, borderRadius: 114, backgroundColor: 'white', margin: '0 auto', objectFit: 'cover'}}
                                 src={profileImgSrc}
                             />
                             {/* <input className="focus:outline-none" style={{position: 'absolute', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 228, height: 228, borderRadius: 114, cursor: 'pointer'}} type="file" onChange={(e) => profileImgChangeHandler(e)} /> */}
                             <img
-                                onClick={() => dispatch(actions.getFriend(token))}
-                                style={{position: 'absolute', right: '1%', top: '50%', cursor: 'pointer'}} 
+                                onClick={() => { dispatch(actions.getFriend(token)); setSelectedInterest('x'); setArticleClicked(false); articleDispatchingCnt = [null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,]; }}
+                                style={{position: 'absolute', right: '6%', top: '50%', cursor: 'pointer'}} 
                                 src="/profile/arrow_right_outline.svg"
                                 alt="arrow"
                             />
@@ -1194,27 +1203,27 @@ const FriendProfile = ({ history }) => {
                         {/* 직장, 활동이력, 한줄소개 */}
                         <ul style={{marginTop: 30}}>
                             {workPlace ? (
-                            <li className="flex flex-row text-sm">
+                            <li className="flex flex-row items-center">
                                 <img 
                                     style={{width: 15, height: 15}}
                                     src="/company.svg"
                                     alt="company"
                                 />
-                                <p className="font-extrabold mx-2 my-0">{workPlace}</p><span>재직중</span>
+                                <p style={{margin: "0px 5px 0 10px"}} className="font-extrabold my-0">{workPlace}</p><span>재직중</span>
                             </li>
                             ) : null}
                             {resume ? (
-                            <li className="flex flex-row text-sm my-3">
+                            <li className="flex flex-row items-center my-3">
                                 <img 
                                     style={{width: 15, height: 15}}
                                     src="/activity.svg"
                                     alt="company"
                                 />
-                                <p className="mx-2 my-0">{resume}</p>
+                                <p style={{margin: "0px 5px 0 10px"}} className="my-0">{resume}</p>
                             </li>
                             ) : null}
-                            <li className="flex flex-row text-sm mb-2">
-                                <p className="">{introText}</p>
+                            <li className="flex flex-row mb-2">
+                                <p>{introText}</p>
                             </li>
                         </ul>
                     </section>
@@ -1223,7 +1232,7 @@ const FriendProfile = ({ history }) => {
                 {/* Album Navigation */}
                 {isLoading ? <div style={{height: 40}}></div> : (
 
-                <section className="flex flex-row items-center justify-start mt-1">
+                <section style={{marginTop: 20}} className="flex flex-row items-center justify-start">
                     <button 
                         style={selectedInterest === 'x' || selectedInterest === null ? selectedTab : notSelectedTab}
                         className="px-5 py-3 mx-3 rounded-3xl focus:outline-none"
@@ -1292,11 +1301,11 @@ const FriendProfile = ({ history }) => {
         alert('존재하지 않는 페이지입니다.')
     }
     return (
-        <Layout invitement footerNone>
+        <Layout history={history} invitement footerNone>
             
             {isLoading ? (
                 <header style={{margin: "20px 0 35px 0"}}>
-                    <section className="flex flex-row items-center justify-around mt-1">
+                    <section className="flex flex-row items-center justify-around">
                         <div style={{width: 87}}></div>
                         <button 
                             style={selectedTab}
@@ -1312,40 +1321,38 @@ const FriendProfile = ({ history }) => {
                     </section>
                 </header>
             ): (
-            pageNum === 3 ? (
-                <img 
-                    onClick={() => setPageNum(2)}
-                    src="/event/waytouse.jpg"
-                    alt="사용방법"
-                />
-            ) : (
             <header style={{margin: "20px 0 35px 0"}}>
-                <section className="flex flex-row items-center justify-around mt-1">
-                    <div style={{width: 87}}>
-                        <img 
-                            style={{width: 35, height: 35, borderRadius: 20, margin: '0 auto'}}
-                            src={MyprofileImgSrc}
-                            alt="my-profile"
-                            onClick={() => history.push('my-profile')}
-                        />
-                    </div>
+                <section className="flex flex-row items-center justify-around">
+                    <button 
+                        className="px-5 py-3 rounded-3xl focus:outline-none"
+                        onClick={() => history.push('my-profile')}
+                    > 내 프로필
+                    </button>
                     <button 
                         style={pageNum === 2 ? selectedTab : notSelectedTab}
-                        className="px-5 py-3 rounded-3xl focus:outline-none"
+                        className="px-5 py-2 rounded-3xl focus:outline-none"
                         onClick={() => setPageNum(2)}
                     > <p style={{fontSize: 18, fontWeight: 300}}>{displayNameInFriend}</p>
                     </button>
                     <button 
                         style={pageNum === 3 ? selectedTab : notSelectedTab}
-                        className="px-5 py-3 rounded-3xl focus:outline-none"
-                        onClick={() => setPageNum(3)}
+                        className="px-5 rounded-3xl focus:outline-none"
+                        onClick={() => setAnyThingClicked(true)}
                     >
-                        사용방법
+                        <img 
+                            style={{width: 45, height: 45}}
+                            src="/profile/message.svg"
+                            alt="message"
+                        />
                     </button>
                 </section>
             </header>
-            )
             )}
+            <Modal show={anyThingClicked} clicked={() => setAnyThingClicked(false)}>
+                <div style={{padding: '40px 0'}}>
+                    <p>메시지는 개발 중 입니다. <br/> 4월 15일 런칭 이후에 <br/> 친구에게 메시지를 보내보세요!</p>
+                </div>
+            </Modal>
 
             {pageContents}
         </Layout>

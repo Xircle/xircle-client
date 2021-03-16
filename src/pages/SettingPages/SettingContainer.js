@@ -8,7 +8,7 @@ const SettingContainer = ({ history, match }) => {
     return (
         <>
         {num !== '11' ? (
-            <div className="w-full overflow-x-hidden">
+            <div className="overflow-x-hidden">
                 <Layout num={num} headerNone footerNone>
                     <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
                         <img
@@ -23,11 +23,9 @@ const SettingContainer = ({ history, match }) => {
                 </Layout>
             </div>
         ) : (
-            <div className="w-full">
-                <Layout headerNone footerNone>
-                    <SettingContents history={history} questionNum={num}/>
-                </Layout>
-            </div>
+            <Layout headerNone footerNone>
+                <SettingContents history={history} questionNum={num}/>
+            </Layout>
         )}
         </>
     )

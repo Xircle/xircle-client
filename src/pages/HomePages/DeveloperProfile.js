@@ -7,6 +7,8 @@ import lawschool from '../../images/my-profile/lawSchool.svg';
 import airpod from '../../images/my-profile/airpod.svg';
 import ide from '../../images/developer-profile/IDE.svg';
 import moyaho from '../../images/developer-profile/moyaho.svg';
+import { createKakaoButton } from '../../components/KakaoShareButton';
+
 
 const selectedTab = {
     backgroundColor: 'black',
@@ -30,7 +32,7 @@ const DeveloperProfile = ({ history }) => {
                 {/* 프로필 사진 */}
                     <div className="relative">
                         <img 
-                            style={{width: 228, height: 228, borderRadius: 114, backgroundColor: 'gray', margin: '0 auto', objectFit: 'cover'}}
+                            style={{width: 198, height: 198, borderRadius: 114, backgroundColor: 'gray', margin: '0 auto', objectFit: 'cover'}}
                             src='/dev_profile.svg'
                             alt="dev_profile"
                         />
@@ -40,7 +42,7 @@ const DeveloperProfile = ({ history }) => {
                     <div className="mt-3">
                         <div className="text-center">
                             <div className="flex flex-row items-center justify-center">
-                                <a href="http://pf.kakao.com/_kDxhtK" style={{color: "#8D8D8D", fontSize: 11}} className="cursor-pointer">문의하기</a>
+                                <a href="http://pf.kakao.com/_kDxhtK" style={{color: "#8D8D8D", fontSize: 11}} className="cursor-pointer">XIRCLE에게 문의하기</a>
                                 <img 
                                     src="/right_arrow.svg"
                                     alt="right_arrow"
@@ -58,25 +60,25 @@ const DeveloperProfile = ({ history }) => {
                     </div>
 
                     {/* 직장, 한줄소개 */}
-                    <ul className="mt-14">
-                        <li className="flex flex-row text-sm mb-2">
+                    <ul style={{marginTop: 30}}>
+                        <li className="flex flex-row">
                             <img 
                                 style={{width: 15, height: 15}}
                                 src="/company.svg"
                                 alt="company"
                             />
-                            <p className="font-extrabold mx-2 my-0">XIRCLE</p><span>사전신청 중 (-3.31)</span>
-                        </li>
-                        <li className="flex flex-row text-sm mb-2">
-                            <p className="">취향과 성향이 잘 맞는 사람들과 대화하고 만날 수 있는 <br/> 대학기반 네트워킹 서비스 [베타테스트] 서연고서성한대상 <br/><br/></p>
+                            <p className="font-extrabold mx-2 my-0">XIRCLE</p><span>사전신청 중 (-4.16)</span>
                         </li>
                         <li className="flex flex-row items-center my-3 ">
                             <img 
-                                style={{width: 11, height: 11}}
+                                style={{width: 15, height: 15}}
                                 src="/activity.svg"
                                 alt="activity"
                             />
-                            <p className="font-sans" style={{color: "#8D8D8D", fontSize: 13, marginLeft: 5}}>XIRCLE 창업멤버</p>
+                            <p className="mx-2 my-0">XIRCLE 창업멤버</p>
+                        </li>
+                        <li className="flex flex-row mb-2">
+                            <p className="">취향과 성향이 잘 맞는 사람들과 대화하고 만날 수 있는 <br/> 대학기반 네트워킹 서비스 [베타테스트] 서연고서성한대상 <br/><br/></p>
                         </li>
                     </ul>
                 </section>
@@ -140,13 +142,74 @@ const DeveloperProfile = ({ history }) => {
                         </li>
                         <li 
                             style={{
-                                margin: 10, backgroundColor: "#DEDEDE", borderRadius: 15, overflow: 'hidden',
-                                width: '45%', height: 160, color: '#fff',
+                                margin: 5, backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                                width: '45%', height: 160,
                                 transform: 'translate(0, -170px)'
                             }} 
-                            className="cursor-pointer relative flex flex-row justify-center items-center"
+                            className="cursor-pointer relative flex flex-col justify-center items-center"
+                            onClick={() => window.location.href = 'https://www.instagram.com/xircle_official/'}
                         >
-                            <a href="https://www.instagram.com/ykring_official/" style={{color: "#fff"}}>XIRCLE 인스타그램</a>
+                            <img 
+                                style={{width: 70, height: 70}}
+                                src="/devProfile/insta.svg"
+                                alt="insta"
+                            />
+                            <p>XIRCLE 인스타그램</p>
+                        </li>
+                        <li 
+                            style={{
+                                margin: 10, backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                                width: '45%', height: 160,
+                                transform: 'translate(0, -50px)'
+                            }} 
+                            className="cursor-pointer relative flex flex-col justify-center items-center"
+                            onClick={() => window.location.href = 'http://pf.kakao.com/_kDxhtK'}
+                        >
+                            <img 
+                                style={{width: 70, height: 70}}
+                                src="/devProfile/kakaotalk.svg"
+                                alt="kakao"
+                            />
+                            <p>XIRCLE 문의하기</p>
+                        </li>
+                        <li 
+                            id="kakao-invite"
+                            onClick={() => createKakaoButton('#kakao-invite')}
+                            style={{
+                                margin: 5, backgroundColor: "#fff", borderRadius: 15,
+                                transform: 'translate(0, -171px)',
+                                width: '45%', height: 281
+                            }} 
+                            className="cursor-pointer relative flex flex-col justify-center items-center"
+                        >
+                            <img 
+                                style={{width: 70, height: 70}}
+                                src="/profile/message.svg"
+                                alt="message"
+                            />
+                            <p>XIRCLE 초대장 보내기</p>
+                        </li>
+                        <li 
+                            style={{
+                                margin: 10, backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                                width: '45%', height: 160,
+                                transform: 'translate(0, -160px)'
+                            }} 
+                            className="cursor-pointer relative flex flex-col justify-center items-center"
+                            onClick={() => window.location.href = 'https://www.facebook.com/xircle.org'}
+                        >
+                            <img 
+                                style={{width: 70, height: 70}}
+                                src="/devProfile/facebook.svg"
+                                alt="facebook"
+                            />
+                            <p>XIRCLE 페이스북</p>
+                        </li>
+                        <li 
+                            style={{
+                                margin: 10, backgroundColor: "#F7F7FA", width: '43%'
+                            }} 
+                        >
                         </li>
                     </ul>
                 </section>
@@ -161,26 +224,26 @@ const DeveloperProfile = ({ history }) => {
                         src="/moyaho.svg"
                         alt="moyaho"
                     />
-                    <p style={{marginTop: 20}}>
+                    <p style={{marginTop: 20, lineHeight: 1.5}}>
                         안녕하세요. XIRCLE 입니다.<br/>
                         사전신청 해주신 모든 분들 진심으로 감사드립니다.<br/>
-                        베타버전 정식 런칭은 3월31일에 시작합니다.<br/>
+                        베타버전 정식 런칭은 4월 16일에 시작합니다.<br/>
                     </p>
-                    <p>
+                    <p style={{lineHeight: 1.5}}>
                         XIRCLE은 연고대 재학생들이 코로나때문에 <br/>
                         막혀버린 네트워킹의 기회를 해결하기 위해<br/>
                         만들어진 프로젝트 서비스로 금전적 이익을 얻지 않습니다.<br/>
                     </p>
-                    <p>
+                    <p style={{lineHeight: 1.5}}>
                         에어팟 / 올리브영 1만원권 이벤트도 <br/>
                         많이 많이 참가해주시구 주변 친구들에게 초대장도<br/>
                         보내주시면 감사하겠습니다 ㅎㅎㅎ <br/>
                     </p>
-                    <p>
+                    <p style={{lineHeight: 1.5}}>
                         일단 서연고서성한 대상으로 진행하며 <br/>
                         상황을 보고 학교를 확대할 예정입니다. <br/>
                     </p>
-                    <p>
+                    <p style={{lineHeight: 1.5}}>
                         ※ 게시글에 관한 문의가 많은데 <br/>
                         게시글은  3월 19일 정도부터 올리실 수 있으며 <br/>
                         친구에게 메시지 보내는건 3월 25일 정도부터 <br/>
@@ -193,9 +256,9 @@ const DeveloperProfile = ({ history }) => {
     }
     return (
         <Layout footerNone invitement>
-            <header className="mt-5 mb-10">
-                <section className="flex flex-row items-center justify-around mt-1">
-                    <div style={{width: 71}}>
+            <header style={{margin: "20px 0 35px 0"}}>
+                <section className="flex flex-row items-center justify-around">
+                    <div className="px-5 py-2" style={{width: 87}}>
                         <img
                             onClick={() => history.goBack()} 
                             style={{width: '20px', height: '20px', margin: '0 auto', cursor: 'pointer'}}
