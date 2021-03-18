@@ -123,7 +123,7 @@ const KakaoMap = ({ history }) => {
                 
                 const fullAddr = result[0].address.address_name; 
                 const newAddr = fullAddr.split(' ');
-                const displayAddr = '<p style="margin: 10px;"> ' + newAddr[0] + ' ' +  newAddr[1] + ' ' + newAddr[2] + '</p>';
+                const displayAddr = '<p style="margin: 10px;"> ' + newAddr[0] + ' ' +  newAddr[1] +  '</p>';
                 setAddr(newAddr[0] + ' ' + newAddr[1])
                 setLongitude(mouseEvent.latLng.getLng());
                 setLatitude(mouseEvent.latLng.getLat());
@@ -154,8 +154,7 @@ const KakaoMap = ({ history }) => {
   return (
     <div style={{opacity: isLoading ? 0.5 : 1, zIndex: 900}} className="flex flex-col items-center h-full relative">
       
-      {isMapSupported ? (
-      <div onClick={(e) => e.preventDefault()} id="map" style={{ width: '80%', height: 300}}>
+      <div onClick={(e) => e.preventDefault()} id="map" style={{ width: '80%', height: isMapSupported ? 300 : 0}}>
         {isLoading ? (
             <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, 0)'}}>
                 <Spinner
@@ -164,7 +163,6 @@ const KakaoMap = ({ history }) => {
             </div>
         ) : null}
       </div>
-      ) : null}
 
       <div style={{marginTop: 20}} className="h-full flex flex-row justify-center items-center pt-5">
         <p style={{marginBottom: 0, fontSize: 13}} className="mr-5">나는</p>
@@ -187,7 +185,7 @@ const KakaoMap = ({ history }) => {
               style={{width: 190}}
           />
         )}
-        <p style={{fontSize: 13}} className="text-lg ml-5">에 삽니다.</p>
+        <p style={{fontSize: 13}} className="text-lg ml-5">에 있어요.</p>
       </div>
       <button onClick={(e) => locationBtnHandler(e)} className="w-full rounded-lg px-5 py-3 my-20 bg-gray-400 text-white focus:outline-none">맞습니다.</button>
     </div>

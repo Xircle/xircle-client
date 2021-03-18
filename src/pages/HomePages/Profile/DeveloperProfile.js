@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import Layout from '../../components/layout';
-import Modal from '../../components/UI/modal';
-import startup from '../../images/my-profile/startUp.svg';
-import coding from '../../images/my-profile/coding.svg';
-import lawschool from '../../images/my-profile/lawSchool.svg';
-import airpod from '../../images/my-profile/airpod.svg';
-import ide from '../../images/developer-profile/IDE.svg';
-import moyaho from '../../images/developer-profile/moyaho.svg';
-import { createKakaoButton } from '../../components/KakaoShareButton';
+import Layout from '../../../components/layout';
+import Modal from '../../../components/UI/modal';
+import startup from '../../../images/my-profile/startUp.svg';
+import coding from '../../../images/my-profile/coding.svg';
+import lawschool from '../../../images/my-profile/lawSchool.svg';
+import airpod from '../../../images/my-profile/airpod.svg';
+import ide from '../../../images/developer-profile/IDE.svg';
+import moyaho from '../../../images/developer-profile/moyaho.svg';
+import { createKakaoButton } from '../../../components/KakaoShareButton';
 
 
 const selectedTab = {
@@ -61,13 +61,13 @@ const DeveloperProfile = ({ history }) => {
 
                     {/* 직장, 한줄소개 */}
                     <ul style={{marginTop: 30}}>
-                        <li className="flex flex-row">
+                        <li className="flex flex-row items-center">
                             <img 
                                 style={{width: 15, height: 15}}
                                 src="/company.svg"
                                 alt="company"
                             />
-                            <p className="font-extrabold mx-2 my-0">XIRCLE</p><span>사전신청 중 (-4.16)</span>
+                            <p style={{margin: "0px 5px 0 10px"}} className="font-extrabold ">XIRCLE</p><span>사전신청 중 (-4.16)</span>
                         </li>
                         <li className="flex flex-row items-center my-3 ">
                             <img 
@@ -75,7 +75,7 @@ const DeveloperProfile = ({ history }) => {
                                 src="/activity.svg"
                                 alt="activity"
                             />
-                            <p className="mx-2 my-0">XIRCLE 창업멤버</p>
+                            <p style={{margin: "0px 5px 0 10px"}}>XIRCLE 창업멤버</p>
                         </li>
                         <li className="flex flex-row mb-2">
                             <p className="">취향과 성향이 잘 맞는 사람들과 대화하고 만날 수 있는 <br/> 대학기반 네트워킹 서비스 [베타테스트] 서연고서성한대상 <br/><br/></p>

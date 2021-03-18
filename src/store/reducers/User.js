@@ -18,6 +18,7 @@ export const initialState = {
     lat: null,
     lng: null,
     interestArr: [],
+    // 사전신청때 받은 article 사진, 관심사, 태그, 글 
     articleImgSrc: null,
     articleText: null,
     articleInterestArr: [],
@@ -27,10 +28,23 @@ export const initialState = {
     resume: null,
     workPlace: null,
     // article
-    articleInProfile: [],
+    articleInProfile: null,
     articleIsLoading: null,
 }
-// article[ {interest: "스타트업", articleContent: "창업은 어려워", articleImgSrc: "https://~~~.com"}, ]
+// articleInProfile: {
+//     "startUp": [
+//         {
+//             articleImgSrc,
+//             articleContent
+//         }
+//         {
+//             articleImgSrc,
+//             articleContent
+//         }
+//     ],
+//     "meat": []
+// }
+
 
 const reducer = (state=initialState, action) => {
     switch(action.type) {
@@ -207,7 +221,7 @@ const reducer = (state=initialState, action) => {
             }
         case actionTypes.GET_INTEREST_ARTICLE_SUCCESS:
             const { interest, articleContent, articleImgSrc } = action;
-
+            // [ {articleImgSrc: "www", articleContent: "안녕~"}, {} ]
             const newArticleArr = JSON.parse(JSON.stringify(state.articleInProfile)) //깊은복사
             if(!articleContent || !articleImgSrc) { // 없으면 추가안함
                 newArticleArr.push({

@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Layout from '../../components/layout';
-import * as actions from '../../store/actions/index';
-import { interest2Index, interest2Object} from '../../components/interest2Object';
-import airpod from '../../images/my-profile/airpod.svg';
-import ageGenerator from '../../components/ageGenerator';
+import Layout from '../../../components/layout';
+import * as actions from '../../../store/actions/index';
+import { interest2Index, interest2Object} from '../../../components/interest2Object';
+import airpod from '../../../images/my-profile/airpod.svg';
+import ageGenerator from '../../../components/ageGenerator';
 import Spinner from 'react-spinner-material';
-import Modal from '../../components/UI/modal';
+import Modal from '../../../components/UI/modal';
 
 let articleDispatchingCnt = [
     null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1223,7 +1223,7 @@ const FriendProfile = ({ history }) => {
                             </li>
                             ) : null}
                             <li className="flex flex-row mb-2">
-                                <p>{introText}</p>
+                                <p style={{margin: '10px 0'}}>{introText}</p>
                             </li>
                         </ul>
                     </section>

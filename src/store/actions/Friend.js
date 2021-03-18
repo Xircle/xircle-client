@@ -59,12 +59,10 @@ export const getFriendArticleStart = () => {
         type: actionTypes.GET_FRIEND_ARTICLE_START,
     }
 }
-export const getFriendArticleSuccess = (interest, articleContent, articleImgSrc) => {
+export const getFriendArticleSuccess = (articleDataArr) => {
     return {
         type: actionTypes.GET_FRIEND_ARTICLE_SUCCESS,
-        interest,
-        articleContent,
-        articleImgSrc,
+        articleDataArr,
     }
 }
 export const getFriendArticleFail = () => {
@@ -77,6 +75,7 @@ export const getFriendArticleInit = () => {
         type: actionTypes.GET_FRIEND_ARTICLE_INIT,
     }
 }
+
 export const getFriendArticle = (token, userId, interest) => {
     return dispatch => {
         dispatch(getFriendArticleStart());
@@ -88,15 +87,20 @@ export const getFriendArticle = (token, userId, interest) => {
         })
         .then(res => {
             console.log(res);
-            const { articleContent, articleImgSrc } = res.data.data;
+            // const { articleContent, articleImgSrc } = res.data.data;
             const isSuccess = res.data.success;
             if(isSuccess) {
-                dispatch(getFriendArticleSuccess(interest, articleContent, articleImgSrc));
+                const articleDataArr = res.data.data; // [{articleImgSrc, articleContent}, {articleImgSrc, articleContent}]
+                if(articleDataArr.length === 0) { // 해당 관심사에 대한 게시글이 없으면 
+                    dispatch(getFriendArticleSuccess(null));
+                }else {
+                    dispatch(getFriendArticleSuccess(articleDataArr));
+                }
             }else {
                 dispatch(getFriendArticleFail());
                 dispatch(getFriendArticleInit());
                 alert(res.data.message);
-                // window.location.href = 'my-profile';
+                window.location.href = 'my-profile';
             }
         })
         .catch(err => {

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Layout from '../../components/layout';
-import * as actions from '../../store/actions/index';
-import Modal from '../../components/UI/modal';
-import { interest2Object } from '../../components/interest2Object';
-import airpod from '../../images/my-profile/airpod.svg';
-import ageGenerator from '../../components/ageGenerator';
+import Layout from '../../../components/layout';
+import * as actions from '../../../store/actions/index';
+import Modal from '../../../components/UI/modal';
+import { interest2Object } from '../../../components/interest2Object';
+import airpod from '../../../images/my-profile/airpod.svg';
+import ageGenerator from '../../../components/ageGenerator';
 import Spinner from 'react-spinner-material';
-import { createKakaoButton } from '../../components/KakaoShareButton';
+import { createKakaoButton } from '../../../components/KakaoShareButton';
 
 let articleDispatchingCnt = [
     null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -59,8 +59,9 @@ const MyProfile = ({ history }) => {
     
     const [pageNum, setPageNum] = useState(2);
     const [selectedInterest, setSelectedInterest] = useState(null); //관심사 네비게이션에서 선택된 관심사. (1, 스타트업) (2, 동네친구) ..등등
-    const [myProfileImgSrc, setMyProfileImgSrc] = useState(profileImgSrc);
-    const [anyThingClicked, setAnyThingClicked] = useState(false);
+    const [myProfileImgSrc, setMyProfileImgSrc] = useState(null);
+    const [profileImgSrcFormData, setProfileImgSrcFormData] = useState('');
+    
     const [naviContents, setNaviContents] = useState(null);
     const [articleClicked, setArticleClicked] = useState(false);
 
@@ -96,6 +97,39 @@ const MyProfile = ({ history }) => {
             alert("로그인 해주세요.");
             window.location.href = "auth";
         }
+    }, []);
+
+    useEffect(() => {
+        // 최초에 이미지 설정
+        setMyProfileImgSrc(profileImgSrc);
+    }, [profileImgSrc]);
+
+    // 프로필이미지 업데이트
+    const updateProfile = useCallback((event) => {
+        event.preventDefault();
+        const reader = new FileReader();
+        reader.onload = event => { 
+            dispatch(actions.updateProfileImgToServer(event.target.result))
+        };
+        const files = event.target.files;
+        const __file = files[0];
+
+        reader.readAsDataURL(__file);
+    }, []);
+
+    const profileImgChangeHandler = useCallback((event) => {
+        const files = event.target.files;
+        const __file = files[0];
+
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(__file);
+        fileReader.onload = e => { // async하게 다 읽었악면 실행 
+            setMyProfileImgSrc(e.target.result);
+        };
+
+        const formData = new FormData();
+        formData.append("img", __file);
+        setProfileImgSrcFormData(formData);
     }, []);
 
     useEffect(() => {
@@ -182,9 +216,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '스타트업') { // @스타트업 관심사 누를 때
             articleDispatchingCnt[1]++;
             if(articleDispatchingCnt[1] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '스타트업');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("스타트업", token, articleArrInProfile));
             }
 
@@ -192,7 +223,7 @@ const MyProfile = ({ history }) => {
             let fetchedArticleImgSrc = {};
             let fetchedArticleContent = {};
             if(articleIsLoading === false) { // fetch된 후
-                foundObj = articleArrInProfile.find(el => el.interest === '스타트업');
+                foundObj = articleArrInProfile.find(el => el.interest === '스타트업'); // [ [{interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"}, { }], [] ]
                 if(!foundObj)
                     return null;
                 fetchedArticleImgSrc = foundObj.articleImgSrc;
@@ -258,9 +289,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '술/맛집탐방') { // @술/맛집탐방 관심사 누를 때
             articleDispatchingCnt[2]++;
             if(articleDispatchingCnt[2] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '술/맛집탐방');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("술/맛집탐방", token, articleArrInProfile));
             }
 
@@ -333,9 +361,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '동네친구') { // @동네친구 관심사 누를 때
             articleDispatchingCnt[3]++;
             if(articleDispatchingCnt[3] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '동네친구');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("동네친구", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -407,9 +432,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '코딩') { // @코딩 관심사 누를 때
             articleDispatchingCnt[4]++;
             if(articleDispatchingCnt[4] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '코딩');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("코딩", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -481,9 +503,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '애견인') { // @애견인 관심사 누를 때
             articleDispatchingCnt[5]++;
             if(articleDispatchingCnt[5] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '애견인');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("애견인", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -555,9 +574,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '패션') { // @패션 관심사 누를 때
             articleDispatchingCnt[6]++;
             if(articleDispatchingCnt[6] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '패션');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("패션", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -629,9 +645,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '예술') { // @예술 관심사 누를 때
             articleDispatchingCnt[7]++;
             if(articleDispatchingCnt[7] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '예술');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("예술", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -703,9 +716,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '게임') { // @게임 관심사 누를 때
             articleDispatchingCnt[8]++;
             if(articleDispatchingCnt[8] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '게임');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("게임", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -777,9 +787,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '헬스') { // @헬스 관심사 누를 때
             articleDispatchingCnt[9]++;
             if(articleDispatchingCnt[9] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '헬스');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("헬스", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -851,9 +858,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '취업준비') { // @취업준비 관심사 누를 때
             articleDispatchingCnt[10]++;
             if(articleDispatchingCnt[10] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '취업준비');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("취업준비", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -925,9 +929,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '수험생') { // @수험생 관심사 누를 때
             articleDispatchingCnt[11]++;
             if(articleDispatchingCnt[11] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '수험생');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("수험생", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -999,9 +1000,6 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '대학원') { // @대학원 관심사 누를 때
             articleDispatchingCnt[12]++;
             if(articleDispatchingCnt[12] === 1) { // 최초 한번만 http 통신하기
-                const foundObjInRedux = articleArrInProfile.find(el => el.interest === '대학원');
-                if(foundObjInRedux) // 현재 리덕스에 있으면 디스패칭 금지
-                    return null;
                 dispatch(actions.getInterestArticle("대학원", token, articleArrInProfile));
             }
             let foundObj = {};
@@ -1073,35 +1071,6 @@ const MyProfile = ({ history }) => {
         }
     }, [selectedInterest, articleIsLoading, isLoading, articleArrInProfile, articleClicked]);
 
-
-    // 프로필이미지 업데이트
-    const updateProfile = useCallback((event) => {
-        event.preventDefault();
-        const reader = new FileReader();
-        reader.onload = event => { 
-            dispatch(actions.updateProfileImgToServer(event.target.result))
-        };
-        const files = event.target.files;
-        const __file = files[0];
-
-        reader.readAsDataURL(__file);
-    }, []);
-
-    const profileImgChangeHandler = useCallback((event) => {
-        const files = event.target.files;
-        const __file = files[0];
-
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(__file);
-        fileReader.onload = e => { // async하게 다 읽었악면 실행 
-            setMyProfileImgSrc(e.target.result);
-        };
-
-        // const formData = new FormData();
-        // formData.append("img", __file);
-        // setProfileImgSrcFormData(formData);
-    }, []);
-
     let pageContents = null;
     if(pageNum === 1) {
         pageContents = (
@@ -1137,9 +1106,9 @@ const MyProfile = ({ history }) => {
                         <div className="relative">
                             <img 
                                 style={{width: 198, height: 198, borderRadius: 114, backgroundColor: 'white', margin: '0 auto', objectFit: 'cover'}}
-                                src={profileImgSrc}
+                                src={myProfileImgSrc}
                             />
-                            {/* <input className="focus:outline-none" style={{position: 'absolute', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 228, height: 228, borderRadius: 114, cursor: 'pointer'}} type="file" onChange={(e) => profileImgChangeHandler(e)} /> */}
+                            <input className="focus:outline-none" style={{position: 'absolute', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 228, height: 228, borderRadius: 114, cursor: 'pointer'}} type="file" onChange={(e) => profileImgChangeHandler(e)} />
                             <img
                                 onClick={() => history.push('friend-profile')}
                                 style={{position: 'absolute', right: '6%', top: '50%', cursor: 'pointer'}} 
@@ -1185,7 +1154,7 @@ const MyProfile = ({ history }) => {
                             </li>
                             ) : null}
                             <li className="flex flex-row mb-2">
-                                <p>{introText}</p>
+                                <p style={{margin: '10px 0'}}>{introText}</p>
                             </li>
                         </ul>
                     </section>
@@ -1254,11 +1223,7 @@ const MyProfile = ({ history }) => {
             </>
         )
     }else if(pageNum === 3) {
-        // pageContents = (
-        //     <div style={{padding: 10}} className="h-screen">
-
-        //     </div>
-        // )
+        console.log('page 3')
     }else {
         alert('존재하지 않는 페이지입니다.')
     }
@@ -1292,15 +1257,6 @@ const MyProfile = ({ history }) => {
             ) : (
             <header style={{margin: "20px 0 35px 0"}}>
                 <section className="flex flex-row items-center justify-around mt-1">
-                    <div style={{width: 87}}>
-                        <p style={{fontWeight: 600, textAlign: 'center'}}>XIRCLE</p>
-                    </div>
-                    <button 
-                        style={pageNum === 2 ? selectedTab : notSelectedTab}
-                        className="px-5 py-2 rounded-3xl focus:outline-none"
-                        onClick={() => setPageNum(2)}
-                    ><p style={{fontSize: 18, fontWeight: 300}}>{displayName || displayNameInUser}</p>
-                    </button>
                     <button 
                         style={pageNum === 3 ? selectedTab : notSelectedTab}
                         className="px-5 rounded-3xl focus:outline-none"
@@ -1311,17 +1267,27 @@ const MyProfile = ({ history }) => {
                             style={{width: 45, height: 45}}
                         />
                     </button>
+                    <button 
+                        style={pageNum === 2 ? selectedTab : notSelectedTab}
+                        className="px-5 py-2 rounded-3xl focus:outline-none"
+                        onClick={() => setPageNum(2)}
+                    ><p style={{fontSize: 18, fontWeight: 300}}>{displayName || displayNameInUser}</p>
+                    </button>
+                    <button 
+                        style={pageNum === 3 ? selectedTab : notSelectedTab}
+                        className="px-5 rounded-3xl focus:outline-none"
+                        onClick={() => history.push('createArticle/1')}
+                    >
+                        <img
+                            src="/setting/write.svg"
+                            style={{width: 45, height: 45}}
+                        />
+                    </button>
                 </section>
             </header>
             )
             )}
 
-            <Modal show={anyThingClicked} clicked={() => setAnyThingClicked(false)}>
-                <div className="mb-5">
-                    <h1 className="text-xl mb-5">개발중입니다.</h1>
-                </div>
-            </Modal>
-            
             {pageContents}
         </Layout>
     )

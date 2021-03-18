@@ -79,8 +79,13 @@ const reducer = (state=initialState, action) => {
                 articleIsLoading: true,
             }
         case actionTypes.GET_FRIEND_ARTICLE_SUCCESS:
-            const { interest, articleContent, articleImgSrc } = action;
-
+            const articleDataArr = action.articleDataArr;
+            if(articleDataArr === null) // 해당 관심사의 article이 없을 때
+                return {
+                    ...state,
+                    articleIsLoading: false,
+                };
+                
             const newArticleArr = JSON.parse(JSON.stringify(state.articleInFriend)) //깊은복사
             if(!articleContent || !articleImgSrc) { // 없으면 추가안함
                 newArticleArr.push({

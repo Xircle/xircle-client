@@ -229,7 +229,7 @@ export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInR
                 console.log(err);
                 dispatch(submitToServerFail());
                 dispatch(submitToServerInit());
-                alert('일시적인 오류가 발생했습니다. 잠시후 다시 시도해주세요.');
+                alert('Something went wrong.');
             })
     }
 }

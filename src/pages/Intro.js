@@ -14,7 +14,6 @@ const Intro = ({ history }) => {
   const [tkInLocalStorage, setTkInLocalStorage] = useState(null);
   useEffect(() => {
     Aos.init();
-    console.log('rendered!')
     setTkInLocalStorage(localStorage.getItem('tk'));
   }, []);
 

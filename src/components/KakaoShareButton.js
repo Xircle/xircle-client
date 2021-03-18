@@ -13,32 +13,25 @@ export const createKakaoButton = (btnId) => {
     content: {
       title: 'Xircle',
       description: '새로운 네트워킹 클럽, Xircle',
-      imageUrl: process.env.REACT_APP_FETCH_IMAGE_URL,
+      imageUrl: 'https://xircle.org/Logo/xircleLogo.png',
       link: {
         mobileWebUrl: 'https://xircle.org/',
         webUrl: 'https://xircle.org/',
       },
     },
     social: {
-      likeCount: 193,
+      likeCount: 190,
       commentCount: 215,
       sharedCount: 103,
     },
     buttons: [
       {
-        title: '웹으로 보기',
+        title: 'Xircle 방문하기',
         link: {
           mobileWebUrl: 'https://xircle.org/',
           webUrl: 'https://xircle.org/',
         },
-      },
-      {
-        title: '앱으로 보기',
-        link: {
-          mobileWebUrl: "https://xircle.org/",
-          webUrl: 'https://xircle.org/',
-        },
-      },
+      }
     ],
   })
 }

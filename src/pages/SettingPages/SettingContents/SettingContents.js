@@ -69,54 +69,54 @@ const SettingContents = ({ history, questionNum }) => {
     
     useEffect(() => {
         const currentPath = window.location.pathname;
-        switch(currentPath) {
-            case '/setting/1':
-                if(!emailInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/2':
-                if(!locationInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/3':
-                if(!isPublicInRedux || !isGraduateInRedux || !genderInRedux || !ageInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/4':
-                if(!jobInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/5':
-                if(!adjInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/6':
-                if(!interestArrInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/7':
-                if(!articleImgSrcInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/8':
-                if(!articleTextInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/9':
-                if(!introTextInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/10':
-                if(!profileImgSrcInRedux) 
-                    return window.location.replace('auth');
-                break;
-            case '/setting/11':
-                if(!emailInRedux) 
-                    return window.location.replace('auth');
-                break;
-            default:
-                return null;
-        }
+        // switch(currentPath) {
+        //     case '/setting/1':
+        //         if(!emailInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/2':
+        //         if(!locationInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/3':
+        //         if(!isPublicInRedux || !isGraduateInRedux || !genderInRedux || !ageInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/4':
+        //         if(!jobInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/5':
+        //         if(!adjInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/6':
+        //         if(!interestArrInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/7':
+        //         if(!articleImgSrcInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/8':
+        //         if(!articleTextInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/9':
+        //         if(!introTextInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/10':
+        //         if(!profileImgSrcInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     case '/setting/11':
+        //         if(!emailInRedux) 
+        //             return window.location.replace('auth');
+        //         break;
+        //     default:
+        //         return null;
+        // }
         return () => {
             setDefaultArticleHashTag('');
         }
@@ -383,8 +383,8 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="h-1/4 text-center px-3 mt-3">
                 <div className="px-3 py-5 mb-3">
-                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">내 주변 친구들을 만나봐요!</h1>
-                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>고객님의 도시 정보까지만 표시하며 언제든지 <br/> 변경 가능해요. 프라이버시에 대해 걱정 하지 마세요!</p>
+                    <h1 style={{textAlign: 'left'}} className="text-2xl text-left">지금 어디있나요?</h1>
+                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>회원님의 도시 정보까지만 표시합니다. <br/> 프라이버시에 대해 걱정 마세요!  <br/> 프로필 수정에서 공개 비공개 설정이 가능해요.</p>
                 </div>
                 <KakaoMap history={history} />
             </section>
@@ -446,6 +446,7 @@ const SettingContents = ({ history, questionNum }) => {
                     <p style={{color: "#C5C1C1", textAlign: 'left'}}>회원님을 설명 해주세요. (필수) <br />어떤 사람인지 궁금해요.</p>
                 </div>
                 <Search
+                    placeholder={"선택지에 없다면 직접 추가!"}
                     size="big"
                     className="text-left ml-2"
                 />
@@ -467,10 +468,11 @@ const SettingContents = ({ history, questionNum }) => {
                 </div>
                 <div className="flex flex-row items-center">
                     <Search
+                        placeholder={"선택지에 없다면 직접 추가!"}
                         size="big"
-                        className="text-left ml-2"
+                        className="text-left ml-2 text-sm"
                     />
-                    <p style={{marginLeft: '10px'}}>{job || jobInRedux}</p>
+                    <p style={{marginLeft: '10px'}}>{jobInRedux || job}</p>
                 </div>
                 <section className="my-3 px-2">
                     {adjectives.map((adj, id) => (
@@ -496,7 +498,7 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="min-h-screen text-center px-3 my-3 mb-10">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left">관심사에 맞는 자신의 이야기를 한가지만 사진과 함께 적어보세요! [사진] </h3>
+                    <p style={{fontSize: 18, fontWeight: 'bold', marginBottom: 18}} className="text-left">관심사에 맞는 자신의 이야기를 사진과 함께 적어보세요! [사진] </p>
                     <p style={{color: "#B3B3B3", textAlign: 'left'}}>ex.오늘 먹은 음식 / 오늘 한 스터디 </p>
                 </div>
                 <section className="mt-5">
@@ -581,8 +583,8 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="text-center px-3 mb-10">
                  <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left">[마지막] 프로필 사진을 올려주세요.</h3>
-                    <p>얼굴 사진이 아니어도 됩니다. 본인을 가장 잘 드러낼 수  있는 사진 하나를 선택해주세요 ;) </p>
+                    <p style={{fontSize: 18, fontWeight: 'bold', marginBottom: 18}} className="text-left">[마지막] 프로필 사진을 올려주세요.</p>
+                    <p style={{fontSize: 12}}>얼굴 사진이 아니어도 됩니다. 본인을 가장 잘 드러낼 수  있는 사진 하나를 선택해주세요 ;) </p>
                 </div>
                 <section className="mt-5">
                     <div style={{position: 'relative'}}>
@@ -626,7 +628,7 @@ const SettingContents = ({ history, questionNum }) => {
                     <h5 className="text-left font-normal text-gray-400 my-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
                 </div>
                 <textarea 
-                    placeholder="ex. 안녕하세요. 저는 스타트업에 관심이 많은 대학생입니다. ㅎㅎ"
+                    placeholder="나를 자유롭게 표현해봐요! "
                     ref={introRef}
                     autoFocus
                     style={{height: 250, backgroundColor: "#F7F7FA"}}
