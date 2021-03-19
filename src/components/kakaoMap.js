@@ -37,7 +37,7 @@ const KakaoMap = ({ history }) => {
 
     if(!addr) {
       if(!location.match(locationRegex))
-          return alert('올바른 지역을 입력해주세요.');
+        return alert('올바른 지역을 입력해주세요.');
     }
 
     const finalLocation = addr || location;
