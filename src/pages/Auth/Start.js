@@ -26,14 +26,13 @@ const Login = ({ history }) => {
 
     useEffect(() => {
         // Goback when refreshing
-        if(!email)
-            window.location.replace('auth');
+        // if(!email)
+        //     window.location.replace('auth');
     }, []);
     useEffect(() => {
         if(errCodeInRedux === null) {
             return null;
         }else if(errCodeInRedux === 0) {
-            console.log('닉네임 생성 성공');
             history.push('/setting/1')
         }else if(errCodeInRedux === 452) {
             setDisplayNameDescription(`[중복] ${displayRef.current.value}은 사용하실 수 없습니다.`);
@@ -47,18 +46,25 @@ const Login = ({ history }) => {
         const displayNameText = event.target.value;
         setDisplayName(displayNameText);
 
-        const displayNameRegex = /^@[a-zA-Z0-9-_]/;
-        if(!displayNameText.match(displayNameRegex)) {
+        const displayNameRegex = /^@[a-zA-Z0-9._]+$/;
+
+        if(!displayNameText.includes('@')) {
             setDisplayNameDescription('닉네임 맨앞에 @를 포함해주세요');
             setIsBtnDisabled(true);
         }else {
-            if(displayNameText.length < 4) {
-                setDisplayNameDescription('닉네임은 3자리 이상으로 해주세요.');
+            console.log(displayNameText)
+            if(!displayNameText.match(displayNameRegex)) {
+                setDisplayNameDescription('영어 대소문자 숫자, 밑줄 및 마침표만 가능합니다!');
                 setIsBtnDisabled(true);
             }else {
-                setDisplayNameDescription(' ');
-                if(phoneNumberDescription === ' ' && passwordDescription === ' ')
-                    setIsBtnDisabled(false);
+                if(displayNameText.length < 4) {
+                    setDisplayNameDescription('닉네임은 3자리 이상으로 해주세요.');
+                    setIsBtnDisabled(true);
+                }else {
+                    setDisplayNameDescription(' ');
+                    if(phoneNumberDescription === ' ' && passwordDescription === ' ')
+                        setIsBtnDisabled(false);
+                }
             }
         }
     }, [displayName, pwd, phoneNum]);
@@ -66,28 +72,41 @@ const Login = ({ history }) => {
     const passwordChangeHandler = useCallback((event) => {
         event.preventDefault();
 
+        const passwordRegex = /^[a-zA-Z0-9]+$/;
         const passwordText = event.target.value;
+        console.log(passwordText)
         setPwd(passwordText);
         if(passwordText.length < 6 || passwordText.length > 10) {
             setPasswordNameDescription('비밀번호는 6자리 이상 10자리 이하입니다.');
             setIsBtnDisabled(true);
         }else {
-            setPasswordNameDescription(' ');
-            if(phoneNumberDescription === ' ' && displayNameDescription === ' ')
-                setIsBtnDisabled(false);
+            if(!passwordText.match(passwordRegex)) {
+                setPasswordNameDescription('영어 대소문자 숫자만 가능합니다!');
+                setIsBtnDisabled(true);
+            }else {
+                setPasswordNameDescription(' ');
+                if(phoneNumberDescription === ' ' && displayNameDescription === ' ')
+                    setIsBtnDisabled(false);
+            }
         }
     }, [displayName, pwd, phoneNum]);
 
     const phoneNumberChangeHandler = useCallback((event) => {
         const phoneText = event.target.value;
+        const phoneRegex = /^[0-9]+$/;
         setPhoneNum(phoneText);
         if(phoneText.length !== 11) {
             setPhoneNumberNameDescription('전화번호를 올바르게 입력해주세요.');
             setIsBtnDisabled(true);
         }else {
-            setPhoneNumberNameDescription(' ');
-            if(displayNameDescription === ' ' && passwordDescription === ' ')
-                setIsBtnDisabled(false);
+            if(!phoneText.match(phoneRegex)) {
+                setPhoneNumberNameDescription('숫자만 입력해주세요.')
+                setIsBtnDisabled(true);
+            }else {
+                setPhoneNumberNameDescription(' ');
+                if(displayNameDescription === ' ' && passwordDescription === ' ')
+                    setIsBtnDisabled(false);
+            }
         }
     }, [displayName, pwd, phoneNum]);
     
