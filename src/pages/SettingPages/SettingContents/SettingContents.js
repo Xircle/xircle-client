@@ -298,7 +298,7 @@ const SettingContents = ({ history, questionNum }) => {
         if(articleTagRef.current.value) { // articleTagRef => "@hello @hi @무야호"
             const articleTagText = articleTagRef.current.value.trim();
             let articleTagArr = articleTagText.split(" ");  // articleTagArr = ["@hello", "@hi", "@무야호"]
-            const hashTagRegex = /^@/;
+            const hashTagRegex = /^@[a-zA-Z0-9]+$/;
 
             let isSuccess = true;
             articleTagArr.forEach(tag => {
@@ -403,7 +403,7 @@ const SettingContents = ({ history, questionNum }) => {
                 {graduateOrNotClicked ? (
                     <Modal show={graduateOrNotClicked}>
                         <div className="mb-5">
-                            <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
+                            <h1 className="text-xl mb-5">회원님은 {univInRedux} 학생이시군요!</h1>
                             <span style={{fontSize: '12px', color: '#5c5c5c'}}>재학중이신가요?  졸업을 하셨나요? </span>
                         </div>
                         <RadioUI subject="graduateOrNot" changeHandler={UnivGraduateChangeHandler}/>
@@ -498,15 +498,16 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="min-h-screen text-center px-3 my-3 mb-10">
                 <div className="px-3 py-5 mb-3">
-                    <p style={{fontSize: 18, fontWeight: 'bold', marginBottom: 18}} className="text-left">관심사에 맞는 자신의 이야기를 사진과 함께 적어보세요! [사진] </p>
+                    <p style={{fontSize: 18, fontWeight: 'bold', marginBottom: 18}} className="text-left">관심사에 맞는 회원님의 활동을 기록해보세요.</p>
                     <p style={{color: "#B3B3B3", textAlign: 'left'}}>ex.오늘 먹은 음식 / 오늘 한 스터디 </p>
                 </div>
                 <section className="mt-5">
                     <div style={{position: 'relative'}}>
                         <img 
-                            style={{width: 300, height: 300, margin: '0 auto', borderRadius: 180, objectFit: 'fill'}} 
+                            style={{width: 300, height: 300, margin: '0 auto', borderRadius: 180, objectFit: 'cover'}} 
                             src={imgSrc ? imgSrc : "/camera.svg"} 
                         />
+                        {!articleImg_formData ? <p style={{color: "#C4C4C4", fontSize: 16, position: 'absolute', top: '60%', left: '50%', width: '100%', transform: 'translate(-50%, 0)', fontWeight: 'bold', whiteSpace: 'pre-line'}}>Click!</p> : null}
                         <input 
                             style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 300, height: 300, borderRadius: 150, cursor: 'pointer'}} 
                             type="file" 
@@ -527,7 +528,7 @@ const SettingContents = ({ history, questionNum }) => {
                             </div>
                         </>
                     ) : <div style={{height: 40}}></div>}
-                    <p style={{margin: '40px 0 0 5px', fontSize: 12, color: "#8D8D8D", textAlign: 'left'}}>최대 용량은 10MB입니다.</p>
+                    <p style={{margin: '40px 0 0 5px', fontSize: 12, color: "#8D8D8D", textAlign: 'left'}}>용량 제한 10MB 까지 올릴 수 있습니다.</p>
                     <button onClick={(e) => uploadBtnHandler(e)} className="mt-5 w-full rounded-xl px-5 py-3 bg-gray-400 text-white focus:outline-none">
                         <p style={{wordBreak: "keep-all"}}>업로드 하기</p>
                     </button>
@@ -549,7 +550,7 @@ const SettingContents = ({ history, questionNum }) => {
                     id="articleText"
                     ref={articleRef}
                     placeholder="첫 번째 글을 작성해 보세요. 비방/욕설은 삼가해주세요."
-                    style={{height: '250px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                    style={{height: '250px', backgroundColor: "#F7F7FA"}}
                     className="mt-5 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
                 <textarea
@@ -557,7 +558,7 @@ const SettingContents = ({ history, questionNum }) => {
                     ref={articleInterestArr}
                     placeholder="게시글 관심사 설정(필수사항) "
                     value={defaultArticleHashTag}
-                    style={{height: '50px', color: "#4700FF", backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                    style={{height: '50px', color: "#4700FF", backgroundColor: "#F7F7FA"}}
                     className="mt-5 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
                 <section className="flex flex-row flex-wrap">
@@ -571,7 +572,7 @@ const SettingContents = ({ history, questionNum }) => {
                     id="articleTag"
                     placeholder="@태그하기 (선택사항)"
                     ref={articleTagRef}
-                    style={{height: '50px', color: "#4700FF", backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                    style={{height: '50px', color: "#4700FF", backgroundColor: "#F7F7FA"}}
                     className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
                 <button onClick={(e) => articleSubmitHandler(e)} className="mt-5 w-full border-2 rounded-xl px-5 py-3 bg-black text-white focus:outline-none">
@@ -583,16 +584,16 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="text-center px-3 mb-10">
                  <div className="px-3 py-5 mb-3">
-                    <p style={{fontSize: 18, fontWeight: 'bold', marginBottom: 18}} className="text-left">[마지막] 프로필 사진을 올려주세요.</p>
-                    <p style={{fontSize: 12}}>얼굴 사진이 아니어도 됩니다. 본인을 가장 잘 드러낼 수  있는 사진 하나를 선택해주세요 ;) </p>
+                    <p style={{fontSize: 24, fontWeight: 'bold', margin: '20px 0 10px'}} className="text-left">프로필사진</p>
+                    <p style={{textAlign: 'left', color: "#C5C1C1"}}>자유로운 프로필 사진을 업로드 해주세요 </p>
                 </div>
                 <section className="mt-5">
                     <div style={{position: 'relative'}}>
                         <img 
-                            style={{width: 300, height: 300, margin: '0 auto', borderRadius: 150, objectFit: 'fill'}} 
+                            style={{width: 300, height: 300, margin: '0 auto', borderRadius: 150, objectFit: 'cover'}} 
                             src={profileImgSrc ? profileImgSrc : "/camera.svg"} 
                         />
-                        {!profileImgSrc ? <p style={{color: "#C4C4C4", fontSize: 12, position: 'absolute', top: '70%', left: '50%', width: '100%', transform: 'translate(-50%, 0)', whiteSpace: 'pre-line'}}>사전신청기간에는 수정이 불가하니,<br/> 프로필 사진은 조금 더 신중하게 선택해주세요!</p> : null}
+                        {!profileImgSrc ? <p style={{color: "#C4C4C4", fontSize: 12, position: 'absolute', top: '60%', left: '50%', width: '100%', transform: 'translate(-50%, 0)', whiteSpace: 'pre-line'}}><p style={{margin: 0, fontSize: 17, fontWeight: 'bold'}}>Click!</p><br/> 사전신청기간에는 수정이 불가하니,<br/> 프로필 사진은 조금 더 신중하게 선택해주세요!</p> : null}
                         <input 
                             style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 300, height: 300, borderRadius: 150, cursor: 'pointer'}} 
                             type="file" 
@@ -624,8 +625,8 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="text-center px-5 my-5">
                 <div className="px-3 py-5 mb-3">
-                    <h3 className="text-left text-3xl font-light">{adj} {job} {displayNameInRedux}님의 한줄소개! </h3>
-                    <h5 className="text-left font-normal text-gray-400 my-10">친구들에게 보여질 한줄소개를 적어보세요.</h5>
+                    <h3 className="text-left text-3xl font-bold">{adjInRedux || adj} {jobInRedux || job} {displayNameInRedux}님의 프로필 소개 </h3>
+                    <h5 className="text-left font-normal text-gray-400 my-5">회원님의 프로필 소개를 적어보세요.</h5>
                 </div>
                 <textarea 
                     placeholder="나를 자유롭게 표현해봐요! "
@@ -642,11 +643,10 @@ const SettingContents = ({ history, questionNum }) => {
     }else if(questionNumber === 10) { 
         contents = (
             <section className="text-center px-10 my-10">
-                <h2 className="text-left mb-3">선택 사항</h2>
+                <h2 style={{fontSize: 24, fontWeight: 'bold'}} className="text-left mb-3">포트폴리오 (선택사항)</h2>
                 <section>
                     <p className="text-gray-400 text-left">
-                        친구들에게 알려줄 정보가 더 있나요? <br/>
-                        자유롭게 적어주세요 :) 
+                        회원님의 활동이력을 기록하세요.
                     </p>
                 </section>
                 
@@ -660,8 +660,8 @@ const SettingContents = ({ history, questionNum }) => {
                     </div>
                     <textarea 
                         ref={resumeRef}
-                        placeholder="인사이더스 1기 / 연고대창업학회 13기"
-                        style={{height: '60px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                        placeholder="가입한 동아리 / 학회활동 / 이전 직장 등등"
+                        style={{height: '60px', backgroundColor: "#F7F7FA"}}
                         className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
                     </textarea>
                 </section>
@@ -676,8 +676,8 @@ const SettingContents = ({ history, questionNum }) => {
                     
                     <textarea 
                         ref={workPlaceRef}
-                        placeholder="삼성 / SKT / 카카오 / 네이버"
-                        style={{height: '60px', backgroundColor: "#F7F7FA", border: '1px solid #ccc'}}
+                        placeholder="삼성 / 현대 / SKT / 카카오초콜렛 / 네이버"
+                        style={{height: '60px', backgroundColor: "#F7F7FA"}}
                         className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
                     </textarea>
                 </section>
@@ -703,9 +703,9 @@ const SettingContents = ({ history, questionNum }) => {
                         <p style={{fontSize: 48, fontWeight: 800}}>XIRCLE</p>
                     </section>
                     <section style={{height: '220px'}} className=" text-center pt-5">
-                        <h1 style={{fontSize: 20}} className="mb-3 px-10">연고링 회원가입 및 사전신청을 해주셔서 대단히 감사합니다.</h1>
+                        <h1 style={{fontSize: 20}} className="mb-3 px-10">Xircle 회원가입 및 사전신청을 해주셔서 대단히 감사합니다.</h1>
                         <p style={{fontSize: 14, lineHeight: 1.4}} className="px-10 pt-5 text-lg text-gray-500">
-                        정식 서비스는 4월 10일날 시작됩니다. <br/>
+                        정식 서비스는 4월 16일날 시작됩니다. <br/>
                         초대장을 보내면 더 많은 친구들과 네트워킹이 가능해요!  
                         </p>
                     </section>
