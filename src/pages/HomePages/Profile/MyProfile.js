@@ -63,8 +63,8 @@ const MyProfile = ({ history }) => {
     const [profileImgSrcFormData, setProfileImgSrcFormData] = useState('');
     
     const [naviContents, setNaviContents] = useState(null);
-    const [articleClicked, setArticleClicked] = useState(false);
-
+    const [articleClickedArr, setArticleClicked] = useState([false, null]);
+    
     const tokenInUser = useSelector(store => store.user.token);
     const tokenInAuth = useSelector(store => store.auth.token);
     const token = tokenInUser || tokenInAuth;
@@ -73,6 +73,7 @@ const MyProfile = ({ history }) => {
     const articleIsLoading = useSelector(store => store.user.articleIsLoading);
     const hasError = useSelector(store => store.user.error);
     const dispatch = useDispatch();
+    
     
     const newArr = interest2Object(interestArr);
     useEffect(() => {
@@ -135,6 +136,8 @@ const MyProfile = ({ history }) => {
     useEffect(() => {
         // interestNum : 클릭한 관심사 인덱스
         if(selectedInterest === 'x' || selectedInterest === null) {
+            if(articleClickedArr[0])
+                setArticleClicked([false, null]);
             setNaviContents(
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {/* 에어팟 광고 마지막 추가*/}
@@ -148,9 +151,9 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
@@ -188,22 +191,7 @@ const MyProfile = ({ history }) => {
                         </div>
                     </li>
                     ))}
-                    <li 
-                        id="kakao-invitement"
-                        onClick={() => createKakaoButton('#kakao-invitement')}
-                        style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15,
-                            width: '45%', height: 281, transform: 'translate(0, -53px)'
-                        }} 
-                        className="cursor-pointer relative flex flex-col justify-center items-center"
-                    >
-                        <img 
-                            style={{width: 70, height: 70}}
-                            src="/profile/message.svg"
-                            alt="message"
-                        />
-                        <p>XIRCLE 초대장 보내기</p>
-                    </li>
+                    
                     <li 
                         style={{
                             margin: 5, backgroundColor: "#F7F7FA",
@@ -211,23 +199,22 @@ const MyProfile = ({ history }) => {
                         }} 
                     >
                     </li>
+                    
                 </ul>
             )
         }else if(selectedInterest === '스타트업') { // @스타트업 관심사 누를 때
             articleDispatchingCnt[1]++;
             if(articleDispatchingCnt[1] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("스타트업", token, articleArrInProfile));
+                if(articleArrInProfile.스타트업) // 이미 한번이라도 게시글을 확인했으면, 디스패칭 안함
+                    return null;
+                dispatch(actions.getInterestArticle("스타트업", token));
             }
 
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후
-                foundObj = articleArrInProfile.find(el => el.interest === '스타트업'); // [ [{interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"}, { }], [] ]
-                if(!foundObj)
+            let foundArr = [];
+            if(articleArrInProfile.스타트업) { // fetch된 후
+                foundArr = articleArrInProfile.스타트업; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -241,29 +228,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -275,9 +255,9 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                         
@@ -289,18 +269,16 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '술/맛집탐방') { // @술/맛집탐방 관심사 누를 때
             articleDispatchingCnt[2]++;
             if(articleDispatchingCnt[2] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("술/맛집탐방", token, articleArrInProfile));
+                if(articleArrInProfile.술_맛집탐방) // 이미 한번이라도 게시글을 확인했으면, 디스패칭 안함
+                    return null;
+                dispatch(actions.getInterestArticle("술_맛집탐방", token));
             }
 
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '술/맛집탐방');
-                if(!foundObj)
+            let foundArr = [];
+            if(articleArrInProfile.술_맛집탐방) { // fetch된 후
+                foundArr = articleArrInProfile.술_맛집탐방; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -314,30 +292,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                            
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -349,9 +319,9 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
@@ -361,17 +331,15 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '동네친구') { // @동네친구 관심사 누를 때
             articleDispatchingCnt[3]++;
             if(articleDispatchingCnt[3] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("동네친구", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '동네친구');
-                if(!foundObj)
+                if(articleArrInProfile.동네친구) // 이미 한번이라도 게시글을 확인했으면, 디스패칭 안함
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("동네친구", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.동네친구) { // fetch된 후
+                foundArr = articleArrInProfile.동네친구; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -385,29 +353,21 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -419,30 +379,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '코딩') { // @코딩 관심사 누를 때
             articleDispatchingCnt[4]++;
             if(articleDispatchingCnt[4] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("코딩", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '코딩');
-                if(!foundObj)
+                if(articleArrInProfile.코딩) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("코딩", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.코딩) { // fetch된 후
+                foundArr = articleArrInProfile.코딩; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -456,29 +413,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -490,30 +440,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '애견인') { // @애견인 관심사 누를 때
             articleDispatchingCnt[5]++;
             if(articleDispatchingCnt[5] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("애견인", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '애견인');
-                if(!foundObj)
+                if(articleArrInProfile.애견인) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("애견인", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.애견인) { // fetch된 후
+                foundArr = articleArrInProfile.애견인; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -527,29 +474,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -561,30 +501,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '패션') { // @패션 관심사 누를 때
             articleDispatchingCnt[6]++;
             if(articleDispatchingCnt[6] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("패션", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '패션');
-                if(!foundObj)
+                if(articleArrInProfile.패션) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("패션", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.패션) { // fetch된 후
+                foundArr = articleArrInProfile.패션; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -598,29 +535,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -632,30 +562,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '예술') { // @예술 관심사 누를 때
             articleDispatchingCnt[7]++;
             if(articleDispatchingCnt[7] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("예술", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '예술');
-                if(!foundObj)
+                if(articleArrInProfile.예술) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("예술", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.예술) { // fetch된 후
+                foundArr = articleArrInProfile.예술; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -669,29 +596,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -703,30 +623,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '게임') { // @게임 관심사 누를 때
             articleDispatchingCnt[8]++;
             if(articleDispatchingCnt[8] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("게임", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '게임');
-                if(!foundObj)
+                if(articleArrInProfile.게임) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("게임", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.게임) { // fetch된 후
+                foundArr = articleArrInProfile.게임; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -740,29 +657,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -774,30 +684,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '헬스') { // @헬스 관심사 누를 때
             articleDispatchingCnt[9]++;
             if(articleDispatchingCnt[9] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("헬스", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '헬스');
-                if(!foundObj)
+                if(articleArrInProfile.헬스) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("헬스", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.헬스) { // fetch된 후
+                foundArr = articleArrInProfile.헬스; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -811,29 +718,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -845,30 +745,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '취업준비') { // @취업준비 관심사 누를 때
             articleDispatchingCnt[10]++;
             if(articleDispatchingCnt[10] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("취업준비", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '취업준비');
-                if(!foundObj)
+                if(articleArrInProfile.취업준비) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("취업준비", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.취업준비) { // fetch된 후
+                foundArr = articleArrInProfile.취업준비; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -882,29 +779,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -916,30 +806,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '수험생') { // @수험생 관심사 누를 때
             articleDispatchingCnt[11]++;
             if(articleDispatchingCnt[11] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("수험생", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '수험생');
-                if(!foundObj)
+                if(articleArrInProfile.수험생) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("수험생", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.수험생) { // fetch된 후
+                foundArr = articleArrInProfile.수험생; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -953,29 +840,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -987,30 +867,27 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }else if(selectedInterest === '대학원') { // @대학원 관심사 누를 때
             articleDispatchingCnt[12]++;
             if(articleDispatchingCnt[12] === 1) { // 최초 한번만 http 통신하기
-                dispatch(actions.getInterestArticle("대학원", token, articleArrInProfile));
-            }
-            let foundObj = {};
-            let fetchedArticleImgSrc = {};
-            let fetchedArticleContent = {};
-            if(articleIsLoading === false) { // fetch된 후에 정의
-                foundObj = articleArrInProfile.find(el => el.interest === '대학원');
-                if(!foundObj)
+                if(articleArrInProfile.대학원) 
                     return null;
-                fetchedArticleImgSrc = foundObj.articleImgSrc;
-                fetchedArticleContent = foundObj.articleContent;
+                dispatch(actions.getInterestArticle("대학원", token));
+            }
+            let foundArr = [];
+            if(articleArrInProfile.대학원) { // fetch된 후
+                foundArr = articleArrInProfile.대학생; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                if(foundArr.length === 0)
+                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -1024,29 +901,22 @@ const MyProfile = ({ history }) => {
                     </div>
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
-                    {JSON.stringify(fetchedArticleImgSrc) === JSON.stringify({}) ? (
-                        null
-                    ) : (
-                        <>
-                            {/* 1개의 게시글 */}
-                            {fetchedArticleImgSrc ? (
-                                <div onClick={() => setArticleClicked(!articleClicked)} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
-                                    <li 
-                                        style={{
-                                            backgroundImage: `url(${fetchedArticleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'contain',
-                                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClicked ? 0.1 : 1
-                                        }} 
-                                        className="cursor-pointer"
-                                    >
-                                    </li>
-                                    <div style={{zIndex: 10, opacity: articleClicked ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
-                                        <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{fetchedArticleContent}</p>
-                                        <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
-                                    </div>
-                                </div>
-                            ) : null}
-                        </>
-                    )}
+                    {foundArr.map((article, id) => (
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                            <div 
+                                style={{
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
+                                }} 
+                                className="cursor-pointer"
+                            >
+                            </div>
+                            <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
+                                <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleContent}</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                            </div>
+                        </li>
+                    ))}
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
@@ -1058,18 +928,17 @@ const MyProfile = ({ history }) => {
                         onClick={() => history.push('event')}
                     >
                         <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'lighter'}}>친구도 사귀고 에어팟도 받고</p>
+                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
                             <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 6, margin: '2px 0', fontWeight: 'lighter', textAlign: 'center'}}>바로가기</p>
+                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
                             <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
                         </div>
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
         }
-    }, [selectedInterest, articleIsLoading, isLoading, articleArrInProfile, articleClicked]);
+    }, [selectedInterest, articleIsLoading, isLoading, articleArrInProfile, articleClickedArr]);
 
     let pageContents = null;
     if(pageNum === 1) {
@@ -1090,7 +959,7 @@ const MyProfile = ({ history }) => {
             selectedCnt = selectedEl.count;
         pageContents = (
             <>
-                {/* Profile Container */}
+                {/* Profile coverer */}
                 {isLoading ? (
                     <div style={{height: 472, position: 'relative'}}>
                         <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
@@ -1108,7 +977,14 @@ const MyProfile = ({ history }) => {
                                 style={{width: 198, height: 198, borderRadius: 114, backgroundColor: 'white', margin: '0 auto', objectFit: 'cover'}}
                                 src={myProfileImgSrc}
                             />
-                            <input className="focus:outline-none" style={{position: 'absolute', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 228, height: 228, borderRadius: 114, cursor: 'pointer'}} type="file" onChange={(e) => profileImgChangeHandler(e)} />
+                            <input className="focus:outline-none" style={{position: 'absolute', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 198, height: 198, borderRadius: 114, cursor: 'pointer'}} onClick={() => history.push("/my-profile/edit")} />
+                            <div onClick={() => history.push('/my-profile/edit')} className="flex flex-row justify-center items-center" style={{width: 40, height: 40, position: 'absolute', bottom: 15, right: '20%', borderRadius: 20, backgroundColor: "#fff", boxShadow: '4px 4px 4px rgba(0, 0, 0, 0.08)',  cursor: 'pointer'}}>
+                                <img 
+                                    src="/profile/setting.svg"
+                                    alt="setting"
+                                    style={{width: 18, height: 18}}
+                                />
+                            </div>
                             <img
                                 onClick={() => history.push('friend-profile')}
                                 style={{position: 'absolute', right: '6%', top: '50%', cursor: 'pointer'}} 
@@ -1120,14 +996,14 @@ const MyProfile = ({ history }) => {
                         {/* 닉네임, 개인정보 */}
                         <div className="mt-3">
                             <div className="text-center">
-                                <p style={{color: "#8D8D8D", fontSize: 11}} className="text-sm cursor-pointer" onClick={() => history.push('/developer-profile')}>XIRCLE 개발자 프로필 구경하기</p>
+                                <span style={{color: "#8D8D8D", fontSize: 11}} className="text-sm cursor-pointer" onClick={() => history.push('/developer-profile')}>XIRCLE 개발자 프로필 구경하기</span>
                                 <h3 style={{fontSize: 20, fontWeight: '600', margin: '5px 0'}}>{adj} {job} <span style={{fontSize: 18, fontWeight: 'lighter'}}>{displayName || displayNameInUser}</span></h3>
                             </div>
                             <div className={`flex flex-row justify-center`}>
-                                <div style={{height: 25, backgroundColor: gender === '남' ? '#CCF6FF' : '#C6BDFF', margin: '0 2px 0 0'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{gender}</p></div>
-                                {isPublic ? <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{univ || univInUser} {isGraduate ? "졸업" : "재학중"}</p></div> : null}
-                                <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{location}</p></div>
-                                <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{secretAge}</p></div>
+                                {isPublic ? <div style={{height: 25, borderRadius: 3, backgroundColor: isGraduate ? 'rgb(204, 246, 255)' : "#DAD4FF", margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{univ || univInUser} {isGraduate ? "졸업" : "재학중"}</p></div> : null}
+                                {/* <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{location}</p></div> */}
+                                <div style={{height: 25, borderRadius: 3, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{secretAge}</p></div>
+                                <div style={{height: 25, borderRadius: 3, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>{gender}</p></div>
                             </div>
                         </div>
 
@@ -1137,7 +1013,7 @@ const MyProfile = ({ history }) => {
                             <li className="flex flex-row items-center">
                                 <img 
                                     style={{width: 15, height: 15}}
-                                    src="/company.svg"
+                                    src="/profile/company.svg"
                                     alt="company"
                                 />
                                 <p style={{margin: "0px 5px 0 10px"}} className="font-extrabold my-0">{workPlace}</p><span>재직중</span>
@@ -1147,12 +1023,23 @@ const MyProfile = ({ history }) => {
                             <li className="flex flex-row items-center my-3">
                                 <img 
                                     style={{width: 15, height: 15}}
-                                    src="/activity.svg"
-                                    alt="company"
+                                    src="/profile/grobal.svg"
+                                    alt="grobal"
                                 />
                                 <p style={{margin: "0px 5px 0 10px"}} className="my-0">{resume}</p>
                             </li>
                             ) : null}
+                            {location ? (
+                            <li className="flex flex-row items-center my-3">
+                                <img 
+                                    style={{width: 15, height: 15}}
+                                    src="/profile/location.svg"
+                                    alt="location"
+                                />
+                                <p style={{margin: "0px 5px 0 10px", color: "#7C7C7C"}} className="my-0">{location}</p>
+                            </li>
+                            ) : null}
+                            
                             <li className="flex flex-row mb-2">
                                 <p style={{margin: '10px 0'}}>{introText}</p>
                             </li>
@@ -1203,7 +1090,7 @@ const MyProfile = ({ history }) => {
                 </section>
                 )}
 
-                {/* Album Container */}
+                {/* Album coverer */}
                 {isLoading ? (
                     <>
                         <div style={{height: 100, position: 'relative'}}>
@@ -1251,22 +1138,24 @@ const MyProfile = ({ history }) => {
             pageNum === 3 ? (
                 <img 
                     onClick={() => setPageNum(2)}
+                    
                     src="/event/waytouse.jpg"
                     alt="사용방법"
                 />
             ) : (
             <header style={{margin: "20px 0 35px 0"}}>
                 <section className="flex flex-row items-center justify-around mt-1">
-                    <button 
-                        style={pageNum === 3 ? selectedTab : notSelectedTab}
+                    <div 
+                        style={{width: 87}}
                         className="px-5 rounded-3xl focus:outline-none"
+                        style={{cursor: 'pointer'}}
                         onClick={() => setPageNum(3)}
                     >
                         <img
                             src="/profile/waytouse.svg"
                             style={{width: 45, height: 45}}
                         />
-                    </button>
+                    </div>
                     <button 
                         style={pageNum === 2 ? selectedTab : notSelectedTab}
                         className="px-5 py-2 rounded-3xl focus:outline-none"
@@ -1274,9 +1163,8 @@ const MyProfile = ({ history }) => {
                     ><p style={{fontSize: 18, fontWeight: 300}}>{displayName || displayNameInUser}</p>
                     </button>
                     <button 
-                        style={pageNum === 3 ? selectedTab : notSelectedTab}
                         className="px-5 rounded-3xl focus:outline-none"
-                        onClick={() => history.push('createArticle/1')}
+                        onClick={() => history.push('/createArticle/1')}
                     >
                         <img
                             src="/setting/write.svg"
