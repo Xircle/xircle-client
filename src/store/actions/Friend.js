@@ -59,9 +59,10 @@ export const getFriendArticleStart = () => {
         type: actionTypes.GET_FRIEND_ARTICLE_START,
     }
 }
-export const getFriendArticleSuccess = (articleDataArr) => {
+export const getFriendArticleSuccess = (interest, articleDataArr) => {
     return {
         type: actionTypes.GET_FRIEND_ARTICLE_SUCCESS,
+        interest,
         articleDataArr,
     }
 }
@@ -76,25 +77,31 @@ export const getFriendArticleInit = () => {
     }
 }
 
-export const getFriendArticle = (token, userId, interest) => {
+export const getFriendArticle = (interest, token, userId) => {
     return dispatch => {
         dispatch(getFriendArticleStart());
 
-        Axios.get(`/randomUser/${userId}/profile/post?interest=${interest}`, {
+        let realInterest;
+        if(interest === '술_맛집탐방')
+            realInterest = '술/맛집탐방';
+        else 
+            realInterest = interest;
+
+        Axios.get(`/randomUser/${userId}/profile/post?interest=${realInterest}`, {
             headers: {
                 'access-token': `${token}`
             }
         })
         .then(res => {
             console.log(res);
-            // const { articleContent, articleImgSrc } = res.data.data;
             const isSuccess = res.data.success;
             if(isSuccess) {
                 const articleDataArr = res.data.data; // [{articleImgSrc, articleContent}, {articleImgSrc, articleContent}]
+                
                 if(articleDataArr.length === 0) { // 해당 관심사에 대한 게시글이 없으면 
-                    dispatch(getFriendArticleSuccess(null));
+                    dispatch(getFriendArticleSuccess(interest, null));
                 }else {
-                    dispatch(getFriendArticleSuccess(articleDataArr));
+                    dispatch(getFriendArticleSuccess(interest, articleDataArr));
                 }
             }else {
                 dispatch(getFriendArticleFail());

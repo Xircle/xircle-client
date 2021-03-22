@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
-import { Axios } from '../../axios-instance';
+import { Axios, AxiosForTest } from '../../axios-instance';
+import axios from 'axios';
 
 // GET시 /user/profile를 리덕스에 담기위한 액션.
 export const addProfileImgSrc = (profileImgSrc) => {
@@ -26,6 +27,13 @@ export const addIsGraduate = (isGraduate) => {
         isGraduate,
     }
 }
+export const addIsLocationPublic = (isLocationPublic) => {
+    return {
+        type: actionTypes.ADD_IS_LOCATION_PUBLIC,
+        isLocationPublic,
+    }
+}
+
 export const addDidsplayName = (displayNameInUser) => {
     return {
         type: actionTypes.ADD_DISPLAY_NAME,
@@ -63,12 +71,12 @@ export const addAdj = (adj) => {
         adj,
     }
 }
-export const addLocation = (location, lng, lat) => {
+export const addLocation = (location, longitude, latitude) => {
     return {
         type: actionTypes.ADD_LOCATION,
         location,
-        lng,
-        lat
+        longitude, 
+        latitude
     }
 }
 export const addResume = (resume) => {
@@ -121,8 +129,7 @@ export const submitImgToAWSInit = () => {
     }
 }
 
-export const submitImgToAWS = (Img_formData, type) => {
-    
+export const submitImgToAWS = (Img_formData, payloadType) => {
     return dispatch => {
         dispatch(submitImgToAWSStart());
 
@@ -132,7 +139,7 @@ export const submitImgToAWS = (Img_formData, type) => {
                 const imgAwsUrl = res.data.data;
                 const isSuccess = res.data.success;
                 if(isSuccess) {
-                    dispatch(submitImgToAWSSuccess(imgAwsUrl, type))
+                    dispatch(submitImgToAWSSuccess(imgAwsUrl, payloadType))
                     dispatch(submitImgToAWSInit());
                 }else {
                     dispatch(submitImgToAWSFail())
@@ -153,6 +160,55 @@ export const addArticleContents = (articleText, articleInterestArr, articleTagAr
         articleText,
         articleInterestArr,
         articleTagArr
+    }
+}
+// create new article
+export const createNewArticleStart = () => {
+    return {
+        type: actionTypes.CREATE_NEW_ARTICLE_START,
+        
+    }
+}
+export const createNewArticleSuccess = () => {
+    return {
+        type: actionTypes.CREATE_NEW_ARTICLE_SUCCESS,
+    }
+}
+export const createNewArticleFail = () => {
+    return {
+        type: actionTypes.CREATE_NEW_ARTICLE_FAIL,
+    }
+}
+export const createNewArticleInit = () => {
+    return {
+        type: actionTypes.CREATE_NEW_ARTICLE_INIT,
+    }
+}
+export const createNewArticle = (tokenInUser, articleImgSrcFormData) => {
+    return dispatch => {
+        dispatch(createNewArticleStart());
+
+        AxiosForTest.post(`/post`, articleImgSrcFormData, {
+            headers: {
+                'access-token': `${tokenInUser}`
+            }
+        })
+            .then(res => {
+                console.log(res);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    dispatch(createNewArticleSuccess());
+                    dispatch(createNewArticleInit());
+                }else {
+                    dispatch(createNewArticleFail())
+                    dispatch(createNewArticleInit());
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(createNewArticleFail());
+                dispatch(createNewArticleInit());
+            })
     }
 }
 
@@ -240,16 +296,14 @@ export const getInterestArticleStart = () => {
         type: actionTypes.GET_INTEREST_ARTICLE_START,
     }
 }
-
-export const getInterestArticleSuccess = (interest, articleContent, articleImgSrc) => {
+export const getInterestArticleSuccess = (interest, articleDataArr) => {
     return {
         type: actionTypes.GET_INTEREST_ARTICLE_SUCCESS,
         interest,
-        articleContent,
-        articleImgSrc,
+        articleDataArr,
     }
 }
-export const getInterestArticleFail = (errCode) => {
+export const getInterestArticleFail = () => {
     return {
         type: actionTypes.GET_INTEREST_ARTICLE_FAIL,
     }
@@ -259,35 +313,37 @@ export const getInterestArticleInit = () => {
         type: actionTypes.GET_INTEREST_ARTICLE_INIT,
     }
 }
-export const getInterestArticle = (interest, tokenInUser, articleInProfile) => {
+export const getInterestArticle = (interest, tokenInUser) => {
     return dispatch => {
         dispatch(getInterestArticleStart());
         
-        let isOverlapped = false;
-        for(let i = 0 ; i < articleInProfile.length; i++) {
-            if(articleInProfile[i].interest === interest) {
-                isOverlapped = true;
-                break;
-            }
-        }
-        if(isOverlapped)
-            return null;
+        let realInterest;
+        if(interest === '술_맛집탐방')
+            realInterest = '술/맛집탐방';
+        else 
+            realInterest = interest;
         
-        Axios.get(`/user/profile/post?interest=${interest}`, {
+        AxiosForTest.get(`/user/profile/post?interest=${realInterest}`, {
             headers: {
                 'access-token': `${tokenInUser}`
             }
         })
             .then(res => {
                 console.log(res);
-                const { articleContent, articleImgSrc } = res.data.data;
                 const isSuccess = res.data.success;
                 if(isSuccess) {
-                    dispatch(getInterestArticleSuccess(interest, articleContent, articleImgSrc));
+                    const articleDataArr = res.data.data; // [{articleImgSrc, articleContent}, {articleImgSrc, articleContent}]
+                    if(articleDataArr.length === 0) { // 해당 관심사에 대한 게시글이 없으면 
+                        dispatch(getInterestArticleSuccess(interest, null));
+                        dispatch(getInterestArticleInit());
+                    }else {
+                        dispatch(getInterestArticleSuccess(interest, articleDataArr));
+                        dispatch(getInterestArticleInit());
+                    }
                 }
                 else{
                     const errCode = res.data.code;
-                    dispatch(getInterestArticleFail(errCode));
+                    dispatch(getInterestArticleFail());
                     dispatch(getInterestArticleInit());
                     alert(res.data.message);
                 }
@@ -296,7 +352,7 @@ export const getInterestArticle = (interest, tokenInUser, articleInProfile) => {
                 console.log(err);
                 dispatch(getInterestArticleFail());
                 dispatch(getInterestArticleInit());
-                alert('네트워크 오류입니다.');
+                alert('Something went wrong.');
             })
     }
 }
@@ -316,3 +372,63 @@ export const updateProfileImgToServer = (updatedProfileImg) => {
     }
 }
 
+
+// 프로필 수정
+export const updateProfileStart = () => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_START,
+    }
+}
+export const updateProfileSuccess = () => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_SUCCESS,
+    }
+}
+export const updateProfileFail = () => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_FAIL,
+    }
+}
+export const updateProfileInit = () => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_INIT,
+    }
+}
+export const updateProfile = (token, editedProfileFormData) => {
+    return dispatch => {
+        dispatch(updateProfileStart());
+
+        for (let value of editedProfileFormData.values()) {
+            console.log(value);
+        }
+        console.log('---------------')
+        for (let key of editedProfileFormData.keys()) {
+            console.log(key);
+        }
+        
+        AxiosForTest.put(`/user/profile`, editedProfileFormData, {
+            headers: {
+                'access-token': `${token}`
+            }
+        })
+            .then(res => {
+                console.log(res);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    dispatch(updateProfileSuccess());
+                    dispatch(updateProfileInit());
+                }
+                else{
+                    dispatch(updateProfileFail());
+                    dispatch(updateProfileInit());
+                    alert(res.data.message);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(updateProfileFail());
+                dispatch(updateProfileInit());
+                alert('Something went wrong.');
+            })
+    }
+}

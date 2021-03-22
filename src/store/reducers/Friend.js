@@ -27,11 +27,11 @@ export const initialState = {
     resume: null,
     workPlace: null,
     // article
-    articleInFriend: [],
+    articleObjInFriend: {},
     articleIsLoading: null,
 }
 
-const reducer = (state=initialState, action) => {
+const reducer = (state = initialState, action) => {
     switch(action.type) {
         case actionTypes.GET_FRIEND_START:
             return {
@@ -39,7 +39,7 @@ const reducer = (state=initialState, action) => {
                 loading: true,
             }
         case actionTypes.GET_FRIEND_SUCCESS:
-            const { userId, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace,  introText, interestArr } = action.payload;
+            const { userId, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr } = action.payload;
             return {
                 ...state,
                 loading: false,
@@ -71,7 +71,7 @@ const reducer = (state=initialState, action) => {
                 loading: null,
                 error: null,
                 articleIsLoading: null,
-                articleInFriend: [],
+                articleObjInFriend: {},
             }
         case actionTypes.GET_FRIEND_ARTICLE_START:
             return {
@@ -79,33 +79,25 @@ const reducer = (state=initialState, action) => {
                 articleIsLoading: true,
             }
         case actionTypes.GET_FRIEND_ARTICLE_SUCCESS:
-            const articleDataArr = action.articleDataArr;
+            const { interest, articleDataArr } = action;
             if(articleDataArr === null) // 해당 관심사의 article이 없을 때
                 return {
                     ...state,
                     articleIsLoading: false,
                 };
-                
-            const newArticleArr = JSON.parse(JSON.stringify(state.articleInFriend)) //깊은복사
-            if(!articleContent || !articleImgSrc) { // 없으면 추가안함
-                newArticleArr.push({
-                    interest,
-                });
-                return {
-                    ...state,
-                    articleIsLoading: false,
-                    articleInFriend: newArticleArr
-                }
-            }
-            newArticleArr.push({
-                interest,
-                articleContent,
-                articleImgSrc,
-            })
+            const newArticleArr = JSON.parse(JSON.stringify(state.articleObjInFriend)) //깊은복사
+            newArticleArr[interest] = [];
+            articleDataArr.map(el => {
+                newArticleArr[interest].push({
+                    articleImgSrc: el.articleImgSrc,
+                    articleContent: el.articleContent
+                })
+            });
+            console.log(newArticleArr)
             return {
                 ...state,
                 articleIsLoading: false,
-                articleInFriend: newArticleArr,
+                articleObjInFriend: newArticleArr,
             }
         case actionTypes.GET_FRIEND_ARTICLE_FAIL:
             return {

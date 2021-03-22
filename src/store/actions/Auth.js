@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
-import { addProfileImgSrc, addIsPublic, addIsGraduate, addDidsplayName, addAge, addGender, addJob, addAdj, addLocation, addResume, addWorkPlace, addInterest, addUniv, addIntroText, }  from '../actions/User';
-import { Axios } from '../../axios-instance';
+import { addProfileImgSrc, addIsPublic, addIsGraduate, addIsLocationPublic, addDidsplayName, addAge, addGender, addJob, addAdj, addLocation, addResume, addWorkPlace, addInterest, addUniv, addIntroText, }  from '../actions/User';
+import { Axios, AxiosForTest } from '../../axios-instance';
 
 export const authStart = () => {
     return {
@@ -287,18 +287,19 @@ export const getUserStart = () => {
         type: actionTypes.GET_USER_START,
     }
 }
-export const getUserSuccess = (token, profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr ) => {
+export const getUserSuccess = (token, profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, isLocationPublic, location, age, resume, workPlace, introText, interestArr, longitude, latitude ) => {
     return dispatch => {
         console.log(profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr);
         dispatch(addProfileImgSrc(profileImgSrc));
         dispatch(addIsGraduate(isGraduate));
         dispatch(addIsPublic(isPublic));
+        dispatch(addIsLocationPublic(isLocationPublic));
         dispatch(addAdj(adj));
         dispatch(addJob(job));
         dispatch(addGender(gender));
         dispatch(addDidsplayName(displayNameInUser));
         dispatch(addUniv(university));
-        dispatch(addLocation(location));
+        dispatch(addLocation(location, longitude, latitude));
         dispatch(addAge(age));
         dispatch(addResume(resume));
         dispatch(addWorkPlace(workPlace));
@@ -316,7 +317,7 @@ export const getUser = (token) => {
     return dispatch => {
         dispatch(getUserStart());
 
-        Axios.get('/user/profile', {
+        AxiosForTest.get('/user/profile', {
             headers: {
                 'access-token': `${token}`
             }
@@ -325,8 +326,8 @@ export const getUser = (token) => {
             console.log(res);
             const isSuccess = res.data.success;
             if(isSuccess) {
-                const { profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace,  introText, interestArr } = res.data.data;
-                dispatch(getUserSuccess(token, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr));
+                const { profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, isLocationPublic, location, age, resume, workPlace,  introText, interestArr, longitude, latitude } = res.data.data;
+                dispatch(getUserSuccess(token, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, isLocationPublic, location, age, resume, workPlace, introText, interestArr, longitude, latitude));
             }else {
                 dispatch(getUserFail());
                 alert(res.data.message);

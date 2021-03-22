@@ -27,7 +27,9 @@ export {
     getInterestArticle,
     getInterestArticleInit,
     updateProfileImg,
-    updateProfileImgToServer
+    updateProfileImgToServer,
+    createNewArticle,
+    updateProfile
 } from './User';
 
 export {

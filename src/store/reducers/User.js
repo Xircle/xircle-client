@@ -8,6 +8,7 @@ export const initialState = {
     token: null,
     isPublic: null,
     isGraduate: null,
+    isLocationPublic: null,
     displayNameInUser: null,
     gender: null,
     univInUser: null,
@@ -15,8 +16,8 @@ export const initialState = {
     job: null,
     adj: null,
     location: null,
-    lat: null,
-    lng: null,
+    latitude: null,
+    longitude: null,
     interestArr: [],
     // 사전신청때 받은 article 사진, 관심사, 태그, 글 
     articleImgSrc: null,
@@ -28,23 +29,15 @@ export const initialState = {
     resume: null,
     workPlace: null,
     // article
-    articleInProfile: null,
+    articleObjInMyProfile: {},
     articleIsLoading: null,
+    // Create new article
+    newArticleImgSrc: null,
+    newArticleTitle: null,
+    newArticleContent: null,
+    newArticleInterest: null,
+    newArticleTagArr: [],
 }
-// articleInProfile: {
-//     "startUp": [
-//         {
-//             articleImgSrc,
-//             articleContent
-//         }
-//         {
-//             articleImgSrc,
-//             articleContent
-//         }
-//     ],
-//     "meat": []
-// }
-
 
 const reducer = (state=initialState, action) => {
     switch(action.type) {
@@ -67,6 +60,11 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 isGraduate: action.isGraduate
+            }
+        case actionTypes.ADD_IS_LOCATION_PUBLIC:
+            return {
+                ...state,
+                isLocationPublic: action.isLocationPublic
             }
         case actionTypes.ADD_DISPLAY_NAME:
             return {
@@ -102,8 +100,8 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 location: action.location,
-                lng: action.lng,
-                lat: action.lat,
+                latitude: action.latitude,
+                longitude: action.longitude,
             }
         case actionTypes.ADD_RESUME:
             return {
@@ -132,6 +130,13 @@ const reducer = (state=initialState, action) => {
                     loading: false,
                     error: false,
                     articleImgSrc: action.imgAwsUrl
+                }
+            }else if(action.payloadType === 'newArticle') {
+                return {
+                    ...state,
+                    loading: false,
+                    error: false,
+                    newArticleImgSrc: action.imgAwsUrl
                 }
             }else {
                 return {
@@ -220,29 +225,26 @@ const reducer = (state=initialState, action) => {
                 articleIsLoading: true
             }
         case actionTypes.GET_INTEREST_ARTICLE_SUCCESS:
-            const { interest, articleContent, articleImgSrc } = action;
-            // [ {articleImgSrc: "www", articleContent: "안녕~"}, {} ]
-            const newArticleArr = JSON.parse(JSON.stringify(state.articleInProfile)) //깊은복사
-            if(!articleContent || !articleImgSrc) { // 없으면 추가안함
-                newArticleArr.push({
-                    interest,
-                });
+            const { interest, articleDataArr } = action;
+            if(articleDataArr === null) // 해당 관심사의 article이 없을 때
                 return {
                     ...state,
                     articleIsLoading: false,
-                    articleInProfile: newArticleArr
-                }
-            }
-
-            newArticleArr.push({
-                interest,
-                articleContent,
-                articleImgSrc
-            })
+                };
+            
+            let newArticleArr = JSON.parse(JSON.stringify(state.articleObjInMyProfile)) //깊은복사
+            
+            newArticleArr[interest] = [];
+            articleDataArr.map(el => {
+                newArticleArr[interest].push({
+                    articleImgSrc: el.articleImgSrc,
+                    articleContent: el.articleContent
+                })
+            });
             return {
                 ...state,
                 articleIsLoading: false,
-                articleInProfile: newArticleArr,
+                articleObjInMyProfile: newArticleArr,
             }
         case actionTypes.GET_INTEREST_ARTICLE_FAIL:
             return {
@@ -255,6 +257,52 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 error: null,
                 articleIsLoading: null
+            }
+        case actionTypes.CREATE_NEW_ARTICLE_START:
+            return {
+                ...state,
+                loading: true
+            }
+        case actionTypes.CREATE_NEW_ARTICLE_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                error: false,
+            }
+        case actionTypes.CREATE_NEW_ARTICLE_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: true,
+            }
+        case actionTypes.CREATE_NEW_ARTICLE_INIT:
+            return {
+                ...state,
+                error: null,
+                loading: null,
+            }
+        case actionTypes.UPDATE_PROFILE_START:
+            return {
+                ...state,
+                loading: true
+            }
+        case actionTypes.UPDATE_PROFILE_SUCCESS:
+            return {
+                ...state,
+                error: false,
+                loading: false,
+            }
+        case actionTypes.UPDATE_PROFILE_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: true,
+            }
+        case actionTypes.UPDATE_PROFILE_INIT:
+            return {
+                ...state,
+                error: null,
+                loading: null,
             }
         default:
             return state
