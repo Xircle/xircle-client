@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../../components/UI/modal';
 import Select from 'react-select';
 import { AgeSettingOptions } from '../../../model/person';
-import { Search } from 'semantic-ui-react'
 import { jobs, adjectives } from '../../../model/person';
 import KakaoShareButton from '../../../components/KakaoShareButton';
 import { FacebookIcon, FacebookShareButton, TwitterShareButton, TwitterIcon, LineShareButton, LineIcon } from 'react-share';
@@ -24,16 +23,17 @@ const SettingContents = ({ history, questionNum }) => {
     const articleRef = useRef();
     const articleInterestArr = useRef();
     const articleTagRef = useRef();
-    
+    const articleTitleRef = useRef();
     const introRef = useRef();
     const resumeRef = useRef();
     const workPlaceRef = useRef();
 
+    const [userDataFormData, setUserDataFormData] = useState(new FormData());
+    const [articleImgFile, setArticleImgFile] = useState(); // articleImgSrc 파일 객체
+    const [profileImgFile, setProfileImgFile] = useState();
+    
     const [defaultArticleHashTag, setDefaultArticleHashTag] = useState('');
     const [profileImgSrc, setProfileImgSrc] = useState('');
-    const [articleImg_formData, setArticleImgSrcFormData] = useState(null);
-    const [profileImg_formData, setProfileImgSrcFormData] = useState(null);
-    
     const [publicOrNotClicked, setPublicOrNotClicked] = useState(true);
     const [graduateOrNotClicked, setGraduateOrNotClicked] = useState(true);
     const [genderClicked, setGenderClicked] = useState(false);
@@ -42,7 +42,6 @@ const SettingContents = ({ history, questionNum }) => {
     const isLoading = useSelector(store => store.user.loading);
     const hasError = useSelector(store => store.user.error);
     const errCode = useSelector(store => store.user.errCode);
-    
     const emailInRedux = useSelector(store => store.auth.email);
     const univInRedux = useSelector(store => store.auth.univ);
     const phoneNumberInRedux = useSelector(store => store.auth.phoneNumber);
@@ -58,6 +57,7 @@ const SettingContents = ({ history, questionNum }) => {
     const latitudeInRedux = useSelector(store => store.user.lat);
     const longitudeInRedux = useSelector(store => store.user.lng);
     const interestArrInRedux = useSelector(store => store.user.interestArr);
+    const articleTitleInRedux = useSelector(store => store.user.articleTitle);
     const articleTextInRedux = useSelector(store => store.user.articleText);
     const articleInterestArrInRedux = useSelector(store => store.user.articleInterestArr);
     const articleTagInRedux = useSelector(store => store.user.articleTag);
@@ -67,56 +67,57 @@ const SettingContents = ({ history, questionNum }) => {
     
     const dispatch = useDispatch();
     
+    // 모든 페이지에서 리다이렉션 고려
     useEffect(() => {
         const currentPath = window.location.pathname;
-        // switch(currentPath) {
-        //     case '/setting/1':
-        //         if(!emailInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/2':
-        //         if(!locationInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/3':
-        //         if(!isPublicInRedux || !isGraduateInRedux || !genderInRedux || !ageInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/4':
-        //         if(!jobInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/5':
-        //         if(!adjInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/6':
-        //         if(!interestArrInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/7':
-        //         if(!articleImgSrcInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/8':
-        //         if(!articleTextInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/9':
-        //         if(!introTextInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/10':
-        //         if(!profileImgSrcInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     case '/setting/11':
-        //         if(!emailInRedux) 
-        //             return window.location.replace('auth');
-        //         break;
-        //     default:
-        //         return null;
-        // }
+        switch(currentPath) {
+            case '/setting/1':
+                if(!emailInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/2':
+                if(!locationInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/3':
+                if(!isPublicInRedux || !isGraduateInRedux || !genderInRedux || !ageInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/4':
+                if(!jobInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/5':
+                if(!adjInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/6':
+                if(!interestArrInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/7':
+                if(!articleImgSrcInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/8':
+                if(!articleTextInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/9':
+                if(!introTextInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/10':
+                if(!profileImgSrcInRedux) 
+                    return window.location.replace('auth');
+                break;
+            case '/setting/11':
+                if(!emailInRedux) 
+                    return window.location.replace('auth');
+                break;
+            default:
+                return null;
+        }
         return () => {
             setDefaultArticleHashTag('');
         }
@@ -258,20 +259,19 @@ const SettingContents = ({ history, questionNum }) => {
         fileReader.onload = e => {
             setImgSrc(e.target.result);
         }
-        // 서버 제출용
-        const formData = new FormData();
-        formData.append("img", __file);
 
-        setArticleImgSrcFormData(formData);
+        setArticleImgFile(__file);
     }, []);
     
     const uploadBtnHandler = useCallback((event) => {
         event.preventDefault();
         if(!imgSrc)
             return alert("사진을 선택해주세요.")
-        // /img 라우터로 formData 올려서 S3에 이미지 업로드하고, URL받기 위한 액션.
-        dispatch(actions.submitImgToAWS(articleImg_formData, "article"));
-    }, [imgSrc, articleImg_formData]);
+
+        userDataFormData.set("articleImgSrc", articleImgFile);
+        setUserDataFormData(userDataFormData);
+        history.push('/setting/7');
+    }, [imgSrc, userDataFormData, articleImgFile]);
     
     // /setting/7
     const articleHashTagClickHandler = useCallback((clickedHashTag) => {
@@ -282,10 +282,15 @@ const SettingContents = ({ history, questionNum }) => {
 
     const articleSubmitHandler = useCallback((event) => {
         event.preventDefault();
+        // 0) articleTitle
+        const articleTitle = articleTitleRef.current.value;
+        if(articleTitle.length === 0)
+            return alert("제목은 적어도 1자 이상은 작성해주세요.")
+
         // 1) articleText
         const articleText = articleRef.current.value;
         if(articleText.length < 3)
-            return alert("적어도 3자 이상은 작성해주세요.")
+            return alert("내용은 적어도 3자 이상은 작성해주세요.")
         if(defaultArticleHashTag.length < 1) 
             return alert("게시물 관심사를 적어도 하나 선택해주세요.");
         
@@ -298,7 +303,7 @@ const SettingContents = ({ history, questionNum }) => {
         if(articleTagRef.current.value) { // articleTagRef => "@hello @hi @무야호"
             const articleTagText = articleTagRef.current.value.trim();
             let articleTagArr = articleTagText.split(" ");  // articleTagArr = ["@hello", "@hi", "@무야호"]
-            const hashTagRegex = /^@[a-zA-Z0-9]+$/;
+            const hashTagRegex = /^@[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$/;
 
             let isSuccess = true;
             articleTagArr.forEach(tag => {
@@ -312,12 +317,12 @@ const SettingContents = ({ history, questionNum }) => {
                 return null;
 
             // 3) 성공했으면 @ 빼서 저장 ['hello', 'hi', '무야호']
-            articleTagArr = articleTagArr.map(tag => {
+            const finalArticleTagArr = articleTagArr.map(tag => {
                 return tag.replace('@', '');
             });
-            dispatch(actions.addArticleContents(articleText, articleInterestArr, articleTagArr));
+            dispatch(actions.addArticleContents(articleTitle, articleText, articleInterestArr, finalArticleTagArr));
         }else { // articleTag 사용안했을 때도 고려
-            dispatch(actions.addArticleContents(articleText, articleInterestArr, []));
+            dispatch(actions.addArticleContents(articleTitle, articleText, articleInterestArr, []));
         }
         history.push('/setting/8')
     }, [defaultArticleHashTag]);
@@ -339,9 +344,7 @@ const SettingContents = ({ history, questionNum }) => {
             setProfileImgSrc(e.target.result);
         };
 
-        const formData = new FormData();
-        formData.append("img", __file);
-        setProfileImgSrcFormData(formData);
+        setProfileImgFile(__file);
     }, []);
 
     const uploadProfileHandler = useCallback((event) => {
@@ -349,8 +352,9 @@ const SettingContents = ({ history, questionNum }) => {
         if(!profileImgSrc)
             return alert("사진을 선택해주세요.");
 
-        dispatch(actions.submitImgToAWS(profileImg_formData, "profile"));
-    }, [profileImgSrc, profileImg_formData]);
+        userDataFormData.set("profileImgSrc", profileImgFile);
+        history.push('/setting/9');
+    }, [profileImgSrc, userDataFormData, profileImgFile]);
 
     // setting/9
     const introTextSubmitHandler = useCallback((event) => {
@@ -366,11 +370,35 @@ const SettingContents = ({ history, questionNum }) => {
     const submitToServer = useCallback(() => {
         const resumeText = resumeRef.current.value;
         const workPlaceText = workPlaceRef.current.value;
-        dispatch(actions.submitToServer(
-            phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleInterestArrInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText
-        ));
+
+        const data = {
+            gender: genderInRedux,
+            age: ageInRedux,
+            adj: adjInRedux,
+            job: jobInRedux,
+            location: locationInRedux,
+            displayName: displayNameInRedux,
+            introText: introTextInRedux,
+            interestArr: interestArrInRedux,
+            phoneNumber: phoneNumberInRedux,
+            isPublic: isPublicInRedux,
+            isGraduate: isGraduateInRedux,
+            resume: resumeText,
+            workPlace: workPlaceText,
+            password: __pwdInRedux,
+            email: emailInRedux,
+            latitude: latitudeInRedux,
+            longitude: longitudeInRedux,
+            articleTitle: articleTitleInRedux,
+            articleText: articleTextInRedux,
+            articleInterestArr: articleInterestArrInRedux,
+            articleTagArr: articleTagInRedux,
+        }
+
+        userDataFormData.append('data', JSON.stringify(data));
+        dispatch(actions.submitToServer(userDataFormData));
         
-    }, [phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleInterestArrInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
+    }, [userDataFormData, phoneNumberInRedux, latitudeInRedux, longitudeInRedux, __pwdInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTitleInRedux, articleTextInRedux, articleInterestArrInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux]);
     
     // /setting/11
     const shareBtnClickedHandler = useCallback(() => {
@@ -394,10 +422,10 @@ const SettingContents = ({ history, questionNum }) => {
             <>
                 <section className="px-8 mt-8">
                     <h1 style={{textAlign: 'left', marginBottom: '10px'}} className="text-2xl text-left">성별</h1>
-                    <p style={{color: "#C5C1C1", textAlign: 'left', marginBottom: '20px'}}>성별을 선택해주세요. (필수)<br /> 직접기입에 성별과 관련없는 정보 기재 하지마세요.</p>
-                    <button onClick={() => WomanBtnClickedHandler()} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base ">여성</span></button>
-                    <button onClick={() => ManBtnClickedHandler()} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base ">남성</span></button>
-                    <button onClick={() => NonBinaryBtnClickedHandler()} style={{width: '80%', backgroundColor: "#F7F7FA"}} className="text-left border-2 px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base "> 논바이너리</span></button>
+                    <p style={{color: "#C5C1C1", textAlign: 'left', marginBottom: '20px'}}>성별을 선택해주세요. <br /> 직접기입에 성별과 관련없는 정보 기재 하지마세요.</p>
+                    <button onClick={() => WomanBtnClickedHandler()} style={{width: '80%', borderRadius: 4, border: '1px solid lightgray',  backgroundColor: "#fff"}} className="text-left px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base ">여성</span></button>
+                    <button onClick={() => ManBtnClickedHandler()} style={{width: '80%', borderRadius: 4, border: '1px solid lightgray', backgroundColor: "#fff"}} className="text-left px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base ">남성</span></button>
+                    <button onClick={() => NonBinaryBtnClickedHandler()} style={{width: '80%', borderRadius: 4, border: '1px solid lightgray', backgroundColor: "#fff"}} className="text-left px-8 py-3 mt-5 focus:outline-none"><span style={{color: "#887F7F"}} className="text-base "> 논바이너리</span></button>
                 </section>
                 
                 {graduateOrNotClicked ? (
@@ -412,7 +440,7 @@ const SettingContents = ({ history, questionNum }) => {
                     <Modal show={publicOrNotClicked}>
                         <div className="mb-5">
                             <h1 className="text-xl mb-5">회원님은 {univInRedux} 이시군요!</h1>
-                            <span style={{fontSize: '12px', color: '#5c5c5c', whiteSpace: 'pre-line'}}>학교를 공개하시겠습니까? 비공개 하시겠습니까? <br/> 공개여부는 언제든지 변경 가능합니다.</span>
+                            <span style={{fontSize: '12px', color: '#5c5c5c', whiteSpace: 'pre-line'}}>학교를 공개하시겠어요? <br/> 공개여부는 언제든지 변경 가능해요.</span>
                         </div>
                         <RadioUI subject="privateOrNot" isFirstValue={isUnivPublic} changeHandler={UnivPublicChangeHandler}/>
                         <p style={{color: "#cdcdcd", fontSize: 12, margin: '15px 0'}}>공개하면 더 많은 네트워킹이 가능해요 :)</p>
@@ -423,7 +451,7 @@ const SettingContents = ({ history, questionNum }) => {
                 <Modal show={genderClicked} clicked={() => setGenderClicked(false)}>
                     <div className="mb-5">
                         <h1 className=" text-xl mb-5">회원님은 몇 살이신가요?</h1>
-                        <span style={{ fontSize: '14px', color: '#5c5c5c'}}>걱정마세요! 나이는 20대 초, 중, 후반으로 표시됩니다.</span>
+                        <span style={{ fontSize: '14px', color: '#5c5c5c'}}>걱정마세요! 나이는 초, 중, 후반으로 표시됩니다. 나이는 변경이 어려우니 잘 선택해주세요.</span>
                     </div>
                     <Select 
                         isSearchable={false}
@@ -433,22 +461,22 @@ const SettingContents = ({ history, questionNum }) => {
                         onChange={(e) => dispatch(actions.addAge(e.value))}
                     />
                     <div className="flex flex-row justify-evenly">
-                        <button onClick={() => history.push('/setting/3')} className="font-sans border-2 w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
+                        <button onClick={() => {if(ageInRedux) history.push('/setting/3')}} className="font-sans border-2 w-full rounded-3xl px-5 py-3 mt-10 bg-gray-400 text-white hover:text-white hover:bg-black focus:outline-none">확인</button>
                     </div>
                 </Modal>
             </>
         )
     }else if(questionNumber === 3) {
         contents = (
-            <section className="text-center px-3 mt-3">
+            <section className="px-3 mt-3">
                 <div className="px-3 py-5 mb-3">
                     <h1 style={{textAlign: 'left'}} className="text-2xl text-left">회원님은 어떤 사람인가요?</h1>
-                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>회원님을 설명 해주세요. (필수) <br />어떤 사람인지 궁금해요.</p>
+                    <p style={{color: "#C5C1C1", textAlign: 'left', lineHeight: 1.5}}>회원님을 설명 해주세요. <br /> 선택지에 없나요? 직접 추가해보세요.</p>
                 </div>
-                <Search
-                    placeholder={"선택지에 없다면 직접 추가!"}
-                    size="big"
-                    className="text-left ml-2"
+                <input
+                    placeholder="선택지에 없다면 직접 추가!"
+                    value=""
+                    style={{width: 220, outline: 'none', heiht: 45, marginLeft: 10, padding: '15px 20px', border: '0.5px solid #ccc', borderRadius: 26}}
                 />
                 <section className="my-5 px-2">
                     {jobs.map((job, id) => (
@@ -464,13 +492,13 @@ const SettingContents = ({ history, questionNum }) => {
             <section className="text-center px-3 mt-3">
                 <div className="px-3 py-5 mb-3">
                     <h1 style={{textAlign: 'left'}} className="text-2xl text-left">회원님은 어떤 사람인가요?</h1>
-                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>회원님을 설명 해주세요. (필수) <br />어떤 사람인지 궁금해요.</p>
+                    <p style={{color: "#C5C1C1", textAlign: 'left'}}>회원님을 설명 해주세요. <br />어떤 사람인지 궁금해요.</p>
                 </div>
                 <div className="flex flex-row items-center">
-                    <Search
-                        placeholder={"선택지에 없다면 직접 추가!"}
-                        size="big"
-                        className="text-left ml-2 text-sm"
+                    <input
+                        placeholder="선택지에 없다면 직접 추가!"
+                        value=""
+                        style={{width: 220, outline: 'none', heiht: 45, marginLeft: 10, padding: '15px 20px', border: '0.5px solid #ccc', borderRadius: 26}}
                     />
                     <p style={{marginLeft: '10px'}}>{jobInRedux || job}</p>
                 </div>
@@ -488,7 +516,7 @@ const SettingContents = ({ history, questionNum }) => {
             <section className="text-center px-3 my-5">
                 <div className="px-3 py-5 mb-3">
                     <h3 style={{whiteSpace: 'pre-line'}} className="text-left text-3xl font-light">{adjInRedux || adj} {jobInRedux || job} {displayNameInRedux}님 요즘 무엇에 관심있으신가요?</h3>
-                    <h5 className="text-left font-normal my-5 text-gray-400">관심사를 2개 이상 골라주세요. (필수) <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 @@@ 해보세요.</h5>
+                    <h5 className="text-left font-normal my-5 text-gray-400">관심사를 2개 이상 골라주세요. <br />관심사가 많을 수록 만날 수 있는 친구가 많아져요.<br />당신을 @태그 해보세요.</h5>
                     <p style={{color: "#8D8D8D", fontSize: 10, textAlign: 'left'}}>※런칭 후 추가 예정</p>
                 </div>
                 <InterestSetting history={history}/>
@@ -498,7 +526,7 @@ const SettingContents = ({ history, questionNum }) => {
         contents = (
             <section className="min-h-screen text-center px-3 my-3 mb-10">
                 <div className="px-3 py-5 mb-3">
-                    <p style={{fontSize: 18, fontWeight: 'bold', marginBottom: 18}} className="text-left">관심사에 맞는 회원님의 활동을 기록해보세요.</p>
+                    <p style={{fontSize: 18, fontWeight: 'bold', marginBottom: 18}} className="text-left">앞에서 고른 관심사와 관련된 <br/> 사진과 글을 자유롭게 기록해보세요.</p>
                     <p style={{color: "#B3B3B3", textAlign: 'left'}}>ex.오늘 먹은 음식 / 오늘 한 스터디 </p>
                 </div>
                 <section className="mt-5">
@@ -507,7 +535,7 @@ const SettingContents = ({ history, questionNum }) => {
                             style={{width: 300, height: 300, margin: '0 auto', borderRadius: 180, objectFit: 'cover'}} 
                             src={imgSrc ? imgSrc : "/camera.svg"} 
                         />
-                        {!articleImg_formData ? <p style={{color: "#C4C4C4", fontSize: 16, position: 'absolute', top: '60%', left: '50%', width: '100%', transform: 'translate(-50%, 0)', fontWeight: 'bold', whiteSpace: 'pre-line'}}>Click!</p> : null}
+                        {!imgSrc && <p style={{color: "#C4C4C4", fontSize: 16, position: 'absolute', top: '60%', left: '50%', width: '100%', transform: 'translate(-50%, 0)', fontWeight: 'bold', whiteSpace: 'pre-line'}}>Click!</p>}
                         <input 
                             style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 300, height: 300, borderRadius: 150, cursor: 'pointer'}} 
                             type="file" 
@@ -544,15 +572,29 @@ const SettingContents = ({ history, questionNum }) => {
                     alt="banner"
                     width='100%'
                     height='100%'
-                />  
+                />
                 <textarea 
-                    name="articleText"
-                    id="articleText"
-                    ref={articleRef}
-                    placeholder="첫 번째 글을 작성해 보세요. 비방/욕설은 삼가해주세요."
-                    style={{height: '250px', backgroundColor: "#F7F7FA"}}
-                    className="mt-5 px-3 py-5 w-full text-base placeholder-gray-300">
+                    name="articleTitle"
+                    ref={articleTitleRef}
+                    placeholder="제목"
+                    style={{height: '50px', outline: 'none', fontWeight: 500, backgroundColor: "#fff", borderBottom: '1px solid rgba(0, 0, 0, 0.15)', overflow: 'hidden'}}
+                    className="mt-5 px-3 py-5 w-full placeholder-gray-300">
                 </textarea>
+                <section style={{position: 'relative'}}>
+                    <textarea 
+                        name="articleText"
+                        id="articleText"
+                        ref={articleRef}
+                        placeholder="앞에서 고른 관심사와 관련된 사진과 글을 자유롭게 기록해보세요"
+                        style={{height: '250px', backgroundColor: "#F7F7FA"}}
+                        className="mt-5 px-3 py-5 w-full text-base placeholder-gray-300">
+                    </textarea>
+                    <img 
+                        src={imgSrc}
+                        alt="articleImage"
+                        style={{width: 77, height: 77, borderRadius: 6, position: 'absolute', right: 10, bottom: 10, objectFit: 'cover'}}
+                    />
+                </section>  
                 <textarea
                     id="articleTag"
                     ref={articleInterestArr}
@@ -585,7 +627,7 @@ const SettingContents = ({ history, questionNum }) => {
             <section className="text-center px-3 mb-10">
                  <div className="px-3 py-5 mb-3">
                     <p style={{fontSize: 24, fontWeight: 'bold', margin: '20px 0 10px'}} className="text-left">프로필사진</p>
-                    <p style={{textAlign: 'left', color: "#C5C1C1"}}>자유로운 프로필 사진을 업로드 해주세요 </p>
+                    <p style={{textAlign: 'left', color: "#C5C1C1"}}>[마지막 단계] <br/>자유로운 프로필 사진을 업로드 해주세요 </p>
                 </div>
                 <section className="mt-5">
                     <div style={{position: 'relative'}}>
@@ -606,7 +648,6 @@ const SettingContents = ({ history, questionNum }) => {
                             <div style={{height: 40, position: 'relative'}}>
                                 <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: 10, transform: 'translate(-50%, 0)'}}>
                                     <Spinner 
-                                        size={5}
                                         color={"#aaa"}
                                     />
                                     <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>업로드 중입니다..</p>
@@ -652,11 +693,12 @@ const SettingContents = ({ history, questionNum }) => {
                 
                 <section style={{margin: "25px 0 15px"}}>
                     <div className="flex flex-row">
-                        <p style={{marginBottom: 0, marginRight: 5}} className="text-left"> 활동 이력 </p>
-                        <img 
-                            src="/activity.svg"
-                            alts="activity"
+                        <img
+                            style={{marginRight: 5}}  
+                            src="/profile/grobal.svg"
+                            alt="activity"
                         />
+                        <p style={{marginBottom: 0, marginRight: 5}} className="text-left"> 활동 이력 </p>
                     </div>
                     <textarea 
                         ref={resumeRef}
@@ -667,11 +709,12 @@ const SettingContents = ({ history, questionNum }) => {
                 </section>
                 <section style={{margin: "10px 0"}}>
                     <div className="flex flex-row">
-                        <p style={{marginBottom: 0, marginRight: 5}} className="text-left"> 근무 직장 </p>
-                        <img 
-                            src="/company.svg"
-                            alts="company"
+                        <img
+                            style={{marginRight: 5}} 
+                            src="/profile/company.svg"
+                            alt="company"
                         />
+                        <p style={{marginBottom: 0}} className="text-left"> 근무 직장 </p>
                     </div>
                     
                     <textarea 
@@ -683,11 +726,13 @@ const SettingContents = ({ history, questionNum }) => {
                 </section>
                 <p style={{color: "#7C7C7C"}}>※ 추후 프로필 수정에서 추가 가능합니다</p>
                 {isLoading ? (
-                    <div style={{height: '30px', left: 'calc(50% - 10px)'}} className="absolute ">
-                        <LoadingIndicator 
-                            color={{red: 0, green: 0, blue: 0, alpha: 1}}
-                            segmentWidth={2}
-                        />
+                    <div style={{height: 40, position: 'relative'}}>
+                        <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: 10, transform: 'translate(-50%, 0)'}}>
+                            <Spinner 
+                                color={"#aaa"}
+                            />
+                            <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>업로드 중입니다..</p>
+                        </div>
                     </div>
                 ) : null}
                 <button onClick={() => submitToServer()} style={{border: '1px solid black'}} className="mt-20 w-full rounded-lg px-5 py-3 bg-black text-white focus:outline-none">
