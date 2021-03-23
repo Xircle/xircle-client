@@ -104,59 +104,11 @@ export const addInterest = (interestArr) => {
     }
 }
 
-// ArticleImg Submit to AWS S3
-export const submitImgToAWSStart = () => {
-    return {
-        type: actionTypes.SUBMIT_IMGSRC_TO_AWS_START,
-        
-    }
-}
-export const submitImgToAWSSuccess = (imgAwsUrl, payloadType) => {
-    return {
-        type: actionTypes.SUBMIT_IMGSRC_TO_AWS_SUCCESS,
-        imgAwsUrl,
-        payloadType,
-    }
-}
-export const submitImgToAWSFail = () => {
-    return {
-        type: actionTypes.SUBMIT_IMGSRC_TO_AWS_FAIL,
-    }
-}
-export const submitImgToAWSInit = () => {
-    return {
-        type: actionTypes.SUBMIT_IMG_SRC_TO_AWS_INIT,
-    }
-}
 
-export const submitImgToAWS = (Img_formData, payloadType) => {
-    return dispatch => {
-        dispatch(submitImgToAWSStart());
-
-        Axios.post('/img', Img_formData)
-            .then(res => {
-                console.log(res);
-                const imgAwsUrl = res.data.data;
-                const isSuccess = res.data.success;
-                if(isSuccess) {
-                    dispatch(submitImgToAWSSuccess(imgAwsUrl, payloadType))
-                    dispatch(submitImgToAWSInit());
-                }else {
-                    dispatch(submitImgToAWSFail())
-                    dispatch(submitImgToAWSInit());
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                dispatch(submitImgToAWSFail());
-                dispatch(submitImgToAWSInit());
-            })
-    }
-}
-
-export const addArticleContents = (articleText, articleInterestArr, articleTagArr) => {
+export const addArticleContents = (articleTitle, articleText, articleInterestArr, articleTagArr) => {
     return {
         type: actionTypes.ADD_ARTICLE_CONTENTS,
+        articleTitle,
         articleText,
         articleInterestArr,
         articleTagArr
@@ -219,12 +171,9 @@ export const submitToServerStart = () => {
     }
 }
 
-export const submitToServerSuccess = (resume, workPlace, token) => {
+export const submitToServerSuccess = () => {
     return {
         type: actionTypes.SUBMIT_TO_SERVER_SUCCESS,
-        resume,
-        workPlace,
-        token,
     }
 }
 export const submitToServerFail = (errCode) => {
@@ -238,41 +187,20 @@ export const submitToServerInit = () => {
         type: actionTypes.SUBMIT_TO_SERVER_FAIL,
     }
 }
-export const submitToServer = (phoneNumberInRedux, latitudeInRedux, longitudeInRedux, passwordInRedux, isPublicInRedux, isGraduateInRedux, emailInRedux, genderInRedux, ageInRedux, jobInRedux, adjInRedux, locationInRedux, articleImgSrcInRedux, articleTextInRedux, articleInterestArrInRedux, articleTagInRedux, displayNameInRedux, interestArrInRedux, introTextInRedux, profileImgSrcInRedux, resumeText, workPlaceText) => {
+export const submitToServer = (userDataFormData) => {
     return dispatch => {
         dispatch(submitToServerStart());
-        const userData = {
-            gender: genderInRedux, 
-            age: ageInRedux,
-            adj: adjInRedux, 
-            job: jobInRedux, 
-            location: locationInRedux, 
-            longitude: longitudeInRedux,
-            latitude: latitudeInRedux,
-            displayName: displayNameInRedux, 
-            profileImgSrc: profileImgSrcInRedux, 
-            introText: introTextInRedux, 
-            interestArr: interestArrInRedux, 
-            phoneNumber: phoneNumberInRedux,
-            isPublic: isPublicInRedux,
-            isGraduate: isGraduateInRedux,
-            resume: resumeText,
-            workPlace: workPlaceText,
-            password: passwordInRedux,
-            email: emailInRedux,
-            articleImgSrc: articleImgSrcInRedux, 
-            articleInterestArr: articleInterestArrInRedux, 
-            articleText: articleTextInRedux, 
-            articleTag: articleTagInRedux,
-        };
-        Axios.post('/pre/user', userData)
+        
+
+        AxiosForTest.post('/user', userDataFormData)
             .then(res => {
                 console.log(res);
                 const isSuccess = res.data.success;
                 const token = res.data.data.token;
                 if(isSuccess) {
-                    dispatch(submitToServerSuccess(resumeText, workPlaceText, token));
                     localStorage.setItem('tk', token);
+                    dispatch(submitToServerSuccess());
+                    dispatch(submitToServerInit());
                 }
                 else{
                     const errCode = res.data.code;
@@ -332,7 +260,7 @@ export const getInterestArticle = (interest, tokenInUser) => {
                 console.log(res);
                 const isSuccess = res.data.success;
                 if(isSuccess) {
-                    const articleDataArr = res.data.data; // [{articleImgSrc, articleContent}, {articleImgSrc, articleContent}]
+                    const articleDataArr = res.data.data;
                     if(articleDataArr.length === 0) { // 해당 관심사에 대한 게시글이 없으면 
                         dispatch(getInterestArticleSuccess(interest, null));
                         dispatch(getInterestArticleInit());
@@ -398,14 +326,6 @@ export const updateProfile = (token, editedProfileFormData) => {
     return dispatch => {
         dispatch(updateProfileStart());
 
-        for (let value of editedProfileFormData.values()) {
-            console.log(value);
-        }
-        console.log('---------------')
-        for (let key of editedProfileFormData.keys()) {
-            console.log(key);
-        }
-        
         AxiosForTest.put(`/user/profile`, editedProfileFormData, {
             headers: {
                 'access-token': `${token}`
