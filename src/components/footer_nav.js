@@ -1,48 +1,43 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { NavLink } from 'react-router-dom';
+import Modal from '../components/UI/modal';
 
-const Footer_nav = ({ footerNone }) => {
+const Footer_nav = ({ history, footerNone }) => {
     return (
-        !footerNone && <nav
-            style={{ borderTop: '1px solid #ccc', padding: '15px 0 30px', backgroundColor: '#fefefe' }}
-            className="flex flex-row w-full justify-evenly absolute bottom-0 "
+        !footerNone && (
+        <nav
+            style={{width: 231, padding: '16px 0', backgroundColor: '#fff', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.3)', borderRadius: 30 }}
+            className="flex flex-row w-full justify-evenly"
         >
-            <NavLink to="/person">
+            {/* Search */}
+            <section>
                 <img 
-                    src={(window.location.pathname == "/person") ? "/NavImage/person-add.svg" : "/NavImage/person-add-outline.svg"}
-                    width={30}
-                    height={30}
+                    src="/NavImage/search.svg"
+                    alt="search"
+                    style={{width: 20, height:20, cursor: 'pointer'}}
+                    onClick={() => alert('친구탐색기능 개발중입니다. 3월 28일에 만나요!')}
                 />
-            </NavLink>
-            <NavLink to="/people-circle">
+            </section>
+
+            {/* Message  */}
+            <section>
                 <img 
-                    src={(window.location.pathname == "/people-circle") ? "/NavImage/people-circle.svg" : "/NavImage/people-circle-outline.svg"}
-                    width={30}
-                    height={30}
+                    src="/NavImage/message.svg"
+                    alt="message"
+                    style={{width: 20, height:20, cursor: 'pointer'}}
+                    onClick={() => alert('채팅기능 개발중입니다. 4월 16일 런칭 후 만나요! ')}
                 />
-            </NavLink>
-            <NavLink to="/globe">
-                <img 
-                    src={(window.location.pathname == "/globe") ? "/NavImage/globe.svg" : "/NavImage/globe-outline.svg"}
-                    width={30}
-                    height={30}
-                />
-            </NavLink>
-            <NavLink to="love-me">
-                <img 
-                    src={(window.location.pathname == "/love-me") ? "/NavImage/heart.svg" : "/NavImage/heart-outline.svg"}
-                    width={30}
-                    height={30}
-                />
-            </NavLink>
-            <NavLink to="/my-profile">
-                <img 
-                    src={(window.location.pathname == "/my-profile") ? "/NavImage/profile.svg" : "/NavImage/profile-outline.svg"}
-                    width={30}
-                    height={30}
-                />
-            </NavLink>
+            </section>
+
+            {/* 게시글 작성 */}
+            <img 
+                src="/NavImage/pencil.svg"
+                alt="pencil"
+                style={{width: 20, height:20, cursor: 'pointer'}}
+                onClick={() => history.push('/createArticle/1')}
+            />
         </nav>
+        )
     )
 }
 
