@@ -9,30 +9,44 @@ import * as actions from '../store/actions/index';
 const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnClicked, setBtnClicked }) => {
     const [headerColor, setHeaderColor] = useState('black');
     const [isWriteClicked, setIsWriteClicked] = useState(false);
+    const [oldScroll, setOldScroll] = useState(window.pageYOffset);
+    const [shouldNavHide, setShouldNavHide] = useState(false);
 
     const directRef = useRef();
     const dispatch = useDispatch();
 
     useEffect(() => {
-        window.addEventListener('scroll', handleScroll)
+        const NavInterval = setInterval(() => {
+            window.addEventListener('scroll', handleScroll)
+        }, 200);
+
         if(isIntro)
             document.body.style.backgroundColor = 'black';
         else
             document.body.style.backgroundColor = '#E4E4E4';
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            clearInterval(NavInterval);
         }
-    }, []);
+    }, [oldScroll]);
 
-    
-    // Headroom. scroll에 따라 색깔 변경
+    // Scroll에 따라 Headroom 변경 || Navigation 변경
     const handleScroll = useCallback(() => {
-        const screenHeight = window.innerHeight;
-        if(window.scrollY > screenHeight) {
-            setHeaderColor('white');
-        }else
-            setHeaderColor('black')
-    }, []);
+        const currPath = window.location.pathname;
+        if(currPath === '/') {
+            const screenHeight = window.innerHeight;
+            if(window.scrollY > screenHeight) {
+                setHeaderColor('white');
+            }else
+                setHeaderColor('black')
+        }else if(currPath === '/my-profile' || currPath === '/friend-profile') {
+            const newScroll = window.pageYOffset;
+            const willHide = newScroll > oldScroll;
+            setShouldNavHide(willHide);
+            setOldScroll(newScroll);
+        }   
+
+    }, [oldScroll]);
     
     const jobAdjSubmitHandler = useCallback((e) => {
         e.preventDefault();
@@ -51,11 +65,11 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
     }, []);
 
     return (
-        <div id="layout" style={{backgroundColor: isIntro ? 'black' : "white"}} className="flex flex-col mx-auto md:w-full">
+        <div id="layout" style={{backgroundColor: isIntro ? 'black' : "white"}} className="flex flex-col mx-auto md:w-full relative">
             {num === '3' || num === '4' ? (
                 <aside>
                     <img
-                        style={{width: '60px', height: '60px', position: 'fixed', right: 20, bottom: 30, cursor: 'pointer'}} 
+                        style={{width: '60px', height: '60px', zIndex: 999, position: 'fixed', right: 20, bottom: 30, cursor: 'pointer'}} 
                         onClick={() => setIsWriteClicked(true)}
                         src="/setting/write.svg"
                         alt="write"
@@ -118,7 +132,10 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
                 </>
             ) : isIntro ?  <header style={{height: 73, backgroundColor: 'black'}}></header> : null}
 
-            <main className="min-h-screen w-full">
+            <main className="min-h-screen w-full relative">
+                <footer style={{position: 'fixed', zIndex: 999, left: '50%', bottom: -20, transition: '.5s ease', transform: shouldNavHide ? 'translate(-50%, 50px)' : 'translate(-50%, -50px)'}}>
+                    <Footer_nav history={history} footerNone={footerNone}/>
+                </footer>
                 {children}
             </main>
 
@@ -137,7 +154,7 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
                     </div>
                 </footer>
             ) : 
-                <Footer_nav footerNone={footerNone}/>
+                null
             }
         </div>
     )
