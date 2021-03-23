@@ -4,7 +4,9 @@ import Layout from '../../../components/layout';
 import * as actions from '../../../store/actions/index';
 import Modal from '../../../components/UI/modal';
 import { interest2Object } from '../../../components/interest2Object';
-import airpod from '../../../images/my-profile/airpod.svg';
+import airpod_event_1 from '../../../images/my-profile/airpod_event_1.svg'
+import airpod_event_2 from '../../../images/my-profile/airpod_event_2.svg'
+import airpod_event_3 from '../../../images/my-profile/airpod_event_3.svg'
 import ageGenerator from '../../../components/ageGenerator';
 import Spinner from 'react-spinner-material';
 import { createKakaoButton } from '../../../components/KakaoShareButton';
@@ -12,7 +14,6 @@ import { createKakaoButton } from '../../../components/KakaoShareButton';
 let articleDispatchingCnt = [
     null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ]
-
 const selectedTab = {
     backgroundColor: 'black',
     color: 'white',
@@ -54,13 +55,11 @@ const heightGenerator = (idx) => {
 };
 
 const MyProfile = ({ history }) => {
-    const { isPublic, isGraduate, displayNameInUser, gender, univInUser, age, job, adj, location, interestArr, articleImgSrc, articleTag, introText, profileImgSrc, resume, workPlace } = useSelector(store => store.user);
+    const { isPublic, isGraduate, isLocationPublic, displayNameInUser, gender, univInUser, age, job, adj, location, interestArr, introText, profileImgSrc, resume, workPlace } = useSelector(store => store.user);
     const { displayName, univ } = useSelector(store => store.auth);
     
     const [pageNum, setPageNum] = useState(2);
     const [selectedInterest, setSelectedInterest] = useState(null); //관심사 네비게이션에서 선택된 관심사. (1, 스타트업) (2, 동네친구) ..등등
-    const [myProfileImgSrc, setMyProfileImgSrc] = useState(null);
-    const [profileImgSrcFormData, setProfileImgSrcFormData] = useState('');
     
     const [naviContents, setNaviContents] = useState(null);
     const [articleClickedArr, setArticleClicked] = useState([false, null]);
@@ -68,7 +67,7 @@ const MyProfile = ({ history }) => {
     const tokenInUser = useSelector(store => store.user.token);
     const tokenInAuth = useSelector(store => store.auth.token);
     const token = tokenInUser || tokenInAuth;
-    const articleArrInProfile = useSelector(store => store.user.articleInProfile);
+    const articleArrInProfile = useSelector(store => store.user.articleObjInMyProfile);
     const isLoading = useSelector(store => store.user.loading);
     const articleIsLoading = useSelector(store => store.user.articleIsLoading);
     const hasError = useSelector(store => store.user.error);
@@ -81,10 +80,12 @@ const MyProfile = ({ history }) => {
         const storedToken = localStorage.getItem('tk');
         const tokenInRedux = token;
         if(storedToken) {
-            if(newArr.length > 0) {
-                if(!newArr[0].count)
-                    return dispatch(actions.getUser(tokenInRedux || storedToken));
-            }
+            if(!profileImgSrc) // /pre/user로 오면 무조건 다시 로딩
+                return dispatch(actions.getUser(storedToken));
+            // if(newArr.length > 0) {
+            //     if(!newArr[0].count)
+            //         return dispatch(actions.getUser(tokenInRedux || storedToken));
+            // }
             if(interestArr.length !== 0) { // 이게 하나라도 있으면 전부 다 있다고 가정
                 return null;
             }
@@ -101,61 +102,24 @@ const MyProfile = ({ history }) => {
     }, []);
 
     useEffect(() => {
-        // 최초에 이미지 설정
-        setMyProfileImgSrc(profileImgSrc);
-    }, [profileImgSrc]);
-
-    // 프로필이미지 업데이트
-    const updateProfile = useCallback((event) => {
-        event.preventDefault();
-        const reader = new FileReader();
-        reader.onload = event => { 
-            dispatch(actions.updateProfileImgToServer(event.target.result))
-        };
-        const files = event.target.files;
-        const __file = files[0];
-
-        reader.readAsDataURL(__file);
-    }, []);
-
-    const profileImgChangeHandler = useCallback((event) => {
-        const files = event.target.files;
-        const __file = files[0];
-
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(__file);
-        fileReader.onload = e => { // async하게 다 읽었악면 실행 
-            setMyProfileImgSrc(e.target.result);
-        };
-
-        const formData = new FormData();
-        formData.append("img", __file);
-        setProfileImgSrcFormData(formData);
-    }, []);
-
-    useEffect(() => {
         // interestNum : 클릭한 관심사 인덱스
         if(selectedInterest === 'x' || selectedInterest === null) {
             if(articleClickedArr[0])
                 setArticleClicked([false, null]);
+            const myInterestCnt = newArr.length;
             setNaviContents(
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
+                        id="airpod_event"
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: 5, backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 111,
                         }} 
                         className="cursor-pointer relative"
-                        onClick={() => history.push('event')}
+                        onClick={() => createKakaoButton("#airpod_event")}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
+                        <img style={{width: '100%'}} src="/profile/invitement.svg" alt="invitement" />
                     </li>
                     {newArr.map((el, idx) => (
                     <li
@@ -187,11 +151,19 @@ const MyProfile = ({ history }) => {
                                 <p style={{fontSize: 10, margin: '0 5px 0 0'}}>{el.count}</p>
                                 <p style={{fontSize: 10, margin: '3px 7px'}}>활동 {el.activity}개</p>
                             </div>
-                            
                         </div>
                     </li>
                     ))}
-                    
+                    <li 
+                        style={{
+                            margin: 5, backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 121, transform: `translate(0, ${heightGenerator(myInterestCnt).translateY})`
+                        }} 
+                        className="cursor-pointer relative"
+                        onClick={() => history.push('event')}
+                    >
+                        <img style={{width: '100%'}} src="/profile/airpod.svg" alt="airpod" />
+                    </li>
                     <li 
                         style={{
                             margin: 5, backgroundColor: "#F7F7FA",
@@ -199,7 +171,6 @@ const MyProfile = ({ history }) => {
                         }} 
                     >
                     </li>
-                    
                 </ul>
             )
         }else if(selectedInterest === '스타트업') { // @스타트업 관심사 누를 때
@@ -212,7 +183,7 @@ const MyProfile = ({ history }) => {
 
             let foundArr = [];
             if(articleArrInProfile.스타트업) { // fetch된 후
-                foundArr = articleArrInProfile.스타트업; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.스타트업; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -229,13 +200,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -247,22 +217,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                        
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_3})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
                     </li>
-                    <p style={{marginTop: 50, color: "#D0CCCC"}}>[개발중] 3월 20일부터 게시글을 올릴 수 있습니다. <br/> 3월 20일날 만나요 </p>
                 </ul>
                 )
             );
@@ -276,7 +243,7 @@ const MyProfile = ({ history }) => {
 
             let foundArr = [];
             if(articleArrInProfile.술_맛집탐방) { // fetch된 후
-                foundArr = articleArrInProfile.술_맛집탐방; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.술_맛집탐방; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -293,13 +260,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -311,19 +277,18 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_1})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
                     </li>
                 </ul>
                 )
@@ -337,7 +302,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.동네친구) { // fetch된 후
-                foundArr = articleArrInProfile.동네친구; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.동네친구; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -354,10 +319,10 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
                             >
@@ -371,19 +336,18 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_1})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
                     </li>
                 </ul>
                 )
@@ -397,7 +361,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.코딩) { // fetch된 후
-                foundArr = articleArrInProfile.코딩; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.코딩; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -414,13 +378,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -432,20 +395,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_3})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -458,7 +420,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.애견인) { // fetch된 후
-                foundArr = articleArrInProfile.애견인; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.애견인; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -475,13 +437,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -493,20 +454,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_2})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -519,7 +479,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.패션) { // fetch된 후
-                foundArr = articleArrInProfile.패션; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.패션; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -536,13 +496,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -554,20 +513,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_3})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -580,7 +538,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.예술) { // fetch된 후
-                foundArr = articleArrInProfile.예술; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.예술; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -597,13 +555,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -615,20 +572,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_2})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -641,7 +597,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.게임) { // fetch된 후
-                foundArr = articleArrInProfile.게임; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.게임; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -658,13 +614,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -676,20 +631,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_3})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -702,7 +656,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.헬스) { // fetch된 후
-                foundArr = articleArrInProfile.헬스; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.헬스; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -719,13 +673,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -737,20 +690,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_1})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -763,7 +715,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.취업준비) { // fetch된 후
-                foundArr = articleArrInProfile.취업준비; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.취업준비; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -780,13 +732,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -798,20 +749,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_2})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -824,7 +774,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.수험생) { // fetch된 후
-                foundArr = articleArrInProfile.수험생; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.수험생; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -841,13 +791,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -859,20 +808,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_3})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -885,7 +833,7 @@ const MyProfile = ({ history }) => {
             }
             let foundArr = [];
             if(articleArrInProfile.대학원) { // fetch된 후
-                foundArr = articleArrInProfile.대학생; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleContent: "안녕하세요~"} ]
+                foundArr = articleArrInProfile.대학원; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
                 if(foundArr.length === 0)
                     return null;
             }
@@ -902,13 +850,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', height: 281, position: 'relative', cursor: 'pointer'}}>
+                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
                             <div 
                                 style={{
-                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', margin: 5, backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
+                                    backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
                                     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, opacity: articleClickedArr[1] === id ? 0.1 : 1
                                 }} 
-                                className="cursor-pointer"
                             >
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
@@ -920,20 +867,19 @@ const MyProfile = ({ history }) => {
                     {/* 에어팟 광고 마지막 추가*/}
                     <li 
                         style={{
-                            margin: 5, backgroundColor: "#fff", borderRadius: 15, 
-                            backgroundColor: '#000', overflow: 'hidden',
-                            width: '45%', height: 111, color: '#fff'
+                            margin: '10px 2px 2px 2px', backgroundColor: "#fff", borderRadius: 15, overflow: 'hidden',
+                            width: '45%', height: 310
                         }} 
                         className="cursor-pointer relative"
                         onClick={() => history.push('event')}
                     >
-                        <div style={{height: '80%'}} className="h-full flex flex-col justify-center items-center">
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0'}}>친구도 사귀고 에어팟도 받고</p>
-                            <p style={{margin: 0, fontSize: 12, margin: '2px 0', fontWeight: 'bold', textAlign: 'center'}}>에어팟 프로 0원 이벤트</p>
-                            <p style={{margin: 0, fontSize: 8, margin: '2px 0', fontWeight: 300, textAlign: 'center'}}>바로가기</p>
-                            <div style={{ height: 40, width: 40, position: 'absolute', bottom: -5, left: '50%', transform: 'translate(-50%, 0)', backgroundSize: 'cover', backgroundImage: `url(${airpod})` }}></div>
-                        </div>
-                    </li>
+                        <div 
+                            style={{
+                                backgroundImage: `url(${airpod_event_1})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', borderRadius: 15, objectFit: 'cover',
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0
+                            }} 
+                        />
+                    </li>  
                 </ul>
                 )
             );
@@ -942,15 +888,7 @@ const MyProfile = ({ history }) => {
 
     let pageContents = null;
     if(pageNum === 1) {
-        pageContents = (
-            <div style={{paddingTop: 10}} className="h-screen relative">
-                <section>
-                    <section onclick={() => history.push('event')} style={{position: 'absolute', left: '50%', top: '25%', transform: 'translate(-50%, 0)'}}>
-                        <p style={{fontSize: 20, textAlign: 'center', whiteSpace: 'pre'}}>Xircle은 이런 가치를 제공합니다.</p>
-                    </section>
-                </section>
-            </div>
-        )
+       console.log('hi');
     } else if(pageNum === 2) {
         const secretAge = ageGenerator(age);
         const selectedEl = newArr.find(el => el.interest === selectedInterest);
@@ -975,7 +913,7 @@ const MyProfile = ({ history }) => {
                         <div className="relative">
                             <img 
                                 style={{width: 198, height: 198, borderRadius: 114, backgroundColor: 'white', margin: '0 auto', objectFit: 'cover'}}
-                                src={myProfileImgSrc}
+                                src={profileImgSrc}
                             />
                             <input className="focus:outline-none" style={{position: 'absolute', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 198, height: 198, borderRadius: 114, cursor: 'pointer'}} onClick={() => history.push("/my-profile/edit")} />
                             <div onClick={() => history.push('/my-profile/edit')} className="flex flex-row justify-center items-center" style={{width: 40, height: 40, position: 'absolute', bottom: 15, right: '20%', borderRadius: 20, backgroundColor: "#fff", boxShadow: '4px 4px 4px rgba(0, 0, 0, 0.08)',  cursor: 'pointer'}}>
@@ -1029,7 +967,7 @@ const MyProfile = ({ history }) => {
                                 <p style={{margin: "0px 5px 0 10px"}} className="my-0">{resume}</p>
                             </li>
                             ) : null}
-                            {location ? (
+                            {location && isLocationPublic ? (
                             <li className="flex flex-row items-center my-3">
                                 <img 
                                     style={{width: 15, height: 15}}
@@ -1115,7 +1053,7 @@ const MyProfile = ({ history }) => {
         alert('존재하지 않는 페이지입니다.')
     }
     return (
-        <Layout history={history} invitement footerNone>
+        <Layout history={history} invitement>
             
             {isLoading ? (
                 <header style={{margin: "20px 0 35px 0"}}>
@@ -1149,12 +1087,8 @@ const MyProfile = ({ history }) => {
                         style={{width: 87}}
                         className="px-5 rounded-3xl focus:outline-none"
                         style={{cursor: 'pointer'}}
-                        onClick={() => setPageNum(3)}
                     >
-                        <img
-                            src="/profile/waytouse.svg"
-                            style={{width: 45, height: 45}}
-                        />
+                        <p style={{fontSize: 14, fontWeight: 600}}>Xircle</p>
                     </div>
                     <button 
                         style={pageNum === 2 ? selectedTab : notSelectedTab}
@@ -1164,10 +1098,10 @@ const MyProfile = ({ history }) => {
                     </button>
                     <button 
                         className="px-5 rounded-3xl focus:outline-none"
-                        onClick={() => history.push('/createArticle/1')}
+                        onClick={() => setPageNum(3)}
                     >
                         <img
-                            src="/setting/write.svg"
+                            src="/profile/waytouse.svg"
                             style={{width: 45, height: 45}}
                         />
                     </button>
