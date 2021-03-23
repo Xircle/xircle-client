@@ -94,7 +94,7 @@ const KakaoMap = ({ history }) => {
               setIsMapSupported(false);
               setIsLoading(false);
             }
-          }, { timeout: 8000 });
+          }, { timeout: 8000, enableHighAccuracy: true });
       } else{
           alert("현 브라우저에서 Geolocation을 지원하지 않습니다.");
           setIsMapSupported(false);
@@ -158,7 +158,7 @@ const KakaoMap = ({ history }) => {
         {isLoading ? (
             <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, 0)'}}>
                 <Spinner
-                    color="blue"
+                    color="gray"
                 />
             </div>
         ) : null}
@@ -187,7 +187,7 @@ const KakaoMap = ({ history }) => {
         )}
         <p style={{fontSize: 13}} className="text-lg ml-5">에 있어요.</p>
       </div>
-      <button onClick={(e) => locationBtnHandler(e)} className="w-full rounded-lg px-5 py-3 my-20 bg-gray-400 text-white focus:outline-none">맞습니다.</button>
+      <button onClick={(e) => locationBtnHandler(e)} disabled={!addr && !location} className="w-full rounded-lg px-5 py-3 my-20 bg-gray-400 text-white focus:outline-none">맞습니다.</button>
     </div>
   )
 }

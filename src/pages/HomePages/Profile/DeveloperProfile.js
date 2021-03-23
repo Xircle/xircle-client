@@ -33,7 +33,7 @@ const DeveloperProfile = ({ history }) => {
                     <div className="relative">
                         <img 
                             style={{width: 198, height: 198, borderRadius: 114, backgroundColor: 'gray', margin: '0 auto', objectFit: 'cover'}}
-                            src='/dev_profile.svg'
+                            src='/devProfile/developer_profile.svg'
                             alt="dev_profile"
                         />
                     </div>
@@ -52,30 +52,37 @@ const DeveloperProfile = ({ history }) => {
                             <h3 style={{fontSize: 20, fontWeight: '600', margin: '5px 0'}}>XIRCLE 개발자 <span style={{fontSize: 18, fontWeight: 'lighter'}}>@YKRING</span></h3>
                         </div>
                         <div className="flex flex-row justify-center">
-                            <div style={{height: 25, backgroundColor: '#CCF6FF', margin: '0 2px 0 0'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>남</p></div>
-                            <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>고려대 / 연세대</p></div>
-                            <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>javascript 거주</p></div>
-                            <div style={{height: 25, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>20중반</p></div>
+                            <div style={{height: 25, borderRadius: 3, backgroundColor: '#DAD4FF', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>고려대 / 연세대 재학중</p></div>
+                            <div style={{height: 25, borderRadius: 3, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>20중</p></div>
+                            <div style={{height: 25, borderRadius: 3, backgroundColor: '#F7F7FA', margin: '0 2px'}}><p style={{fontSize: '8px', color: '#616060', fontWeight: 'normal', padding: '7px'}}>남</p></div>
                         </div>
                     </div>
 
                     {/* 직장, 한줄소개 */}
                     <ul style={{marginTop: 30}}>
                         <li className="flex flex-row items-center">
-                            <img 
-                                style={{width: 15, height: 15}}
-                                src="/company.svg"
-                                alt="company"
-                            />
-                            <p style={{margin: "0px 5px 0 10px"}} className="font-extrabold ">XIRCLE</p><span>사전신청 중 (-4.16)</span>
+                                <img 
+                                    style={{width: 15, height: 15}}
+                                    src="/profile/company.svg"
+                                    alt="company"
+                                />
+                                <p style={{margin: "0px 5px 0 10px"}} className="font-extrabold my-0">Xirce</p><span>재직중</span>
                         </li>
-                        <li className="flex flex-row items-center my-3 ">
+                        <li className="flex flex-row items-center my-3">
                             <img 
                                 style={{width: 15, height: 15}}
-                                src="/activity.svg"
-                                alt="activity"
+                                src="/profile/grobal.svg"
+                                alt="grobal"
                             />
-                            <p style={{margin: "0px 5px 0 10px"}}>XIRCLE 창업멤버</p>
+                            <p style={{margin: "0px 5px 0 10px"}} className="my-0">Xircle 개발 / 연고대창업학회</p>
+                        </li>
+                        <li className="flex flex-row items-center my-3">
+                            <img 
+                                style={{width: 15, height: 15}}
+                                src="/profile/location.svg"
+                                alt="location"
+                            />
+                            <p style={{margin: "0px 5px 0 10px", color: "#7C7C7C"}} className="my-0">Javascript 거주</p>
                         </li>
                         <li className="flex flex-row mb-2">
                             <p className="">취향과 성향이 잘 맞는 사람들과 대화하고 만날 수 있는 <br/> 대학기반 네트워킹 서비스 [베타테스트] 서연고서성한대상 <br/><br/></p>

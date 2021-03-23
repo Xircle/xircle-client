@@ -130,23 +130,23 @@ const Intro = ({ history }) => {
               {/* 내용 */}
               <div className="px-4">
                 <div data-aos="fade-right" data-aos-duration="2000">
-                  <h1 style={{fontSize: 35, fontWeight: 'bold', lineHeight: '3.2rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>검증된 인맥 <br /> 오직 XIRCLE 에서만 <br/> 가능한 일 </h1> 
+                  <h1 style={{fontSize: 35, fontWeight: 'bold', lineHeight: '3.2rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>새로운 친구와의 <br /> 인연, XIRCLE 에서 <br/> 경험하세요! </h1> 
                   <div  className="my-12">
-                    <h3 style={{fontSize: 16, lineHeight: 1.5, marginBottom: 5}}>이메일 인증을 통해서 들어온 사람들만의 <br/>새로운 형태의 <span style={{color: "#2F51F0"}}>네트워킹</span> </h3>
-                    <p>당신의 네트워킹에 집중하세요</p>
+                    <h3 style={{fontSize: 16, lineHeight: 1.5, marginBottom: 5}}>인증을 통해서 들어온 친구들과의 <br/> 믿을수 있는 <span style={{color: "#2F51F0"}}>네트워킹</span> </h3>
+                    <p>당신의 네트워킹에 중하세요</p>
                   </div>
                 </div>
 
                 <div style={{marginTop: 100}}>
                   <div className="my-20 text-center">
-                    <p id="user_number" style={{color: "#2F51F0", fontSize: 30, fontWeight: 'bold'}}>+1716명</p>
-                    <h5 style={{margin: "10px 0"}}>기존 1차 TEST(연고링) 가입자 <br/> 9일만에 누적 1,700명이상 <br/> </h5>
-                    <span>  ※ 연고링이 XIRCLE로 서비스명이 변경되었습니다.</span>
+                    <p id="user_number" style={{color: "#2F51F0", marginRight: 20, fontSize: 30, fontWeight: 'bold'}}>+&nbsp; 1,716명</p>
+                    <h5 style={{margin: "10px 0", fontSize: 18, fontWeight: 400, color: "#1F1F1F", lineHeight: 1.5}}>기존 1차 TEST 가입자 <br/> 9일만에 누적 1,700명이상 <br/> </h5>
+                    <span style={{color: "#7C7C7C", fontSize: 12, fontWeight: 500}}>  ※ 1차 테스트는 서연고서성한 대학으로 진행.</span>
                   </div>
                   <div className="my-10 text-center">
-                    <p style={{color: "#2F51F0", fontSize: 30, fontWeight: 'bold'}}>56:44</p>
-                    <h5 style={{margin: "10px 0"}}>남성 56% 여성 44% 이상적인 성비</h5>
-                    <p style={{color: "#949393", fontSize: 12}}>※ XIRCLE은 소개팅앱이 아닙니다. 네트워킹 목적 </p>
+                    <p style={{color: "#2F51F0", fontSize: 30, marginRight: 10, fontWeight: 'bold'}}>56:44</p>
+                    <h5 style={{margin: "10px 0", fontSize: 18, fontWeight: 400, color: "#1F1F1F", lineHeight: 1.5}}>남성 56% 여성 44% 이상적인 성비</h5>
+                    <span style={{color: "#7C7C7C", fontSize: 12, fontWeight: 500}}> ※ XIRCLE은 소개팅앱이 아닙니다. 네트워킹 목적 </span>
                   </div>
                 </div>
               </div>
@@ -170,7 +170,7 @@ const Intro = ({ history }) => {
               </div>
               <div className="px-4 mt-20">
                 <p style={{color: "#2F51F0", fontSize: 25, marginBottom: 10, fontWeight: 'bold'}}>XIRCLE 친구들 리얼 후기</p>
-                <p style={{fontSize: 10}}>※1차 테스트 ( 연고링 ) 실제 참여하신 분들께서 자발적으로 남겨주신 후기입니다.</p>
+                <p style={{fontSize: 10}}>※1차 테스트 실제 참여하신 분들께서 자발적으로 남겨주신 후기입니다.</p>
               </div>
 
               <div className="px-2 py-5">
@@ -319,8 +319,8 @@ const Intro = ({ history }) => {
                 <div className='mt-10'>
                   <h2 style={{fontSize: 20, margin: 0, fontWeight: 'bold', lineHeight: '3.5rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>XIRCLE 소개팅앱인가요? </h2> 
                   <div style={{color: "#7C7C7C", marginTop: 5 }}>
-                    <p style={{fontSize: 16, marginBottom: 5}} className=" font-light"><strong>언론에 소개팅어플로 소개되었던 연고링. 그러나</strong></p>
-                    <p style={{fontSize: 12}}>연고링의 목적은 대학친구 사귀기였습니다. 연고링의 리뉴얼 버전 XIRCLE은 소개팅앱이 아닙니다. 목적은 ‘새로운 네트워킹’입니다. 소개팅 미팅도 가능하지만 부차적인 부분입니다.</p>
+                    <p style={{fontSize: 16, marginBottom: 5}} className=" font-light"><strong>아닙니다.</strong></p>
+                    <p style={{fontSize: 12}}>XIRCLE은 소개팅앱이 아닙니다. 목적은 ‘새로운 네트워킹’입니다. 소개팅 미팅도 가능하지만 부차적인 부분입니다.</p>
                   </div>
                 </div>
                 {/* 대학원생도 가능한가요? */}

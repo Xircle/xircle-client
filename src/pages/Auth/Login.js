@@ -46,8 +46,8 @@ const Login = ({ history }) => {
         if(!displayNameText.match(displayNameRegex)) {
             setDisplayNameDescription('닉네임 맨앞에 @를 포함해주세요');
         }else {
-            if(displayNameText.length < 4) {
-                setDisplayNameDescription('닉네임은 3자리 이상으로 해주세요.');
+            if(displayNameText.length < 4 || displayNameText.length > 14) {
+                setDisplayNameDescription('닉네임은 3자리 이상 14자리 이하로 해주세요.');
             }
             else {
                 setDisplayNameDescription(null);

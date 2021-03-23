@@ -27,7 +27,7 @@ const Auth = ({ history }) => {
         if(isEmailSent === null || isLoading === true) { //맨 처음에만 보이게
             description = (
                 <p style={{fontSize: '14px', color: "#C5C1C1", textAlign: 'left', margin: '20px auto'}}>
-                    이메일을 인증해주세요. <br/>연고링은 베타테스트단계로  <br/>서울대 고려대 연세대 서강대 한양대 성균관대 <br/> 학생들로만 진행중입니다. 
+                    이메일을 인증해주세요. <br/>Xircle은 베타테스트단계로  <br/>서울대 고려대 연세대 서강대 한양대 성균관대 <br/> 학생들로만 진행중입니다. 
                 </p>
             )
         }
@@ -46,6 +46,7 @@ const Auth = ({ history }) => {
         const univ = emailInRedux.slice(index+1); // 영어
         const univKor = universitySwitcher(univ); //한국말
 
+        
         const code = passwordRef.current.value;
         dispatch(actions.authConfirm(emailInRedux, code, univKor));
     }, [emailInRedux]);
@@ -68,8 +69,8 @@ const Auth = ({ history }) => {
     
     return (
         <Layout headerNone footerNone={true}>
-            <div style={{height: '60px'}} className="flex flex-row items-center justify-between ">
-                <p onClick={() => history.push('/login')} style={{color: "#4700FF", margin: '20px 0', width: '95%', textAlign: 'right', cursor: 'pointer'}}>로그인하기</p>
+            <div style={{height: '60px', justifyContent: 'flex-end'}} className="flex flex-row items-center ">
+                <span onClick={() => history.push('/login')} style={{color: "#4700FF", fontSize: 16, fontWeight: 500,  margin: '20px 15px 0 0', textAlign: 'right', cursor: 'pointer'}}>로그인하기</span>
             </div>
             <section className="mb-10">
                 <section style={{padding: '10px 30px'}} className="text-center mt-5">

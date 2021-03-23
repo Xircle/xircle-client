@@ -52,13 +52,12 @@ const Login = ({ history }) => {
             setDisplayNameDescription('닉네임 맨앞에 @를 포함해주세요');
             setIsBtnDisabled(true);
         }else {
-            console.log(displayNameText)
             if(!displayNameText.match(displayNameRegex)) {
                 setDisplayNameDescription('영어 대소문자 숫자, 밑줄 및 마침표만 가능합니다!');
                 setIsBtnDisabled(true);
             }else {
-                if(displayNameText.length < 4) {
-                    setDisplayNameDescription('닉네임은 3자리 이상으로 해주세요.');
+                if(displayNameText.length < 4 || displayNameText.length > 14) {
+                    setDisplayNameDescription('닉네임은 3자리 이상 14자리 이하로 해주세요.');
                     setIsBtnDisabled(true);
                 }else {
                     setDisplayNameDescription(' ');
@@ -74,7 +73,6 @@ const Login = ({ history }) => {
 
         const passwordRegex = /^[a-zA-Z0-9]+$/;
         const passwordText = event.target.value;
-        console.log(passwordText)
         setPwd(passwordText);
         if(passwordText.length < 6 || passwordText.length > 10) {
             setPasswordNameDescription('비밀번호는 6자리 이상 10자리 이하입니다.');

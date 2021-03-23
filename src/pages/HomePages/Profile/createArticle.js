@@ -149,7 +149,6 @@ const CreateArticle = ({ history, match }) => {
 
             data.articleTagArr = finalArticleTagArr;
         }
-        console.log(data);
         articleImgSrcFormData.append('data', JSON.stringify(data));
         dispatch(actions.createNewArticle(tokenInRedux, articleImgSrcFormData));
 

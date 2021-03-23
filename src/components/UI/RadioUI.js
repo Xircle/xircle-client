@@ -11,7 +11,7 @@ const RadioUI = ({ subject, isFirstValue, changeHandler }) => {
       if(subject === 'privateOrNot') {
         setValueArr(['public', 'private', '공개', '비공개']);
       } else if(subject === 'graduateOrNot')
-        setValueArr(['graduate', 'attending', '졸업', '재학']);
+        setValueArr(['graduate', 'attending', '졸업', '재학중']);
     }, [subject]);
 
     return (

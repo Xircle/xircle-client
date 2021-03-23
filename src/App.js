@@ -13,6 +13,7 @@ const FriendProfile = React.lazy(() => import('./pages/HomePages/Profile/FriendP
 const DeveloperProfile = React.lazy(() => import('./pages/HomePages/Profile/DeveloperProfile'));
 const AirpodEvent = React.lazy(() => import('./pages/HomePages/Profile/AirpodEvent'));
 const CreateArticle = React.lazy(() => import('./pages/HomePages/Profile/createArticle'));
+const ProfileEdit = React.lazy(() => import('./pages/HomePages/Profile/ProfileEdit'));
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/developer-profile" component={DeveloperProfile} exact/>
             <Route path="/friend-profile" component={FriendProfile} exact/>
             <Route path="/my-profile" component={MyProfile} exact/>
+            <Route path="/my-profile/edit" component={ProfileEdit} exact/>
             <Route path="/createArticle/:questionNum" component={CreateArticle} exact/>
             <Route path="/" component={Intro} exact/> 
             <Redirect from="*" to="/"/>

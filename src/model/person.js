@@ -1,66 +1,3 @@
-// 대학교
-export const UniversityOptions = [
-    { value: 'seoul', label: '서울대학교', color: '#00B8D9', isFixed: true },
-    { value: 'korea', label: '고려대학교', color: '#0052CC'},
-    { value: 'yonsei', label: '연세대학교', color: '#5243AA' },
-    { value: 'hanyang', label: '한양대학교', color: '#FF5630', isFixed: true },
-    { value: 'seokang', label: '서강대학교', color: '#FF5630', isFixed: true },
-    { value: 'sungkyunkwan', label: '성균관대학교', color: '#FF5630', isFixed: true },
-]
-
-export const UnivgroupedOptions = [
-    {
-      label: '대학',
-      options: UniversityOptions,
-    },
-];
-
-// 성별
-export const GenderOptions = [
-    { value: 'man', label: '남자', color: '#00B8D9', isFixed: true },
-    { value: 'woman', label: '여자', color: '#0052CC'},
-]
-
-export const GendergroupedOptions = [
-    {
-      label: '성별',
-      options: GenderOptions,
-    },
-];
-
-// 나이
-export const AgeOptions = [
-    // value => 최대 나이
-    { value: [20, 22], label: '20세 ~ 22세', color: '#00B8D9', isFixed: true },
-    { value: [23, 26], label: '23세 ~ 26세', color: '#0052CC'},
-    { value: [27, 29], label: '27세 ~ 29세', color: '#0052CC'},
-    { value: [30, 40], label: '30세 이상', color: '#0052CC'},
-]
-
-export const AgegroupedOptions = [
-    {
-      label: '나이',
-      options: AgeOptions,
-    },
-];
-
-// 취향
-export const InterestOptions = [
-    { value: '맛집', label: '🍣 맛집 탐방하기', color: '#0052CC'},
-    { value: '넷플릭스', label: '🍿 넷플릭스 보기', color: '#0052CC'},
-    { value: '게임', label: '🎮 게임', color: '#00B8D9', isFixed: true },
-    { value: '독서', label: '📚 독서', color: '#00B8D9', isFixed: true },
-    { value: '헬스', label: '💪🏻 헬스', color: '#0052CC'},
-    { value: '개발', label:'💻 개발', color: '#00B8D9', isFixed: true },
-]
-
-export const InterestgroupedOptions = [
-    {
-      label: '관심사',
-      options: InterestOptions,
-    },
-];
-
 export const AgeSettingOptions = [
     { label: 20, value: 20 },
     { label: 21, value: 21 },
@@ -78,6 +15,21 @@ export const AgeSettingOptions = [
     { label: 33, value: 33 },
     { label: 34, value: 34 },
     { label: 35, value: 35 },
+    { label: 36, value: 36 },
+    { label: 37, value: 37 },
+    { label: 38, value: 38 },
+    { label: 39, value: 39 },
+    { label: 40, value: 40 },
+    { label: 41, value: 41 },
+    { label: 42, value: 42 },
+    { label: 43, value: 43 },
+    { label: 44, value: 44 },
+    { label: 45, value: 45 },
+    { label: 46, value: 46 },
+    { label: 47, value: 47 },
+    { label: 48, value: 48 },
+    { label: 49, value: 49 },
+    { label: 50, value: 50 },
 ];
 
 export const jobs = [
@@ -86,7 +38,7 @@ export const jobs = [
     { label: "미개봉새내기", value: "미개봉새내기" },
     { label: "졸업생", value: "졸업생" },
     { label: "대학원생", value: "대학원생" },
-    { label: "유학원", value: "유학원" },
+    { label: "유학생", value: "유학생" },
     { label: "교환학생", value: "교환학생" },
     { label: "문과대생", value: "문과대생" },
     { label: "상경대생", value: "상경대생" },
