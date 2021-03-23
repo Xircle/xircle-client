@@ -21,6 +21,7 @@ export const initialState = {
     interestArr: [],
     // 사전신청때 받은 article 사진, 관심사, 태그, 글 
     articleImgSrc: null,
+    articleTitle: null,
     articleText: null,
     articleInterestArr: [],
     articleTagArr: [],
@@ -31,12 +32,6 @@ export const initialState = {
     // article
     articleObjInMyProfile: {},
     articleIsLoading: null,
-    // Create new article
-    newArticleImgSrc: null,
-    newArticleTitle: null,
-    newArticleContent: null,
-    newArticleInterest: null,
-    newArticleTagArr: [],
 }
 
 const reducer = (state=initialState, action) => {
@@ -118,49 +113,10 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 interestArr: action.interestArr
             }
-        case actionTypes.SUBMIT_IMGSRC_TO_AWS_START:
-            return {
-                ...state,
-                loading: true
-            }
-        case actionTypes.SUBMIT_IMGSRC_TO_AWS_SUCCESS:
-            if(action.payloadType === "article") {
-                return {
-                    ...state,
-                    loading: false,
-                    error: false,
-                    articleImgSrc: action.imgAwsUrl
-                }
-            }else if(action.payloadType === 'newArticle') {
-                return {
-                    ...state,
-                    loading: false,
-                    error: false,
-                    newArticleImgSrc: action.imgAwsUrl
-                }
-            }else {
-                return {
-                    ...state,
-                    loading: false,
-                    error: false,
-                    profileImgSrc: action.imgAwsUrl
-                }
-            }
-        case actionTypes.SUBMIT_IMGSRC_TO_AWS_FAIL:
-            return {
-                ...state,
-                loading: false,
-                error: true,
-            }
-        case actionTypes.SUBMIT_IMG_SRC_TO_AWS_INIT:
-            return {
-                ...state,
-                loading: null,
-                error: null,
-            }
         case actionTypes.ADD_ARTICLE_CONTENTS:
             return {
                 ...state,
+                articleTitle: action.articleTitle,
                 articleText: action.articleText,
                 articleInterestArr: action.articleInterestArr,
                 articleTagArr: action.articleTagArr
@@ -186,10 +142,7 @@ const reducer = (state=initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                error: false,
-                resume: action.resume,
-                workPlace: action.workPlace,
-                token: action.token,
+                error: false
             }
         case actionTypes.SUBMIT_TO_SERVER_INIT:
             return {
@@ -238,7 +191,7 @@ const reducer = (state=initialState, action) => {
             articleDataArr.map(el => {
                 newArticleArr[interest].push({
                     articleImgSrc: el.articleImgSrc,
-                    articleContent: el.articleContent
+                    articleContent: el.articleContent,
                 })
             });
             return {

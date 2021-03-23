@@ -19,7 +19,6 @@ export {
     addJob,
     addAdj,
     addLocation,
-    submitImgToAWS,
     addArticleContents,
     addIntroText,
     addInterest,

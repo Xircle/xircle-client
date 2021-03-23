@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import { Axios } from '../../axios-instance';
+import { Axios, AxiosForTest } from '../../axios-instance';
 
 export const getFriendStart = () => {
     return {
@@ -27,7 +27,7 @@ export const getFriend = (token) => {
         dispatch(getFriendInit());
         dispatch(getFriendStart());
 
-        Axios.get('/randomUser/profile', {
+        AxiosForTest.get('/randomUser/profile', {
             headers: {
                 'access-token': `${token}`
             }
@@ -87,7 +87,7 @@ export const getFriendArticle = (interest, token, userId) => {
         else 
             realInterest = interest;
 
-        Axios.get(`/randomUser/${userId}/profile/post?interest=${realInterest}`, {
+        AxiosForTest.get(`/randomUser/${userId}/profile/post?interest=${realInterest}`, {
             headers: {
                 'access-token': `${token}`
             }

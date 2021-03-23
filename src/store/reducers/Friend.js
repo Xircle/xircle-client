@@ -93,7 +93,6 @@ const reducer = (state = initialState, action) => {
                     articleContent: el.articleContent
                 })
             });
-            console.log(newArticleArr)
             return {
                 ...state,
                 articleIsLoading: false,

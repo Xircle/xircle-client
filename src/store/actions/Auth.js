@@ -33,7 +33,7 @@ export const auth = (email) => {
         const authData = {
             email: email
         };
-        Axios.post('/email', authData)
+        AxiosForTest.post('/email', authData)
             .then(res => {
                 console.log(res);
                 const isSuccess = res.data.success;
@@ -91,7 +91,7 @@ export const authConfirm = (email, code, univKor) => {
             email,
             code, 
         };
-        Axios.post('/check/email', authData)
+        AxiosForTest.post('/check/email', authData)
             .then(res => {
                 console.log(res);
                 const isSuccess = res.data.success;
@@ -141,8 +141,7 @@ export const findAuth = (email) => {
         const authData = {
             email,
         };
-        console.log(authData);
-        Axios.post('/find/info', authData)
+        AxiosForTest.post('/find/info', authData)
             .then(res => {
                 console.log(res);
                 const isSuccess = res.data.success;
@@ -200,8 +199,7 @@ export const joinSubmit = (displayName, wpd, phoneNumber) => {
         const authData = {
             displayName,
         };
-        console.log(authData);
-        Axios.post('/check/name', authData)
+        AxiosForTest.post('/check/name', authData)
             .then(res => {
                 console.log(res);
                 const isSuccess = res.data.success;
@@ -209,7 +207,7 @@ export const joinSubmit = (displayName, wpd, phoneNumber) => {
                     dispatch(joinSuccess(displayName, wpd, phoneNumber));
                 }
                 else {
-                    const errCode = res.data.data;
+                    const errCode = res.data.code;
                     console.log(errCode);
                     dispatch(joinFail(errCode));
                     dispatch(joinInit());
@@ -255,7 +253,7 @@ export const loginSubmit = (displayName, password) => {
             displayName,
             password,
         };
-        Axios.post('/login', authData)
+        AxiosForTest.post('/login', authData)
             .then(res => {
                 console.log(res);
                 const isSuccess = res.data.success;
@@ -289,7 +287,6 @@ export const getUserStart = () => {
 }
 export const getUserSuccess = (token, profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, isLocationPublic, location, age, resume, workPlace, introText, interestArr, longitude, latitude ) => {
     return dispatch => {
-        console.log(profileImgSrc, adj, job, displayNameInUser, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr);
         dispatch(addProfileImgSrc(profileImgSrc));
         dispatch(addIsGraduate(isGraduate));
         dispatch(addIsPublic(isPublic));
