@@ -10,6 +10,7 @@ import airpod_event_3 from '../../../images/my-profile/airpod_event_3.svg'
 import ageGenerator from '../../../components/ageGenerator';
 import Spinner from 'react-spinner-material';
 import { createKakaoButton } from '../../../components/KakaoShareButton';
+import { Placeholder, Card } from 'semantic-ui-react';
 
 let articleDispatchingCnt = [
     null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -200,7 +201,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -260,7 +266,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -319,7 +330,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -378,7 +394,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -437,7 +458,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -496,7 +522,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -555,7 +586,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -614,7 +650,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -673,7 +714,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -732,7 +778,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -791,7 +842,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -850,7 +906,12 @@ const MyProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -899,12 +960,19 @@ const MyProfile = ({ history }) => {
             <>
                 {/* Profile coverer */}
                 {isLoading ? (
-                    <div style={{height: 472, position: 'relative'}}>
-                        <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
-                            <Spinner 
-                                color={"#aaa"}
-                            />
+                    <div className="px-3 py-3 mx-3" style={{height: 472, position: 'relative'}}>
+                        <div className="flex flex-col items-center" >
+                            <Placeholder style={{ height: 198, width: 198, borderRadius: 100 }}>
+                                <Placeholder.Image />
+                            </Placeholder>
                             <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>프로필 로딩중...</p>
+                            <Placeholder style={{ height: '100%', width: '80%'}}>
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                            </Placeholder>
                         </div>
                     </div>
                 ) : (
@@ -986,8 +1054,7 @@ const MyProfile = ({ history }) => {
                 )}
 
                 {/* Album Navigation */}
-                {isLoading ? <div style={{height: 40}}></div> : (
-
+                {isLoading ? null : (
                 <section style={{marginTop: 20}} className="flex flex-row items-center justify-start">
                     <button 
                         style={selectedInterest === 'x' || selectedInterest === null ? selectedTab : notSelectedTab}
@@ -1031,14 +1098,22 @@ const MyProfile = ({ history }) => {
                 {/* Album coverer */}
                 {isLoading ? (
                     <>
-                        <div style={{height: 100, position: 'relative'}}>
-                            <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: 10, transform: 'translate(-50%, 0)'}}>
-                                <Spinner 
-                                    color={"#aaa"}
-                                />
-                                <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>사진 로딩중...</p>
-                            </div>
-                        </div>
+                        <Card.Group style={{padding: '0 20px'}} itemsPerRow={2}>
+                            <Card>
+                                <Card.Content>
+                                    <Placeholder>
+                                    <Placeholder.Image square />
+                                    </Placeholder>
+                                </Card.Content>
+                            </Card>
+                                <Card>
+                                <Card.Content>
+                                    <Placeholder>
+                                    <Placeholder.Image square />
+                                    </Placeholder>
+                                </Card.Content>
+                            </Card>
+                        </Card.Group>
                     </>
                 ) : (
                     <section style={{minHeight: '500px', height: '100%', padding: '20px 0', margin: '10px 0', backgroundColor: "#F7F7FA"}}>
@@ -1058,10 +1133,10 @@ const MyProfile = ({ history }) => {
             {isLoading ? (
                 <header style={{margin: "20px 0 35px 0"}}>
                     <section className="flex flex-row items-center justify-around mt-1">
-                        <div style={{width: 87}}></div>
+                        <div style={{width: 70}}></div>
                         <button 
                             style={selectedTab}
-                            className="px-5 py-3 rounded-3xl focus:outline-none"
+                            className="px-5 mr-3 py-3 rounded-3xl focus:outline-none"
                         ><p style={{fontSize: 12, fontWeight: 300}}>대학생들의 새로운 네트워크 </p>
                         </button>
                         <button 
