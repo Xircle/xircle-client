@@ -11,6 +11,7 @@ import ageGenerator from '../../../components/ageGenerator';
 import Spinner from 'react-spinner-material';
 import Modal from '../../../components/UI/modal';
 import { createKakaoButton } from '../../../components/KakaoShareButton';
+import { Placeholder, Card } from 'semantic-ui-react';
 
 let articleDispatchingCnt = [
     null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -193,7 +194,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/스타트업/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -253,7 +262,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/술_맛집탐방/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -312,7 +329,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/동네친구/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -371,7 +396,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/코딩/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -430,7 +463,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/애견인/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -489,7 +530,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/패션/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -548,7 +597,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/예술/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -607,7 +664,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/게임/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -666,7 +731,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/헬스/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -725,7 +798,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/취업준비/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -784,7 +865,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/수험생/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -843,7 +932,15 @@ const FriendProfile = ({ history }) => {
                 ) : (
                 <ul className="flex flex-row justify-evenly flex-wrap">
                     {foundArr.map((article, id) => (
-                        <li key={id} onClick={() => setArticleClicked([!articleClickedArr[0], id])} style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}>
+                        <li 
+                            key={id} 
+                            style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
+                            onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/friend/article/대학원/${id}`);
+                                }
+                                setArticleClicked([!articleClickedArr[0], id]);
+                        }}>
                             <div 
                                 style={{
                                     backgroundImage: `url(${article.articleImgSrc})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', height: '100%', color: '#000', backgroundColor: "#fff", borderRadius: 15, objectFit: 'cover',
@@ -890,12 +987,19 @@ const FriendProfile = ({ history }) => {
             <>
                 {/* Profile Container */}
                 {isLoading ? (
-                    <div style={{height: 472, position: 'relative'}}>
-                        <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
-                            <Spinner 
-                                color={"#aaa"}
-                            />
-                            <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>프로필 로딩중...</p>
+                    <div className="px-3 py-3 mx-3" style={{height: 472, position: 'relative'}}>
+                        <div className="flex flex-col items-center" >
+                            <Placeholder style={{ height: 198, width: 198, borderRadius: 100 }}>
+                                <Placeholder.Image />
+                            </Placeholder>
+                            <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>친구 프로필 로딩중...</p>
+                            <Placeholder style={{ height: '100%', width: '80%'}}>
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                            </Placeholder>
                         </div>
                     </div>
                 ) : (
@@ -969,7 +1073,7 @@ const FriendProfile = ({ history }) => {
                 )}
 
                 {/* Album Navigation */}
-                {isLoading ? <div style={{height: 40}}></div> : (
+                {isLoading ? null : (
 
                 <section style={{marginTop: 20}} className="flex flex-row items-center justify-start">
                     <button 
@@ -1014,14 +1118,22 @@ const FriendProfile = ({ history }) => {
                 {/* Album Container */}
                 {isLoading ? (
                     <>
-                        <div style={{height: 100, position: 'relative'}}>
-                            <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: 10, transform: 'translate(-50%, 0)'}}>
-                                <Spinner 
-                                    color={"#aaa"}
-                                />
-                                <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>사진 로딩중...</p>
-                            </div>
-                        </div>
+                        <Card.Group style={{padding: '0 20px'}} itemsPerRow={2}>
+                            <Card>
+                                <Card.Content>
+                                    <Placeholder>
+                                    <Placeholder.Image square />
+                                    </Placeholder>
+                                </Card.Content>
+                            </Card>
+                                <Card>
+                                <Card.Content>
+                                    <Placeholder>
+                                    <Placeholder.Image square />
+                                    </Placeholder>
+                                </Card.Content>
+                            </Card>
+                        </Card.Group>
                     </>
                 ) : (
                     <section style={{minHeight: '500px', height: '100%', padding: '20px 0', margin: '10px 0', backgroundColor: "#F7F7FA"}}>
