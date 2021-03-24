@@ -133,7 +133,7 @@ const Intro = ({ history }) => {
                   <h1 style={{fontSize: 35, fontWeight: 'bold', lineHeight: '3.2rem', whiteSpace: 'pre-line', position: "relative", zIndex: 10}}>새로운 친구와의 <br /> 인연, XIRCLE 에서 <br/> 경험하세요! </h1> 
                   <div  className="my-12">
                     <h3 style={{fontSize: 16, lineHeight: 1.5, marginBottom: 5}}>인증을 통해서 들어온 친구들과의 <br/> 믿을수 있는 <span style={{color: "#2F51F0"}}>네트워킹</span> </h3>
-                    <p>당신의 네트워킹에 중하세요</p>
+                    <p>당신의 네트워킹에 집중하세요</p>
                   </div>
                 </div>
 
