@@ -201,19 +201,17 @@ export const submitToServer = (userDataFormData) => {
                     localStorage.setItem('tk', token);
                     dispatch(submitToServerSuccess());
                     dispatch(submitToServerInit());
-                }
-                else{
+                }else{
                     const errCode = res.data.code;
                     dispatch(submitToServerFail(errCode));
                     dispatch(submitToServerInit());
-                    alert(res.data.message);
                 }
             })
             .catch(err => {
                 console.log(err);
                 dispatch(submitToServerFail());
                 dispatch(submitToServerInit());
-                alert('Something went wrong.');
+                alert("Something went wrong.");
             })
     }
 }
@@ -285,6 +283,83 @@ export const getInterestArticle = (interest, tokenInUser) => {
     }
 }
 // -------
+
+// Get Article Detail
+export const getInterestArticleDetailStart = () => {
+    return {
+        type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_START,
+    }
+}
+export const getInterestArticleDetailSuccess = (interest, articleDataArr) => {
+    return {
+        type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_SUCCESS,
+        interest,
+        articleDataArr,
+    }
+}
+export const getInterestArticleDetailFail = () => {
+    return {
+        type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_FAIL,
+    }
+}
+export const getInterestArticleDetailInit = () => {
+    return {
+        type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_INIT,
+    }
+}
+export const getInterestArticleDetail = (token, interest) => {
+    return dispatch => {
+        dispatch(getInterestArticleDetailStart());
+        
+        setTimeout(() => {
+            const articleDataArr = [
+                {
+                    postId: 'a1', 
+                    createdAt: "2021/03/21", 
+                    articleImgSrcs: ["https://api.xircle.org/1616523233781.png", "hi"], 
+                    articleTitle: "해방촌에서", 
+                    extraHashtags: ['@독서', '@빅데이터']
+                }, 
+                {
+                    postId: 'a2', 
+                    createdAt: "2021/03/22", 
+                    articleImgSrcs: ["https://api.xircle.org/1616588060318.png", "hello"], 
+                    articleTitle: "카페에서 책읽기", 
+                    extraHashtags: ['@카페', '@독서']
+                }
+            ];
+            dispatch(getInterestArticleDetailSuccess(interest, articleDataArr));
+            dispatch(getInterestArticleDetailInit());
+        }, 2000);
+
+        // AxiosForTest.get(`/post?interest=${interest}`, {
+        //     headers: {
+        //         'access-token': `${token}`
+        //     }
+        // })
+        //     .then(res => {
+        //         console.log(res);
+        //         const isSuccess = res.data.success;
+        //         if(isSuccess) {
+        //             const articleDataArr = res.data.data;
+        //             dispatch(getInterestArticleDetailSuccess(interest, articleDataArr));
+        //             dispatch(getInterestArticleDetailInit());
+        //         }
+        //         else{
+        //             dispatch(getInterestArticleDetailFail());
+        //             dispatch(getInterestArticleDetailInit());
+        //             alert(res.data.message);
+        //         }
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //         dispatch(getInterestArticleDetailFail());
+        //         dispatch(getInterestArticleDetailInit());
+        //         alert('Something went wrong.');
+        //     })
+    }
+}
+// ------
 
 export const updateProfileImg = (updatedProfileImg) => {
     return {

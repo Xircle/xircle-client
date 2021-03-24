@@ -24,6 +24,7 @@ export {
     addInterest,
     submitToServer,
     getInterestArticle,
+    getInterestArticleDetail,
     getInterestArticleInit,
     updateProfileImg,
     updateProfileImgToServer,
