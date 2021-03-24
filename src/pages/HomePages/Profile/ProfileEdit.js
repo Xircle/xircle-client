@@ -43,7 +43,7 @@ const ProfileEdit = ({ history }) => {
     
     // 리다이렉션
     useEffect(() => {
-        if(!profileImgSrcInEdit) 
+        if(!profileImgSrcInEdit)  
             return history.push('/my-profile')
     }, []);
 
@@ -431,7 +431,7 @@ const ProfileEdit = ({ history }) => {
                     </div>
                 </Modal>
                 {/* Adj */}
-                <Modal show={isAdjClicked} clicked={() => setAdjClicked(false)}>
+                <Modal show={isAdjClicked} clicked={() => setAdjClicked(false)} type="directInput">
                     <img 
                         onClick={() => setAdjClicked(false)}
                         style={{width: 25, height: 25, margin: '0 0 0 auto'}}
@@ -454,7 +454,7 @@ const ProfileEdit = ({ history }) => {
                     </form>
                 </Modal>
                 {/* Job */}
-                <Modal show={isJobClicked} clicked={() => setJobClicked(false)}>
+                <Modal show={isJobClicked} clicked={() => setJobClicked(false)}  type="directInput">
                     <img 
                         onClick={() => setJobClicked(false)}
                         style={{width: 25, height: 25, margin: '0 0 0 auto'}}
