@@ -298,7 +298,7 @@ const ProfileEdit = ({ history }) => {
                     <input 
                         style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 111, height: 111, borderRadius: 150, cursor: 'pointer'}} 
                         type="file" 
-                        accept="image/x-png,image/jpeg,image/gif"
+                        accept="image/x-png,image/png,image/svg,image/jpeg,image/jpg,image/gif"
                         onChange={(e) => uploadPhoto(e)} 
                     />
                     <div style={{position: 'absolute', bottom: 15, right: '31%'}}>
@@ -310,7 +310,7 @@ const ProfileEdit = ({ history }) => {
                 
                 {/* displayName */}
                 <div className="mt-3 text-center">
-                    <p style={{fontSize: 20, margin: 0, fontWeight: 'lighter', fontFamily: 'cursive', margin: '5px 0'}}>{displayNameInUser}</p>
+                    <span style={{fontSize: 20, margin: 0, fontWeight: 'lighter', fontFamily: 'cursive', margin: '5px 0'}}>{displayNameInUser}</span>
                 </div>
 
                 <div style={{margin: '10px 0', borderBottom: '1px solid #EBEBEB'}}></div>
@@ -318,27 +318,27 @@ const ProfileEdit = ({ history }) => {
                 {/* 모든 Profile */}
                 <ul style={{marginTop: 20, padding: '0 10px 0 0'}}>
                     <h1 style={{fontSize: 18, margin: '30px 0', color: "#595959", fontWeight: 'bold'}}>Profile</h1>
-                    <li onClick={() => setPageType('location')} style={{margin: '10px 0'}} className="flex flex-row justify-between cursor-pointer">
+                    <li onClick={() => setPageType('location')} style={{margin: '20px 0'}} className="flex flex-row justify-between cursor-pointer">
                         <p style={{color: "#595959"}}>위치</p>
                         <span style={{color: "#B5B5B5"}}>{locationInEdit}{isLocationPublic ? null : "(비공개)"}</span>
                     </li>
-                    <li onClick={() => setUnivClicked(true)} style={{margin: '10px 0'}} className="flex flex-row justify-between cursor-pointer">
+                    <li onClick={() => setUnivClicked(true)} style={{margin: '20px 0'}} className="flex flex-row justify-between cursor-pointer">
                         <p style={{color: "#595959"}}>학교</p>
                         <p style={{color: "#B5B5B5"}}>{univInUser} {isGraduateInEdit  ? "졸업" : "재학"} {isPublicInEdit ? "(공개)" : "(비공개)"} </p>
                     </li>
-                    <li style={{margin: '10px 0'}} className="flex flex-row justify-between">
+                    <li style={{margin: '20px 0'}} className="flex flex-row justify-between">
                         <p style={{color: "#595959"}}>나이</p>
                         <p style={{color: "#B5B5B5"}}>{age}살</p>
                     </li>
-                    <li style={{margin: '10px 0'}} className="flex flex-row justify-between">
+                    <li style={{margin: '20px 0'}} className="flex flex-row justify-between">
                         <p style={{color: "#595959"}}>성별</p>
                         <p style={{color: "#B5B5B5"}}>{gender === '남' ? "남성" : "여성"}</p>
                     </li>
-                    <li onClick={() => setAdjClicked(true)} style={{margin: '10px 0'}} className="flex flex-row justify-between cursor-pointer">
+                    <li onClick={() => setAdjClicked(true)} style={{margin: '20px 0'}} className="flex flex-row justify-between cursor-pointer">
                         <p  style={{color: "#595959"}}>수식어</p>
                         <p style={{color: "#B5B5B5"}}>{adjInEdit}</p>
                     </li>
-                    <li onClick={() => setJobClicked(true)} style={{margin: '10px 0'}} className="flex flex-row justify-between cursor-pointer">
+                    <li onClick={() => setJobClicked(true)} style={{margin: '20px 0'}} className="flex flex-row justify-between cursor-pointer">
                         <p style={{color: "#595959"}}>직업</p>
                         <p style={{color: "#B5B5B5"}}>{jobInEdit}</p>
                     </li>
@@ -396,7 +396,7 @@ const ProfileEdit = ({ history }) => {
                         />
                         <span onClick={() => setUnivClicked(false)} style={{color: "#4700FF", cursor: 'pointer'}}>확인</span>
                     </div>
-                    <h1 style={{fontSize: 14, margin: '10px 0', fontWeight: 600}}>{univInUser}</h1>
+                    <h1 style={{fontSize: 14, margin: '20px 0', fontWeight: 600}}>{univInUser}</h1>
                     <div className="flex flex-row justify-evenly my-10">
                         <Checkbox 
                             radio
@@ -606,7 +606,7 @@ const ProfileEdit = ({ history }) => {
                 {pageType === 'default' ? (
                 <>
                     <p style={{margin: '5px 0 5px 10px'}}> 프로필 편집 </p>
-                    <div onClick={() => profileEditSubmit()} style={{width: 25, color: "#4700FF", cursor: 'pointer'}}>수정</div>
+                    <div onClick={() => profileEditSubmit()} style={{width: 25, color: "#2F51F0", cursor: 'pointer'}}>수정</div>
                 </>
                 ) : <div style={{height: 29}}></div>}
             </header>

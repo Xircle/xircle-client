@@ -170,7 +170,7 @@ const CreateArticle = ({ history, match }) => {
                         <input 
                             style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 350, height: 350, borderRadius: 175, cursor: 'pointer'}} 
                             type="file" 
-                            accept="image/x-png,image/jpeg,image/gif"
+                            accept="image/x-png,image/png,image/svg,image/jpeg,image/jpg,image/gif"
                             onChange={(e) => uploadPhoto(e)} 
                         />
                     </div>
