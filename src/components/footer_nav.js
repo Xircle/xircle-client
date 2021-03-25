@@ -1,6 +1,4 @@
-import React, {useState} from 'react';
-import { NavLink } from 'react-router-dom';
-import Modal from '../components/UI/modal';
+import React from 'react';
 
 const Footer_nav = ({ history, footerNone }) => {
     return (
@@ -15,7 +13,7 @@ const Footer_nav = ({ history, footerNone }) => {
                     src="/NavImage/search.svg"
                     alt="search"
                     style={{width: 20, height:20, cursor: 'pointer'}}
-                    onClick={() => alert('친구탐색기능 개발중입니다. 3월 28일에 만나요!')}
+                    onClick={() => history.push('search')}
                 />
             </section>
 
