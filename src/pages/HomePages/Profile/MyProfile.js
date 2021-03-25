@@ -205,6 +205,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/스타트업/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -270,6 +273,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/술_맛집탐방/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -334,6 +340,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/동네친구/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -398,6 +407,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/코딩/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -462,6 +474,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/애견인/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -526,6 +541,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/패션/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -590,6 +608,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/예술/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -654,6 +675,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/게임/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -718,6 +742,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/헬스/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -782,6 +809,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/취업준비/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -846,6 +876,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/수험생/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
@@ -910,6 +943,9 @@ const MyProfile = ({ history }) => {
                             key={id} 
                             style={{width: '45%', margin: '10px 2px 2px 2px', height: 310, position: 'relative', cursor: 'pointer'}}
                             onClick={() => {
+                                if(articleClickedArr[1] === id) {
+                                    history.push(`/my/article/대학원/${id}`);
+                                }
                                 setArticleClicked([!articleClickedArr[0], id]);
                         }}>
                             <div 
