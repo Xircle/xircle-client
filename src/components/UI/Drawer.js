@@ -4,9 +4,9 @@ import React from 'react';
 const Drawer = ({ children, show, clicked, type }) => {
     let height;
     if(type === 'univ') {
-        height = 220;
+        height = 300;
     }else if(type === 'age') {
-        height = 285;
+        height = 255;
     }else {
         height = '90%';
     }
@@ -14,10 +14,12 @@ const Drawer = ({ children, show, clicked, type }) => {
         <div className="w-full">
             <Backdrop show={show} clicked={clicked}/>
             <div 
+                id="drawerContainer"
                 style={{
                     borderRadius: '25px 25px 0 0 ',
                     position: "fixed",
-                    zIndex: 500,
+                    overflowY: 'scroll',
+                    zIndex: 999,
                     maxWidth: 400,
                     width: '100%',
                     height: height,
