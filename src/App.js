@@ -14,6 +14,8 @@ const DeveloperProfile = React.lazy(() => import('./pages/HomePages/Profile/Deve
 const AirpodEvent = React.lazy(() => import('./pages/HomePages/Profile/AirpodEvent'));
 const CreateArticle = React.lazy(() => import('./pages/HomePages/Profile/createArticle'));
 const ProfileEdit = React.lazy(() => import('./pages/HomePages/Profile/ProfileEdit'));
+const ArticleDetail = React.lazy(() => import('./pages/HomePages/Profile/ArticleDetail'));
+const SearchFriend = React.lazy(() => import('./pages/HomePages/Search/SearchFriend'));
 
 const App = () => {
   return (
@@ -32,6 +34,8 @@ const App = () => {
             <Route path="/my-profile" component={MyProfile} exact/>
             <Route path="/my-profile/edit" component={ProfileEdit} exact/>
             <Route path="/createArticle/:questionNum" component={CreateArticle} exact/>
+            <Route path="/:who/article/:interest/:postNum" component={ArticleDetail} exact/>
+            <Route path="/search" component={SearchFriend} exact/>
             <Route path="/" component={Intro} exact/> 
             <Redirect from="*" to="/"/>
         </Switch>
