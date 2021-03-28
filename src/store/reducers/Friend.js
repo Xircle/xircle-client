@@ -4,7 +4,7 @@ export const initialState = {
     loading: null,
     error: null,
     errCode: null,
-    // data
+    // Friend's data
     userId: null,
     isPublic: null,
     isGraduate: null,
@@ -26,9 +26,11 @@ export const initialState = {
     profileImgSrc: null,
     resume: null,
     workPlace: null,
-    // article
+    // Friend's article
     articleObjInFriend: {},
     articleIsLoading: null,
+    // detail article
+    hasMoreArticle: true,
 }
 
 const reducer = (state = initialState, action) => {
@@ -109,6 +111,47 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 articleIsLoading: null,
                 error: null
+            }
+        case actionTypes.GET_FRIEND_INTEREST_ARTICLE_DETAIL_START:
+            return {
+                ...state,
+                articleIsLoading: true
+            }
+        case actionTypes.GET_FRIEND_INTEREST_ARTICLE_DETAIL_SUCCESS:
+            const _interest = action.interest;
+            const dataArr = action.articleDataArr; // 최신순으로 배열에 담김
+            const hasMoreArticle = action.hasMoreArticle;
+            
+            let newArticleObj = JSON.parse(JSON.stringify(state.articleObjInFriend)); //깊은복사
+            console.log(newArticleObj);
+            newArticleObj[_interest] = newArticleObj[_interest].map((el, id) => {
+                return {
+                    ...el,
+                    postId: dataArr[id].postId,
+                    createdAt: dataArr[id].createdAt,
+                    articleImgSrc: dataArr[id].articleImgSrcs[0],
+                    articleTitle: dataArr[id].articleTitle,
+                    articleTagArr: dataArr[id].extraHashtags,
+                }
+            })
+            return {
+                ...state,
+                articleIsLoading: false,
+                error: false,
+                articleObjInFriend: newArticleObj,
+                hasMoreArticle: hasMoreArticle
+            }
+        case actionTypes.GET_FRIEND_INTEREST_ARTICLE_DETAIL_FAIL:
+            return {
+                ...state,
+                articleIsLoading: false,
+                error: true,
+            }
+        case actionTypes.GET_FRIEND_INTEREST_ARTICLE_DETAIL_INIT:
+            return {
+                ...state,
+                error: null,
+                articleIsLoading: null
             }
         
         default:

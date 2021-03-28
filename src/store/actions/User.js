@@ -290,11 +290,12 @@ export const getInterestArticleDetailStart = () => {
         type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_START,
     }
 }
-export const getInterestArticleDetailSuccess = (interest, articleDataArr) => {
+export const getInterestArticleDetailSuccess = (interest, articleDataArr, hasMoreArticle) => {
     return {
         type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_SUCCESS,
         interest,
         articleDataArr,
+        hasMoreArticle
     }
 }
 export const getInterestArticleDetailFail = () => {
@@ -307,56 +308,42 @@ export const getInterestArticleDetailInit = () => {
         type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_INIT,
     }
 }
-export const getInterestArticleDetail = (token, interest) => {
+export const getInterestArticleDetail = (token, interest, page) => {
     return dispatch => {
         dispatch(getInterestArticleDetailStart());
-        
-        setTimeout(() => {
-            const articleDataArr = [
-                {
-                    postId: 'a1', 
-                    createdAt: "2021/03/21", 
-                    articleImgSrcs: ["https://api.xircle.org/1616523233781.png", "hi"], 
-                    articleTitle: "해방촌에서", 
-                    extraHashtags: ['@독서', '@빅데이터']
-                }, 
-                {
-                    postId: 'a2', 
-                    createdAt: "2021/03/22", 
-                    articleImgSrcs: ["https://api.xircle.org/1616588060318.png", "hello"], 
-                    articleTitle: "카페에서 책읽기", 
-                    extraHashtags: ['@카페', '@독서']
+            
+        let realInterest;
+        if(interest === '술_맛집탐방')
+            realInterest = '술/맛집탐방';
+        else 
+            realInterest = interest;
+        AxiosForTest.get(`/post?interest=${realInterest}&page=${page}`, {
+            headers: {
+                'access-token': `${token}`
+            }
+        })
+            .then(res => {
+                console.log(res);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    const articleDataArr = res.data.data;
+                    let hasMoreArticle = true;
+                    if(articleDataArr.length === 0)
+                        hasMoreArticle = false;
+                    dispatch(getInterestArticleDetailSuccess(interest, articleDataArr, hasMoreArticle));
                 }
-            ];
-            dispatch(getInterestArticleDetailSuccess(interest, articleDataArr));
-            dispatch(getInterestArticleDetailInit());
-        }, 2000);
-
-        // AxiosForTest.get(`/post?interest=${interest}`, {
-        //     headers: {
-        //         'access-token': `${token}`
-        //     }
-        // })
-        //     .then(res => {
-        //         console.log(res);
-        //         const isSuccess = res.data.success;
-        //         if(isSuccess) {
-        //             const articleDataArr = res.data.data;
-        //             dispatch(getInterestArticleDetailSuccess(interest, articleDataArr));
-        //             dispatch(getInterestArticleDetailInit());
-        //         }
-        //         else{
-        //             dispatch(getInterestArticleDetailFail());
-        //             dispatch(getInterestArticleDetailInit());
-        //             alert(res.data.message);
-        //         }
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //         dispatch(getInterestArticleDetailFail());
-        //         dispatch(getInterestArticleDetailInit());
-        //         alert('Something went wrong.');
-        //     })
+                else{
+                    dispatch(getInterestArticleDetailFail());
+                    dispatch(getInterestArticleDetailInit());
+                    alert(res.data.message);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(getInterestArticleDetailFail());
+                dispatch(getInterestArticleDetailInit());
+                alert('Something went wrong.');
+            })
     }
 }
 // ------

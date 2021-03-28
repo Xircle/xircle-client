@@ -32,6 +32,7 @@ export const initialState = {
     // article
     articleObjInMyProfile: {},
     articleIsLoading: null,
+    hasMoreArticle: true,
 }
 
 const reducer = (state=initialState, action) => {
@@ -179,6 +180,7 @@ const reducer = (state=initialState, action) => {
             }
         case actionTypes.GET_INTEREST_ARTICLE_SUCCESS:
             const { interest, articleDataArr } = action;
+            console.log(articleDataArr);
             if(articleDataArr === null) // 해당 관심사의 article이 없을 때
                 return {
                     ...state,
@@ -219,9 +221,10 @@ const reducer = (state=initialState, action) => {
         case actionTypes.GET_INTEREST_ARTICLE_DETAIL_SUCCESS:
             const _interest = action.interest;
             const dataArr = action.articleDataArr; // 최신순으로 배열에 담김
+            const hasMoreArticle = action.hasMoreArticle;
             
             let newArticleObj = JSON.parse(JSON.stringify(state.articleObjInMyProfile)); //깊은복사
-            console.log(newArticleObj);
+            
             newArticleObj[_interest] = newArticleObj[_interest].map((el, id) => {
                 return {
                     ...el,
@@ -232,11 +235,13 @@ const reducer = (state=initialState, action) => {
                     articleTagArr: dataArr[id].extraHashtags,
                 }
             })
+            console.log(newArticleObj);
             return {
                 ...state,
                 articleIsLoading: false,
                 error: false,
-                articleObjInMyProfile: newArticleObj
+                articleObjInMyProfile: newArticleObj,
+                hasMoreArticle: hasMoreArticle
             }
         case actionTypes.GET_INTEREST_ARTICLE_DETAIL_FAIL:
             return {
