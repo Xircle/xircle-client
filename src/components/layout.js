@@ -16,9 +16,13 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const NavInterval = setInterval(() => {
-            window.addEventListener('scroll', handleScroll)
-        }, 200);
+        const currPath = window.location.pathname;
+        let NavInterval;
+        if(currPath === '/my-profile' || currPath === '/friend-profile') {
+            NavInterval = setInterval(() => {
+                window.addEventListener('scroll', handleScroll)
+            }, 200);
+        }
 
         if(isIntro)
             document.body.style.backgroundColor = 'black';
