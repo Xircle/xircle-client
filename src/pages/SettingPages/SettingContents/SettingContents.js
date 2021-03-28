@@ -246,6 +246,8 @@ const SettingContents = ({ history, questionNum }) => {
     const uploadPhoto = useCallback((event) => {
         event.preventDefault();
         // file을 읽을 reader 객체 생성
+        if(!event.target.files)
+            return null;
         const files = event.target.files;
         const __file = files[0];
         const __size = files[0].size;
@@ -330,6 +332,8 @@ const SettingContents = ({ history, questionNum }) => {
     // /setting/8
     const uploadProfileImg = useCallback((event) => {
         event.preventDefault();
+        if(!event.target.files)
+            return null;
         // file을 읽을 reader 객체 생성
         const files = event.target.files;
         const __file = files[0];
@@ -539,7 +543,7 @@ const SettingContents = ({ history, questionNum }) => {
                         <input 
                             style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 300, height: 300, borderRadius: 150, cursor: 'pointer'}} 
                             type="file" 
-                            accept="image/x-png,image/jpeg,image/gif"
+                            accept="image/x-png,image/png,image/svg,image/jpeg,image/jpg,image/gif"
                             onChange={(e) => uploadPhoto(e)} 
                         />
                     </div>
@@ -600,7 +604,7 @@ const SettingContents = ({ history, questionNum }) => {
                     ref={articleInterestArr}
                     placeholder="게시글 관심사 설정(필수사항) "
                     value={defaultArticleHashTag}
-                    style={{height: '50px', color: "#4700FF", backgroundColor: "#F7F7FA"}}
+                    style={{height: '50px', color: "#2F51F0", backgroundColor: "#F7F7FA"}}
                     className="mt-5 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
                 <section className="flex flex-row flex-wrap">
@@ -614,7 +618,7 @@ const SettingContents = ({ history, questionNum }) => {
                     id="articleTag"
                     placeholder="@태그하기 (선택사항)"
                     ref={articleTagRef}
-                    style={{height: '50px', color: "#4700FF", backgroundColor: "#F7F7FA"}}
+                    style={{height: '50px', color: "#2F51F0", backgroundColor: "#F7F7FA"}}
                     className="mt-3 px-3 py-5 w-full text-base placeholder-gray-300">
                 </textarea>
                 <button onClick={(e) => articleSubmitHandler(e)} className="mt-5 w-full border-2 rounded-xl px-5 py-3 bg-black text-white focus:outline-none">
@@ -639,7 +643,7 @@ const SettingContents = ({ history, questionNum }) => {
                         <input 
                             style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 300, height: 300, borderRadius: 150, cursor: 'pointer'}} 
                             type="file" 
-                            accept="image/x-png,image/jpeg,image/gif"
+                            accept="image/x-png,image/png,image/svg,image/jpeg,image/jpg,image/gif"
                             onChange={(e) => uploadProfileImg(e)} 
                         />
                     </div>
