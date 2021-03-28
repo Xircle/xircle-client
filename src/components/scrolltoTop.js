@@ -18,7 +18,6 @@ export const scrolltoPostNum = (postNum) => {
   }else {
     top = 890 + 830*(postNum-1); // 890 + 860
   }
-  console.log(top)
   rootEl.scrollTo({
     top,
     behavior: 'smooth'

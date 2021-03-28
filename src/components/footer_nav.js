@@ -13,7 +13,7 @@ const Footer_nav = ({ history, footerNone }) => {
                     src="/NavImage/search.svg"
                     alt="search"
                     style={{width: 20, height:20, cursor: 'pointer'}}
-                    onClick={() => history.push('search')}
+                    onClick={() => history.push('/search')}
                 />
             </section>
 

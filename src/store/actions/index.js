@@ -35,4 +35,5 @@ export {
 export {
     getFriend,
     getFriendArticle,
+    getFriendInterestArticleDetail
 } from './Friend';
