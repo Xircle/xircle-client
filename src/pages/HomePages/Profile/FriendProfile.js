@@ -19,6 +19,7 @@ let articleDispatchingCnt = [
 const selectedTab = {
     backgroundColor: 'black',
     color: 'white',
+    marginRight: 5,
 };
 const notSelectedTab = {
     backgroundColor: 'white',

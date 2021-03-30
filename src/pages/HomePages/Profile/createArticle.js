@@ -4,6 +4,7 @@ import Spinner from 'react-spinner-material';
 import * as actions from '../../../store/actions/index';
 import Layout from '../../../components/layout';
 import ArticleBanner from '../../../components/Banner/articleBanner';
+import { scrolltoTop } from '../../../components/scrolltoTop';
 
 const CreateArticle = ({ history, match }) => {
     const [imgSrc, setImgSrc] = useState(null); // 이미지 뷰용
@@ -30,6 +31,7 @@ const CreateArticle = ({ history, match }) => {
     let contents = null;
   
     useEffect(() => {
+        scrolltoTop();
         const currentPath = window.location.pathname;
         switch(currentPath) {
             case '/createArticle/1':
@@ -168,7 +170,7 @@ const CreateArticle = ({ history, match }) => {
                             src={imgSrc ? imgSrc : "/profile/camera_square.svg"} 
                         />
                         <input 
-                            style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 350, height: 350, borderRadius: 175, cursor: 'pointer'}} 
+                            style={{position: 'absolute', display: 'block', opacity: 0, top: 0, left: '50%', transform: 'translate(-50%, 0)', width: 350, height: 350, cursor: 'pointer'}} 
                             type="file" 
                             accept="image/x-png,image/png,image/svg,image/jpeg,image/jpg,image/gif"
                             onChange={(e) => uploadPhoto(e)} 

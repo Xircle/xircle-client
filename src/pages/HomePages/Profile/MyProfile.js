@@ -18,6 +18,7 @@ let articleDispatchingCnt = [
 const selectedTab = {
     backgroundColor: 'black',
     color: 'white',
+    marginRight: 5,
 };
 const notSelectedTab = {
     backgroundColor: 'white',
@@ -83,10 +84,6 @@ const MyProfile = ({ history }) => {
         if(storedToken) {
             if(!profileImgSrc) // /pre/user로 오면 무조건 다시 로딩
                 return dispatch(actions.getUser(storedToken));
-            // if(newArr.length > 0) {
-            //     if(!newArr[0].count)
-            //         return dispatch(actions.getUser(tokenInRedux || storedToken));
-            // }
             if(interestArr.length !== 0) { // 이게 하나라도 있으면 전부 다 있다고 가정
                 return null;
             }
@@ -174,9 +171,9 @@ const MyProfile = ({ history }) => {
                     </li>
                 </ul>
             )
-        }else if(selectedInterest === '스타트업') { // @스타트업 관심사 누를 때
+        }else if(selectedInterest === '스타트업') { 
             articleDispatchingCnt[1]++;
-            if(articleDispatchingCnt[1] === 1) { // 최초 한번만 http 통신하기
+            if(articleDispatchingCnt[1] === 1) { 
                 if(articleArrInProfile.스타트업) // 이미 한번이라도 게시글을 확인했으면, 디스패칭 안함
                     return null;
                 dispatch(actions.getInterestArticle("스타트업", token));
@@ -1172,7 +1169,7 @@ const MyProfile = ({ history }) => {
                         <div style={{width: 70}}></div>
                         <button 
                             style={selectedTab}
-                            className="px-5 mr-3 py-3 rounded-3xl focus:outline-none"
+                            className="px-5 py-3 rounded-3xl focus:outline-none"
                         ><p style={{fontSize: 12, fontWeight: 300}}>대학생들의 새로운 네트워크 </p>
                         </button>
                         <button 
@@ -1195,11 +1192,10 @@ const MyProfile = ({ history }) => {
             <header style={{margin: "20px 0 35px 0"}}>
                 <section className="flex flex-row items-center justify-around mt-1">
                     <div 
-                        style={{width: 87}}
                         className="px-5 rounded-3xl focus:outline-none"
-                        style={{cursor: 'pointer'}}
+                        style={{width: 87, cursor: 'pointer'}}
                     >
-                        <p style={{fontSize: 14, fontWeight: 600}}>Xircle</p>
+                        <p style={{fontSize: 14, textAlign: 'center', fontWeight: 600}}>Xircle</p>
                     </div>
                     <button 
                         style={pageNum === 2 ? selectedTab : notSelectedTab}
@@ -1218,8 +1214,7 @@ const MyProfile = ({ history }) => {
                     </button>
                 </section>
             </header>
-            )
-            )}
+            ))}
 
             {pageContents}
         </Layout>
