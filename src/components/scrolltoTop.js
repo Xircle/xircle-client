@@ -11,13 +11,7 @@ export const scrolltoTop = (setBtnClicked) => {
 export const scrolltoPostNum = (postNum) => {
   const rootEl = document.documentElement;
   let top;
-  if(postNum === 0) // 짝수번째 post인경우
-    top = 0;
-  else if(postNum === 1) {
-    top = 890;
-  }else {
-    top = 890 + 830*(postNum-1); // 890 + 860
-  }
+  top = 760 * postNum;
   rootEl.scrollTo({
     top,
     behavior: 'smooth'
