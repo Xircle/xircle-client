@@ -7,6 +7,8 @@ const Drawer = ({ children, show, clicked, type }) => {
         height = 300;
     }else if(type === 'age') {
         height = 255;
+    }else if(type === 'setting') {
+        height = 220;
     }else {
         height = '90%';
     }
