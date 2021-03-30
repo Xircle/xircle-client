@@ -30,6 +30,7 @@ export const initialState = {
     resume: null,
     workPlace: null,
     // article
+    myUserId: null,
     articleObjInMyProfile: {},
     articleIsLoading: null,
     hasMoreArticle: true,
@@ -179,8 +180,8 @@ const reducer = (state=initialState, action) => {
                 articleIsLoading: true
             }
         case actionTypes.GET_INTEREST_ARTICLE_SUCCESS:
-            const { interest, articleDataArr } = action;
-            console.log(articleDataArr);
+            const { interest, articleDataArr, myUserId } = action;
+            console.log(myUserId);
             if(articleDataArr === null) // 해당 관심사의 article이 없을 때
                 return {
                     ...state,
@@ -200,6 +201,7 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 articleIsLoading: false,
                 articleObjInMyProfile: newArticleArr,
+                myUserId,
             }
         case actionTypes.GET_INTEREST_ARTICLE_FAIL:
             return {

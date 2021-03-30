@@ -222,11 +222,12 @@ export const getInterestArticleStart = () => {
         type: actionTypes.GET_INTEREST_ARTICLE_START,
     }
 }
-export const getInterestArticleSuccess = (interest, articleDataArr) => {
+export const getInterestArticleSuccess = (interest, articleDataArr, myUserId) => {
     return {
         type: actionTypes.GET_INTEREST_ARTICLE_SUCCESS,
         interest,
         articleDataArr,
+        myUserId
     }
 }
 export const getInterestArticleFail = () => {
@@ -249,7 +250,7 @@ export const getInterestArticle = (interest, tokenInUser) => {
         else 
             realInterest = interest;
         
-        AxiosForTest.get(`/user/profile/post?interest=${realInterest}`, {
+        AxiosForTest.get(`/user/profile/post?interest=${realInterest}&page=0`, {
             headers: {
                 'access-token': `${tokenInUser}`
             }
@@ -259,11 +260,12 @@ export const getInterestArticle = (interest, tokenInUser) => {
                 const isSuccess = res.data.success;
                 if(isSuccess) {
                     const articleDataArr = res.data.data;
+                    const myUserId = res.data.data[0].userId;
                     if(articleDataArr.length === 0) { // 해당 관심사에 대한 게시글이 없으면 
-                        dispatch(getInterestArticleSuccess(interest, null));
+                        dispatch(getInterestArticleSuccess(interest, null, myUserId));
                         dispatch(getInterestArticleInit());
                     }else {
-                        dispatch(getInterestArticleSuccess(interest, articleDataArr));
+                        dispatch(getInterestArticleSuccess(interest, articleDataArr, myUserId));
                         dispatch(getInterestArticleInit());
                     }
                 }
@@ -308,7 +310,7 @@ export const getInterestArticleDetailInit = () => {
         type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_INIT,
     }
 }
-export const getInterestArticleDetail = (token, interest, page) => {
+export const getInterestArticleDetail = (token, interest, page, myUserID) => {
     return dispatch => {
         dispatch(getInterestArticleDetailStart());
             
@@ -317,7 +319,9 @@ export const getInterestArticleDetail = (token, interest, page) => {
             realInterest = '술/맛집탐방';
         else 
             realInterest = interest;
-        AxiosForTest.get(`/post?interest=${realInterest}&page=${page}`, {
+
+        console.log(myUserID, realInterest, page);
+        AxiosForTest.get(`/post/user/${myUserID}?interest=${realInterest}&page=0`, {
             headers: {
                 'access-token': `${token}`
             }
@@ -331,6 +335,7 @@ export const getInterestArticleDetail = (token, interest, page) => {
                     if(articleDataArr.length === 0)
                         hasMoreArticle = false;
                     dispatch(getInterestArticleDetailSuccess(interest, articleDataArr, hasMoreArticle));
+                    dispatch(getInterestArticleDetailInit());
                 }
                 else{
                     dispatch(getInterestArticleDetailFail());
