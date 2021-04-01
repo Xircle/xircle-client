@@ -35,7 +35,7 @@ const Intro = ({ history }) => {
         <section style={{minHeight: '100vh'}} className="h-full w-full">
           <section className="relative">
             <div className="h-screen w-full overflow-visible">
-              <video autoPlay loop muted playsInline preload="metadata" src="/Intro/intro-video.mp4" type="video/mp4" className="h-screen object-cover">
+              <video autoPlay loop muted playsInline preload="metadata" src="/Intro/intro-video.mp4" type="video/mp4" style={{objectFit: 'cover', height: '100vh'}} width="100%" height="812">
                 Your browser doesn't support video.
               </video>
               <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}></div>
@@ -49,7 +49,7 @@ const Intro = ({ history }) => {
                   요즘 대학생들의 <br/>
                   새로운 네트워킹
                 </h1>
-                <h1 style={{fontSize: 33, wordBreak: 'keep-all'}} className="text-white m-0 font-extrabold">XIRCLE, 써클</h1>
+                <h1 style={{fontSize: 33, wordBreak: 'keep-all', fontWeight: 800, color: "#fff", margin: 0}}>XIRCLE, 써클</h1>
                 {btnClicked ? (
                   <div data-aos="zoom-out" data-aos-duration="2000">
                     <p style={{fontSize: 18, color: 'white', whiteSpace: 'nowrap', margin: '20px 0'}}>사전신청에 오신걸 환영합니다.</p>
