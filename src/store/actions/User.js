@@ -1,5 +1,6 @@
 import * as actionTypes from './actionTypes';
 import { Axios, AxiosForTest } from '../../axios-instance';
+import { getFriendInterestArticleDetailStart, getFriendInterestArticleDetailSuccess, getFriendInterestArticleDetailFail, getFriendInterestArticleDetailInit} from './Friend';
 import axios from 'axios';
 
 // GET시 /user/profile를 리덕스에 담기위한 액션.
@@ -259,8 +260,8 @@ export const getInterestArticle = (interest, tokenInUser) => {
                 console.log(res);
                 const isSuccess = res.data.success;
                 if(isSuccess) {
-                    const articleDataArr = res.data.data;
-                    const myUserId = res.data.data[0].userId;
+                    const articleDataArr = res.data.data.post;
+                    const myUserId = res.data.data.userId;
                     if(articleDataArr.length === 0) { // 해당 관심사에 대한 게시글이 없으면 
                         dispatch(getInterestArticleSuccess(interest, null, myUserId));
                         dispatch(getInterestArticleInit());
@@ -310,45 +311,79 @@ export const getInterestArticleDetailInit = () => {
         type: actionTypes.GET_INTEREST_ARTICLE_DETAIL_INIT,
     }
 }
-export const getInterestArticleDetail = (token, interest, page, myUserID) => {
+export const getInterestArticleDetail = (token, interest, page, userId, type) => {
     return dispatch => {
-        dispatch(getInterestArticleDetailStart());
-            
-        let realInterest;
-        if(interest === '술_맛집탐방')
-            realInterest = '술/맛집탐방';
-        else 
-            realInterest = interest;
-
-        console.log(myUserID, realInterest, page);
-        AxiosForTest.get(`/post/user/${myUserID}?interest=${realInterest}&page=0`, {
-            headers: {
-                'access-token': `${token}`
-            }
-        })
-            .then(res => {
-                console.log(res);
-                const isSuccess = res.data.success;
-                if(isSuccess) {
-                    const articleDataArr = res.data.data;
-                    let hasMoreArticle = true;
-                    if(articleDataArr.length === 0)
-                        hasMoreArticle = false;
-                    dispatch(getInterestArticleDetailSuccess(interest, articleDataArr, hasMoreArticle));
-                    dispatch(getInterestArticleDetailInit());
+        if(type === 'my') { // 나의 세부 게시글 볼 때
+            dispatch(getInterestArticleDetailStart());
+            let realInterest;
+            if(interest === '술_맛집탐방')
+                realInterest = '술/맛집탐방';
+            else 
+                realInterest = interest;
+            AxiosForTest.get(`/post/user/${userId}?interest=${realInterest}&page=0`, {
+                headers: {
+                    'access-token': `${token}`
                 }
-                else{
+            })
+                .then(res => {
+                    console.log(res);
+                    const isSuccess = res.data.success;
+                    if(isSuccess) {
+                        const articleDataArr = res.data.data;
+                        let hasMoreArticle = true;
+                        if(articleDataArr.length === 0)
+                            hasMoreArticle = false;
+                        dispatch(getInterestArticleDetailSuccess(interest, articleDataArr, hasMoreArticle));
+                        dispatch(getInterestArticleDetailInit());
+                    }
+                    else{
+                        dispatch(getInterestArticleDetailFail());
+                        dispatch(getInterestArticleDetailInit());
+                        alert(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
                     dispatch(getInterestArticleDetailFail());
                     dispatch(getInterestArticleDetailInit());
-                    alert(res.data.message);
+                    alert('Something went wrong.');
+                })
+        }else { // 친구 세부 게시글 볼때
+            dispatch(getFriendInterestArticleDetailStart());
+            let realInterest;
+            if(interest === '술_맛집탐방')
+                realInterest = '술/맛집탐방';
+            else 
+                realInterest = interest;
+            AxiosForTest.get(`/post/user/${userId}?interest=${realInterest}&page=0`, {
+                headers: {
+                    'access-token': `${token}`
                 }
             })
-            .catch(err => {
-                console.log(err);
-                dispatch(getInterestArticleDetailFail());
-                dispatch(getInterestArticleDetailInit());
-                alert('Something went wrong.');
-            })
+                .then(res => {
+                    console.log(res);
+                    const isSuccess = res.data.success;
+                    if(isSuccess) {
+                        const articleDataArr = res.data.data;
+                        let hasMoreArticle = true;
+                        if(articleDataArr.length === 0)
+                            hasMoreArticle = false;
+                        dispatch(getFriendInterestArticleDetailSuccess(interest, articleDataArr, hasMoreArticle));
+                        dispatch(getFriendInterestArticleDetailInit());
+                    }
+                    else{
+                        dispatch(getFriendInterestArticleDetailFail());
+                        dispatch(getFriendInterestArticleDetailInit());
+                        alert(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    dispatch(getFriendInterestArticleDetailFail());
+                    dispatch(getFriendInterestArticleDetailInit());
+                    alert('Something went wrong.');
+                })
+        }
     }
 }
 // ------
@@ -419,3 +454,55 @@ export const updateProfile = (token, editedProfileFormData) => {
             })
     }
 }
+// 게시글 삭제
+export const deleteMyArticleStart = () => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_START,
+    }
+}
+export const deleteMyArticleSuccess = () => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_SUCCESS,
+    }
+}
+export const deleteMyArticleFail = () => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_FAIL,
+    }
+}
+export const deleteMyArticleInit = () => {
+    return {
+        type: actionTypes.UPDATE_PROFILE_INIT,
+    }
+}
+export const deleteMyArticle = (token, postId) => {
+    return dispatch => {
+        dispatch(deleteMyArticleStart());
+
+        AxiosForTest.delete(`/post/${postId}`, {
+            headers: {
+                'access-token': `${token}`
+            }
+        })
+            .then(res => {
+                console.log(res);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    dispatch(deleteMyArticleSuccess());
+                    dispatch(deleteMyArticleInit());
+                }
+                else{
+                    dispatch(deleteMyArticleFail());
+                    dispatch(deleteMyArticleInit());
+                    alert(res.data.message);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(deleteMyArticleFail());
+                dispatch(deleteMyArticleInit());
+                alert('Something went wrong.');
+            })
+    }
+}
+
