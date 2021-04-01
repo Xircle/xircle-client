@@ -181,7 +181,6 @@ const reducer = (state=initialState, action) => {
             }
         case actionTypes.GET_INTEREST_ARTICLE_SUCCESS:
             const { interest, articleDataArr, myUserId } = action;
-            console.log(myUserId);
             if(articleDataArr === null) // 해당 관심사의 article이 없을 때
                 return {
                     ...state,
@@ -194,7 +193,7 @@ const reducer = (state=initialState, action) => {
             articleDataArr.map(el => {
                 newArticleArr[interest].push({
                     articleImgSrc: el.articleImgSrc,
-                    articleContent: el.articleContent,
+                    articleTitle: el.articleTitle,
                 })
             });
             return {
@@ -234,10 +233,10 @@ const reducer = (state=initialState, action) => {
                     createdAt: dataArr[id].createdAt,
                     articleImgSrc: dataArr[id].articleImgSrcs[0],
                     articleTitle: dataArr[id].articleTitle,
+                    articleContent: dataArr[id].content,
                     articleTagArr: dataArr[id].extraHashtags,
                 }
             })
-            console.log(newArticleObj);
             return {
                 ...state,
                 articleIsLoading: false,
