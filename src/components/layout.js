@@ -18,13 +18,13 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
     useEffect(() => {
         const currPath = window.location.pathname;
         let NavInterval;
-        if(currPath === '/my-profile' || currPath === '/friend-profile') {
+        if(currPath === '/' || currPath === '/my-profile' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article')) {
             NavInterval = setInterval(() => {
                 window.addEventListener('scroll', handleScroll)
             }, 200);
         }
 
-        if(isIntro)
+        if(isIntro) 
             document.body.style.backgroundColor = 'black';
         else
             document.body.style.backgroundColor = '#E4E4E4';
@@ -43,7 +43,7 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
                 setHeaderColor('white');
             }else
                 setHeaderColor('black')
-        }else if(currPath === '/my-profile' || currPath === '/friend-profile') {
+        }else if(currPath === '/my-profile' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article')) {
             const newScroll = window.pageYOffset;
             const willHide = newScroll > oldScroll;
             setShouldNavHide(willHide);
