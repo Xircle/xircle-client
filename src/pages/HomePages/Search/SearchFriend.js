@@ -5,11 +5,12 @@ import { Placeholder } from 'semantic-ui-react';
 import Drawer from '../../../components/UI/Drawer';
 import { Axios } from '../../../axios-instance';
 import Spinner from 'react-spinner-material';
+import { scrolltoTop } from '../../../components/scrolltoTop';
 
 const { kakao } = window;
 
 const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
-    const { token, location, longitude, latitude, profileImgSrc, interestArr } = useSelector(store => store.user);
+    const { token, location, longitude, latitude, profileImgSrc } = useSelector(store => store.user);
 
     const [univClicked, setUnivClicked] = useState(false);
     const [ageClicked, setAgeClicked] = useState(false);
@@ -22,24 +23,23 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
     const [rangeValue, setRangeValue] = useState(4);
 
     // 서버에 보낼 4개 변수들
-    const [filteredUniv, setFilteredUniv] = useState();
-    const [filteredAge, setFilteredAge] = useState();
-    const [filteredLocation, setFilteredLocation] = useState();
+    const [filteredUniv, setFilteredUniv] = useState(null);
+    const [filteredAge, setFilteredAge] = useState(null);
+    const [filteredLocation, setFilteredLocation] = useState(null);
     const [filteredGender, setFilteredGender] = useState(null);
     const [isFiltering, setIsFiltering] = useState(true);
 
     const [filteredFriend, setFilteredFriend] = useState([]); // [{ profileImgSrc, adj, job, displayName, introText, sameInterest}]
-    const [filteringPage, setFilteringPage] = useState(1);
+    const [filteringPage, setFilteringPage] = useState(0);
     const observer = useRef()
 
     // 리다이렉션
     useEffect(() => {
-        // if(!profileImgSrc)
-        //     return window.location.href = '/my-profile';
+        if(!token)
+            return window.location.href = '/my-profile';
 
-        setTimeout(() => {
-            setIsFiltering(false);
-        }, 1000);
+        scrolltoTop();
+        filteringSubmitHandler();
     }, []);
 
     const lastFriendElementRef = useCallback(node => {
@@ -58,17 +58,15 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
     
     // Filtering dispatching 
     const filteringSubmitHandler = useCallback(() => {
+        console.log(filteringPage);
+
         setIsFiltering(true);
         const finalGender = filteredGender === null ? null : filteredGender ? "남" : "여";
         
-        // 같은 관심사 배열구하기
-        const myHashtagArr = interestArr.map(el => {
-            return el.interest
-        });
-        console.log(myHashtagArr);
-        console.log(filteredUniv, filteredAge, filteredLocation, finalGender, filteringPage, myHashtagArr);
+        console.log(filteredUniv, filteredAge, filteredLocation, finalGender, filteringPage);
 
-        Axios.get(`/users?university=${filteredUniv}&age=${filteredAge}&location=${filteredLocation}&gender=${finalGender}&page=${filteringPage}&hashtag=${myHashtagArr}`, {
+        console.log(filteringPage)
+        Axios.get(`/users?university=고려대학교&page=0`, {
             headers: {
                 'access-token': token
             }
@@ -85,16 +83,16 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                 setIsFiltering(false);
             }else {
                 setIsFiltering(false);
-                alert("필터링 실패. 다시 시도해주세요.");
+                // alert("필터링 실패. 다시 시도해주세요.");
             }
         })
         .catch(err => {
             console.log(err);
             setIsFiltering(false);
-            alert("필터링 실패. 다시 시도해주세요.");
+            // alert("필터링 실패. 다시 시도해주세요.");
         })
 
-    }, [filteredAge, filteredLocation, filteredGender, filteredUniv, filteringPage]);
+    }, [token, filteredAge, filteredLocation, filteredGender, filteredUniv, filteringPage]);
 
     // Age
     const ageRangeHandler = useCallback((e) => {
@@ -358,7 +356,7 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                                 src="/UI/refresh.svg"
                                 alt="refresh"
                             />    
-                            <p onClick={() => filteringSubmitHandler()} style={{color: "#2F51F0", margin: '0 15px', cursor: 'pointer'}}>검색하기</p>
+                            <p onClick={() => {setFilteredFriend([]); setFilteringPage(0); filteringSubmitHandler()}} style={{color: "#2F51F0", margin: '0 15px', cursor: 'pointer'}}>검색하기</p>
                         </section>
 
                         {/* 친구들 프로필 컨테이너 */}
@@ -396,102 +394,6 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                                     )
                                 }
                             })}
-                            {/* <div onClick={() => console.log('here')} className="flex flex-row items-center px-3 my-10">
-                                <img 
-                                    style={{width: 55, height: 55, borderRadius: 30}}
-                                    src="https://api.xircle.org/1616523233781.png"
-                                    alt="profile"
-                                />
-                                <div className="px-5 flex flex-col justify-center ">
-                                    <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest 5</p>
-                                    <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>배부른 개발자 <span style={{fontWeight: 400, fontSize: 14}}>@2donny</span></h2>
-                                    <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>책좋아하는 학생입니다. 책좋아하는 학생입니다 학생입니다. 독서 TALK 하실분 책좋아하는 학생입니다.독서 TALK 하실분 책좋아하는 학생입니다책좋아하는 학생입니다책좋아하는 학생입니다.</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center px-3 my-10">
-                                <img 
-                                    style={{width: 60, height: 60, borderRadius: 30}}
-                                    src="https://api.xircle.org/1615526650472.png"
-                                    alt="profile"
-                                />
-                                <div className="px-5 flex flex-col justify-center ">
-                                    <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest 5</p>
-                                    <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>배부른 개발자 <span style={{fontWeight: 400, fontSize: 14}}>@2donny</span></h2>
-                                    <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>책좋아하는 학생입니다. 책좋아하는 학생입니다 학생입니다. 독서 TALK 하실분 책좋아하는 학생입니다.독서 TALK 하실분 책좋아하는 학생입니다책좋아하는 학생입니다책좋아하는 학생입니다.</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center px-3 my-10">
-                                <img 
-                                    style={{width: 60, height: 60, borderRadius: 30}}
-                                    src="https://api.xircle.org/1615853112677.jpg"
-                                    alt="profile"
-                                />
-                                <div className="px-5 flex flex-col justify-center ">
-                                    <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest 5</p>
-                                    <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>배부른 개발자 <span style={{fontWeight: 400, fontSize: 14}}>@2donny</span></h2>
-                                    <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>책좋아하는 학생입니다. 책좋아하는 학생입니다 학생입니다. 독서 TALK 하실분 책좋아하는 학생입니다.독서 TALK 하실분 책좋아하는 학생입니다책좋아하는 학생입니다책좋아하는 학생입니다.</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center px-3 my-10">
-                                <img 
-                                    style={{width: 60, height: 60, borderRadius: 30}}
-                                    src="https://api.xircle.org/1615857659787.JPG"
-                                    alt="profile"
-                                />
-                                <div className="px-5 flex flex-col justify-center ">
-                                    <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest 5</p>
-                                    <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>배부른 개발자 <span style={{fontWeight: 400, fontSize: 14}}>@2donny</span></h2>
-                                    <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>책좋아하는 학생입니다. 책좋아하는 학생입니다 학생입니다. 독서 TALK 하실분 책좋아하는 학생입니다.독서 TALK 하실분 책좋아하는 학생입니다책좋아하는 학생입니다책좋아하는 학생입니다.</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center px-3 my-10">
-                                <img 
-                                    style={{width: 60, height: 60, borderRadius: 30}}
-                                    src="https://api.xircle.org/1615859277221.jpeg"
-                                    alt="profile"
-                                />
-                                <div className="px-5 flex flex-col justify-center ">
-                                    <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest 5</p>
-                                    <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>배부른 개발자 <span style={{fontWeight: 400, fontSize: 14}}>@2donny</span></h2>
-                                    <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>책좋아하는 학생입니다. 책좋아하는 학생입니다 학생입니다. 독서 TALK 하실분 책좋아하는 학생입니다.독서 TALK 하실분 책좋아하는 학생입니다책좋아하는 학생입니다책좋아하는 학생입니다.</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center px-3 my-10">
-                                <img 
-                                    style={{width: 60, height: 60, borderRadius: 30}}
-                                    src="https://api.xircle.org/1615863666967.jpeg"
-                                    alt="profile"
-                                />
-                                <div className="px-5 flex flex-col justify-center ">
-                                    <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest 5</p>
-                                    <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>배부른 개발자 <span style={{fontWeight: 400, fontSize: 14}}>@2donny</span></h2>
-                                    <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>책좋아하는 학생입니다. 책좋아하는 학생입니다 학생입니다. 독서 TALK 하실분 책좋아하는 학생입니다.독서 TALK 하실분 책좋아하는 학생입니다책좋아하는 학생입니다책좋아하는 학생입니다.</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center px-3 my-10">
-                                <img 
-                                    style={{width: 60, height: 60, borderRadius: 30}}
-                                    src="https://api.xircle.org/1615882395916.jpg"
-                                    alt="profile"
-                                />
-                                <div className="px-5 flex flex-col justify-center ">
-                                    <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest 5</p>
-                                    <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>배부른 개발자 <span style={{fontWeight: 400, fontSize: 14}}>@2donny</span></h2>
-                                    <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>책좋아하는 학생입니다. 책좋아하는 학생입니다 학생입니다. 독서 TALK 하실분 책좋아하는 학생입니다.독서 TALK 하실분 책좋아하는 학생입니다책좋아하는 학생입니다책좋아하는 학생입니다.</p>
-                                </div>
-                            </div>
-                            <div className="flex flex-row items-center px-3 my-10">
-                                <img 
-                                    style={{width: 60, height: 60, borderRadius: 30}}
-                                    src="https://api.xircle.org/1615882395916.jpg"
-                                    alt="profile"
-                                />
-                                <div className="px-5 flex flex-col justify-center ">
-                                    <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest 5</p>
-                                    <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>배부른 개발자 <span style={{fontWeight: 400, fontSize: 14}}>@2donny</span></h2>
-                                    <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>책좋아하는 학생입니다. 책좋아하는 학생입니다 학생입니다. 독서 TALK 하실분 책좋아하는 학생입니다.독서 TALK 하실분 책좋아하는 학생입니다책좋아하는 학생입니다책좋아하는 학생입니다.</p>
-                                </div>
-                            </div> */}
                             {isFiltering && (
                                 <Spinner 
                                     color='#ccc'
