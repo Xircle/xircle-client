@@ -21,7 +21,7 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
         if(currPath === '/' || currPath === '/my-profile' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article')) {
             NavInterval = setInterval(() => {
                 window.addEventListener('scroll', handleScroll)
-            }, 200);
+            }, 150);
         }
 
         if(isIntro) 
@@ -137,10 +137,10 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
             ) : isIntro ?  <header style={{height: 73, backgroundColor: 'black'}}></header> : null}
 
             <main className="min-h-screen w-full relative">
-                <footer style={{position: 'fixed', zIndex: 999, left: '50%', bottom: -20, transition: '.5s ease', transform: shouldNavHide ? 'translate(-50%, 50px)' : 'translate(-50%, -50px)'}}>
+                {children}
+                <footer style={{position: 'fixed', zIndex: 200, left: '50%', bottom: -20, transition: '.5s ease', transform: shouldNavHide ? 'translate(-50%, 50px)' : 'translate(-50%, -50px)'}}>
                     <Footer_nav history={history} footerNone={footerNone}/>
                 </footer>
-                {children}
             </main>
 
             {/* footer */}

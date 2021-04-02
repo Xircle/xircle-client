@@ -19,7 +19,7 @@ const Modal = ({ children, show, clicked, type }) => {
                         visibility: show ? 'visible' :'hidden',
                         borderRadius: '10px',
                         position: "fixed",
-                        zIndex: 500,
+                        zIndex: 999,
                         width: '340px',
                         textAlign: 'center',
                         border: '1px solid #ccc',

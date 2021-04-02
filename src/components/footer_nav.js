@@ -18,7 +18,7 @@ const Footer_nav = ({ history, footerNone }) => {
     return (
         !footerNone && (
         <nav
-            style={{width: 231, padding: '16px 0', backgroundColor: '#fff', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.3)', borderRadius: 30 }}
+            style={{width: 231, zIndex: 100, padding: '16px 0', backgroundColor: '#fff', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.3)', borderRadius: 30 }}
             className="flex flex-row w-full justify-evenly"
         >
             {/* Diary */}
@@ -27,7 +27,7 @@ const Footer_nav = ({ history, footerNone }) => {
                     src={selectedPage === 1 ? '/NavImage/diary-outline.svg' : "/NavImage/diary.svg"}
                     alt="diary"
                     style={{width: 20, height:20, cursor: 'pointer'}}
-                    onClick={() => history.push('/diary')}
+                    onClick={() => alert("전체 친구 조회는 개발중입니다!")}
                 />
             </section>
 

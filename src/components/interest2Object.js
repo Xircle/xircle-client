@@ -43,72 +43,72 @@ export function interest2Index(interest){
 }
 
 export function interest2Object(interestArr){
-    const newArr = interestArr.map(interest => {
+    const newArr = interestArr.map(el => {
         let value;
-        if(interest.interest) {
-            value = interest.interest;
+        if(el.interest) {
+            value = el.interest;
         }else {
-            value = interest;
+            value = el;
         }
         switch(value) {
             case "스타트업": 
                 return {
-                    ...interest,
+                    ...el,
                     url: startup,
                 }
             case "술/맛집탐방": 
                 return {
-                    ...interest,
+                    ...el,
                     url: meet,
                 }
             case "애견인": 
                 return {
-                    ...interest,
+                    ...el,
                     url: dog,
                 }
             case "동네친구": 
                 return {
-                    ...interest,
+                    ...el,
                     url: friend,
                 }
             case "코딩": 
                 return {
-                    ...interest,
+                    ...el,
                     url: coding,
                 }
             case "패션": 
                 return {
-                    ...interest,
+                    ...el,
                     url: fashion,
                 }
             case "헬스": 
                 return {
-                    ...interest,
+                    ...el,
                     url: health,
                 }
             case "게임": 
                 return {
-                    ...interest,
+                    ...el,
                     url: game,
                 }
             case "예술": 
                 return {
-                    ...interest,
+                    ...el,
                     url: art,
                 }
             case "취업준비": 
                 return {
-                    ...interest,
+                    ...el,
                     url: jobfinder,
                 }
             case "수험생": 
                 return {
-                    ...interest,
+                    ...el,
                     url: lawschool,
                 }
             case "대학원": 
                 return {
-                    ...interest,
+                    ...el,
                     url: graduate,
                 }
             default:

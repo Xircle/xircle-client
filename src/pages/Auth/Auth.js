@@ -70,7 +70,7 @@ const Auth = ({ history }) => {
     return (
         <Layout headerNone footerNone={true}>
             <div style={{height: '60px', justifyContent: 'flex-end'}} className="flex flex-row items-center ">
-                <span onClick={() => history.push('/login')} style={{color: "#4700FF", fontSize: 16, fontWeight: 500,  margin: '20px 15px 0 0', textAlign: 'right', cursor: 'pointer'}}>로그인하기</span>
+                <span onClick={() => history.push('/login')} style={{color: "#2F51F0", fontSize: 16, fontWeight: 500,  margin: '20px 15px 0 0', textAlign: 'right', cursor: 'pointer'}}>로그인하기</span>
             </div>
             <section className="mb-10">
                 <section style={{padding: '10px 30px'}} className="text-center mt-5">

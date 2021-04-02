@@ -1,7 +1,7 @@
 import React, { useState, useReducer, useCallback} from 'react';
 import { useDispatch } from 'react-redux';
 import graduateSchool from '../images/setting/interest_1.svg';
-import startUp from '../images/setting/startup.svg';
+import startUp from '../images/setting/startUp.jpg';
 import friend from '../images/setting/friend.svg';
 import meet from '../images/setting/meet.svg';
 import dogLover from '../images/setting/interest_10.svg';
@@ -9,7 +9,7 @@ import game from '../images/setting/game.svg';
 import coding from '../images/setting/interest_5.svg';
 import fashion from '../images/setting/interest_12.svg';
 import health from '../images/setting/interest_8.svg';
-import art from '../images/setting/art.svg';
+import art from '../images/setting/art.png';
 import jobFinder from '../images/setting/interest_11.svg';
 import lawSchool from '../images/setting/interest_2.svg';
 
