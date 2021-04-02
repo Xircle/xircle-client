@@ -457,25 +457,27 @@ export const updateProfile = (token, editedProfileFormData) => {
 // 게시글 삭제
 export const deleteMyArticleStart = () => {
     return {
-        type: actionTypes.UPDATE_PROFILE_START,
+        type: actionTypes.DELETE_MY_ARTICLE_START,
     }
 }
-export const deleteMyArticleSuccess = () => {
+export const deleteMyArticleSuccess = (interest, postId) => {
     return {
-        type: actionTypes.UPDATE_PROFILE_SUCCESS,
+        type: actionTypes.DELETE_MY_ARTICLE_SUCCESS,
+        interest,
+        postId,
     }
 }
 export const deleteMyArticleFail = () => {
     return {
-        type: actionTypes.UPDATE_PROFILE_FAIL,
+        type: actionTypes.DELETE_MY_ARTICLE_FAIL,
     }
 }
 export const deleteMyArticleInit = () => {
     return {
-        type: actionTypes.UPDATE_PROFILE_INIT,
+        type: actionTypes.DELETE_MY_ARTICLE_INIT,
     }
 }
-export const deleteMyArticle = (token, postId) => {
+export const deleteMyArticle = (token, interest, postId) => {
     return dispatch => {
         dispatch(deleteMyArticleStart());
 
@@ -488,7 +490,7 @@ export const deleteMyArticle = (token, postId) => {
                 console.log(res);
                 const isSuccess = res.data.success;
                 if(isSuccess) {
-                    dispatch(deleteMyArticleSuccess());
+                    dispatch(deleteMyArticleSuccess(interest, postId));
                     dispatch(deleteMyArticleInit());
                 }
                 else{
@@ -505,4 +507,3 @@ export const deleteMyArticle = (token, postId) => {
             })
     }
 }
-

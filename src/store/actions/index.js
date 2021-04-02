@@ -29,11 +29,11 @@ export {
     updateProfileImg,
     updateProfileImgToServer,
     createNewArticle,
-    updateProfile
+    updateProfile,
+    deleteMyArticle,
 } from './User';
 
 export {
     getFriend,
     getFriendArticle,
-    getFriendInterestArticleDetail
 } from './Friend';
