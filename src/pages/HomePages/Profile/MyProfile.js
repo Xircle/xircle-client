@@ -18,7 +18,6 @@ let articleDispatchingCnt = [
 const selectedTab = {
     backgroundColor: 'black',
     color: 'white',
-    marginRight: 5,
 };
 const notSelectedTab = {
     backgroundColor: 'white',
@@ -62,7 +61,7 @@ const MyProfile = ({ history }) => {
     
     const [pageNum, setPageNum] = useState(2);
     const [selectedInterest, setSelectedInterest] = useState(null); //관심사 네비게이션에서 선택된 관심사. (1, 스타트업) (2, 동네친구) ..등등
-    
+    const [newArr, setNewArr] = useState(interest2Object(interestArr));
     const [naviContents, setNaviContents] = useState(null);
     const [articleClickedArr, setArticleClicked] = useState([false, null]);
     
@@ -75,8 +74,11 @@ const MyProfile = ({ history }) => {
     const hasError = useSelector(store => store.user.error);
     const dispatch = useDispatch();
     
-    
-    const newArr = interest2Object(interestArr);
+    // interestArr의 activity가 삭제될때마다 새롭게 렌더링
+    useEffect(() => {
+        setNewArr(interest2Object(interestArr));
+    }, [interestArr]);
+
     useEffect(() => {
         // 하나라도 없으면 
         const storedToken = localStorage.getItem('tk');
@@ -174,16 +176,12 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '스타트업') { 
             articleDispatchingCnt[1]++;
             if(articleDispatchingCnt[1] === 1) { 
-                if(articleArrInProfile.스타트업) // 이미 한번이라도 게시글을 확인했으면, 디스패칭 안함
-                    return null;
                 dispatch(actions.getInterestArticle("스타트업", token));
             }
 
             let foundArr = [];
             if(articleArrInProfile.스타트업) { // fetch된 후
                 foundArr = articleArrInProfile.스타트업; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -216,7 +214,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -242,16 +240,12 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '술/맛집탐방') { // @술/맛집탐방 관심사 누를 때
             articleDispatchingCnt[2]++;
             if(articleDispatchingCnt[2] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.술_맛집탐방) // 이미 한번이라도 게시글을 확인했으면, 디스패칭 안함
-                    return null;
                 dispatch(actions.getInterestArticle("술_맛집탐방", token));
             }
 
             let foundArr = [];
             if(articleArrInProfile.술_맛집탐방) { // fetch된 후
                 foundArr = articleArrInProfile.술_맛집탐방; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -284,7 +278,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -310,16 +304,13 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '동네친구') { // @동네친구 관심사 누를 때
             articleDispatchingCnt[3]++;
             if(articleDispatchingCnt[3] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.동네친구) // 이미 한번이라도 게시글을 확인했으면, 디스패칭 안함
-                    return null;
                 dispatch(actions.getInterestArticle("동네친구", token));
             }
             let foundArr = [];
-            if(articleArrInProfile.동네친구) { // fetch된 후
+            if(articleArrInProfile.동네친구) { // fetch된 후, 있거나 전부 삭제되서 길이가 0인경우 없어진 경우
                 foundArr = articleArrInProfile.동네친구; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
+            
             setNaviContents(
                 articleIsLoading ? (
                     <div style={{height: 100, position: 'relative'}}>
@@ -351,7 +342,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -377,15 +368,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '코딩') { // @코딩 관심사 누를 때
             articleDispatchingCnt[4]++;
             if(articleDispatchingCnt[4] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.코딩) 
-                    return null;
                 dispatch(actions.getInterestArticle("코딩", token));
             }
             let foundArr = [];
             if(articleArrInProfile.코딩) { // fetch된 후
                 foundArr = articleArrInProfile.코딩; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -418,7 +405,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -444,15 +431,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '애견인') { // @애견인 관심사 누를 때
             articleDispatchingCnt[5]++;
             if(articleDispatchingCnt[5] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.애견인) 
-                    return null;
                 dispatch(actions.getInterestArticle("애견인", token));
             }
             let foundArr = [];
             if(articleArrInProfile.애견인) { // fetch된 후
                 foundArr = articleArrInProfile.애견인; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -485,7 +468,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -511,15 +494,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '패션') { // @패션 관심사 누를 때
             articleDispatchingCnt[6]++;
             if(articleDispatchingCnt[6] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.패션) 
-                    return null;
                 dispatch(actions.getInterestArticle("패션", token));
             }
             let foundArr = [];
             if(articleArrInProfile.패션) { // fetch된 후
                 foundArr = articleArrInProfile.패션; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -552,7 +531,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -578,15 +557,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '예술') { // @예술 관심사 누를 때
             articleDispatchingCnt[7]++;
             if(articleDispatchingCnt[7] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.예술) 
-                    return null;
                 dispatch(actions.getInterestArticle("예술", token));
             }
             let foundArr = [];
             if(articleArrInProfile.예술) { // fetch된 후
                 foundArr = articleArrInProfile.예술; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -619,7 +594,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -645,15 +620,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '게임') { // @게임 관심사 누를 때
             articleDispatchingCnt[8]++;
             if(articleDispatchingCnt[8] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.게임) 
-                    return null;
                 dispatch(actions.getInterestArticle("게임", token));
             }
             let foundArr = [];
             if(articleArrInProfile.게임) { // fetch된 후
                 foundArr = articleArrInProfile.게임; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -686,7 +657,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -712,15 +683,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '헬스') { // @헬스 관심사 누를 때
             articleDispatchingCnt[9]++;
             if(articleDispatchingCnt[9] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.헬스) 
-                    return null;
                 dispatch(actions.getInterestArticle("헬스", token));
             }
             let foundArr = [];
             if(articleArrInProfile.헬스) { // fetch된 후
                 foundArr = articleArrInProfile.헬스; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -753,7 +720,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -779,15 +746,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '취업준비') { // @취업준비 관심사 누를 때
             articleDispatchingCnt[10]++;
             if(articleDispatchingCnt[10] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.취업준비) 
-                    return null;
                 dispatch(actions.getInterestArticle("취업준비", token));
             }
             let foundArr = [];
             if(articleArrInProfile.취업준비) { // fetch된 후
                 foundArr = articleArrInProfile.취업준비; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -820,7 +783,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -846,15 +809,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '수험생') { // @수험생 관심사 누를 때
             articleDispatchingCnt[11]++;
             if(articleDispatchingCnt[11] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.수험생) 
-                    return null;
                 dispatch(actions.getInterestArticle("수험생", token));
             }
             let foundArr = [];
             if(articleArrInProfile.수험생) { // fetch된 후
                 foundArr = articleArrInProfile.수험생; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -887,7 +846,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -913,15 +872,11 @@ const MyProfile = ({ history }) => {
         }else if(selectedInterest === '대학원') { // @대학원 관심사 누를 때
             articleDispatchingCnt[12]++;
             if(articleDispatchingCnt[12] === 1) { // 최초 한번만 http 통신하기
-                if(articleArrInProfile.대학원) 
-                    return null;
                 dispatch(actions.getInterestArticle("대학원", token));
             }
             let foundArr = [];
             if(articleArrInProfile.대학원) { // fetch된 후
                 foundArr = articleArrInProfile.대학원; // [ {interest: '스타트업', articleImgSrc: 'www.api.xircle~', articleTitle: "안녕하세요~"} ]
-                if(foundArr.length === 0)
-                    return null;
             }
             setNaviContents(
                 articleIsLoading ? (
@@ -954,7 +909,7 @@ const MyProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
