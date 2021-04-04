@@ -20,9 +20,8 @@ const Login = ({ history }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if(isConfirmed === null) {
-            return null;
-        }else if(isConfirmed === true) {
+        if(isConfirmed === null) return null
+        else if(isConfirmed === true) { // 로그인 성공한 다음에 프로필 페이지로 이동
             history.push('/my-profile');
         }else {
             return null;

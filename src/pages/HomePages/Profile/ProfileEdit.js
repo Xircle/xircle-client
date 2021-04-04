@@ -56,105 +56,107 @@ const ProfileEdit = ({ history }) => {
     useEffect(() => {
         if(pageType !== 'location') return null;
 
-        // 카카오맵 script 
-        const container = document.getElementById('map'); 
-        const options = {
-            center: new kakao.maps.LatLng(37.585568, 127.029391),
-            level: 5
-        };
-        const map = new kakao.maps.Map(container, options);
-        let marker = null;
-        const geocoder = new kakao.maps.services.Geocoder();
-        const infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
-        
-        if(navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                setLatitudeInEdit(lat);
-                setLongitudeInEdit(lon);
-                const locPosition = new kakao.maps.LatLng(lat, lon); 
-                
-                displayMarker(locPosition);
-
-                // latitude, longitude로 현재 위치정보 반환하는 콜백함수.
-                searchDetailAddrFromCoords({ lat: lat, lng: lon}, function(result, status) {
-                if (status === kakao.maps.services.Status.OK) {
-                    const fullAddr = result[0].address.address_name; 
-                    const newAddr = fullAddr.split(' ');
-                    setAddr(newAddr[0] + ' ' + newAddr[1]);
-                }
-                });
-            }, (err) => { // error 콜백함수
-                console.log(err.message);
-                if(err.code === err.PERMISSION_DENIED) {
-                    console.log('permission denied');
-                    setIsMapSupported(false);
-                    setIsLoading(false);
-                } else if(err.code === err.TIMEOUT) {
-                    console.log('Time out')
-                    setIsMapSupported(false);
-                    setIsLoading(false);
-                } else {
-                    console.log('something made error')
-                    setIsMapSupported(false);
-                    setIsLoading(false);
-                }
-            }, { timeout: 8000, enableHighAccuracy: true });
-        } else{
-            alert("현 브라우저에서 Geolocation을 지원하지 않습니다.");
-            setIsMapSupported(false);
-            setIsLoading(false);
-        }
-        
-        // 지도에 마커와 인포윈도우를 표시하는 함수입니다
-        function displayMarker(locPosition) {
-            marker = new kakao.maps.Marker({  
-                map: map, 
-                position: locPosition
-            }); 
-            // 지도 중심좌표를 접속위치로 변경합니다
-            map.setCenter(locPosition);      
-            setIsLoading(false);
-        }
-
-        // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
-        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-            if(isLoading)
-                return null;
-            searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
-                if(status === kakao.maps.services.Status.OK) {
-                    let detailAddr = !!result[0].road_address ? result[0].road_address.address_name : '';
-                    detailAddr += result[0].address.address_name;
+        kakao.maps.load(() => {
+            // 카카오맵 script 
+            const container = document.getElementById('map'); 
+            const options = {
+                center: new kakao.maps.LatLng(37.585568, 127.029391),
+                level: 5
+            };
+            const map = new kakao.maps.Map(container, options);
+            let marker = null;
+            const geocoder = new kakao.maps.services.Geocoder();
+            const infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+            
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    setLatitudeInEdit(lat);
+                    setLongitudeInEdit(lon);
+                    const locPosition = new kakao.maps.LatLng(lat, lon); 
                     
-                    const fullAddr = result[0].address.address_name; 
-                    const newAddr = fullAddr.split(' ');
-                    const displayAddr = '<p style="margin: 10px;"> ' + newAddr[0] + ' ' +  newAddr[1] +  '</p>';
-                    setAddr(newAddr[0] + ' ' + newAddr[1])
-                    setLongitudeInEdit(mouseEvent.latLng.getLng());
-                    setLatitudeInEdit(mouseEvent.latLng.getLat());
-                    const content = displayAddr;
-        
-                    // 마커를 클릭한 위치에 표시합니다 
-                    if(!marker)
-                        return alert("새로고침 해주세요!");
-                    marker.setPosition(mouseEvent.latLng);
-                    marker.setMap(map);
-        
-                    // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
-                    infowindow.setContent(content);
-                    infowindow.open(map, marker);
-                }   
+                    displayMarker(locPosition);
+    
+                    // latitude, longitude로 현재 위치정보 반환하는 콜백함수.
+                    searchDetailAddrFromCoords({ lat: lat, lng: lon}, function(result, status) {
+                    if (status === kakao.maps.services.Status.OK) {
+                        const fullAddr = result[0].address.address_name; 
+                        const newAddr = fullAddr.split(' ');
+                        setAddr(newAddr[0] + ' ' + newAddr[1]);
+                    }
+                    });
+                }, (err) => { // error 콜백함수
+                    console.log(err.message);
+                    if(err.code === err.PERMISSION_DENIED) {
+                        console.log('permission denied');
+                        setIsMapSupported(false);
+                        setIsLoading(false);
+                    } else if(err.code === err.TIMEOUT) {
+                        console.log('Time out')
+                        setIsMapSupported(false);
+                        setIsLoading(false);
+                    } else {
+                        console.log('something made error')
+                        setIsMapSupported(false);
+                        setIsLoading(false);
+                    }
+                }, { timeout: 8000, enableHighAccuracy: true });
+            } else{
+                alert("현 브라우저에서 Geolocation을 지원하지 않습니다.");
+                setIsMapSupported(false);
+                setIsLoading(false);
+            }
+            
+            // 지도에 마커와 인포윈도우를 표시하는 함수입니다
+            function displayMarker(locPosition) {
+                marker = new kakao.maps.Marker({  
+                    map: map, 
+                    position: locPosition
+                }); 
+                // 지도 중심좌표를 접속위치로 변경합니다
+                map.setCenter(locPosition);      
+                setIsLoading(false);
+            }
+    
+            // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
+            kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+                if(isLoading)
+                    return null;
+                searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+                    if(status === kakao.maps.services.Status.OK) {
+                        let detailAddr = !!result[0].road_address ? result[0].road_address.address_name : '';
+                        detailAddr += result[0].address.address_name;
+                        
+                        const fullAddr = result[0].address.address_name; 
+                        const newAddr = fullAddr.split(' ');
+                        const displayAddr = '<p style="margin: 10px;"> ' + newAddr[0] + ' ' +  newAddr[1] +  '</p>';
+                        setAddr(newAddr[0] + ' ' + newAddr[1])
+                        setLongitudeInEdit(mouseEvent.latLng.getLng());
+                        setLatitudeInEdit(mouseEvent.latLng.getLat());
+                        const content = displayAddr;
+            
+                        // 마커를 클릭한 위치에 표시합니다 
+                        if(!marker)
+                            return alert("새로고침 해주세요!");
+                        marker.setPosition(mouseEvent.latLng);
+                        marker.setMap(map);
+            
+                        // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+                        infowindow.setContent(content);
+                        infowindow.open(map, marker);
+                    }   
+                });
             });
+            
+            function searchDetailAddrFromCoords(coords, callback) {
+                // 좌표로 법정동 상세 주소 정보를 요청합니다
+                if(coords.lng)
+                    geocoder.coord2Address(coords.lng, coords.lat, callback);
+                else
+                    geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+            }
         });
-        
-        function searchDetailAddrFromCoords(coords, callback) {
-            // 좌표로 법정동 상세 주소 정보를 요청합니다
-            if(coords.lng)
-                geocoder.coord2Address(coords.lng, coords.lat, callback);
-            else
-                geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-        }
     }, [pageType, isLoading]);
 
     // Location page callback
@@ -283,11 +285,11 @@ const ProfileEdit = ({ history }) => {
         contents = (
             <section style={{height: '100%', marginTop: 10, position: 'relative'}} className="px-3 py-3 mx-3">
                 {editLoading ? (
-                    <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '30%', transform: 'translate(-50%, -50%)'}}>
-                        <Spinner
-                            color="gray"
-                        />
-                    </div>
+                        <div style={{position: 'absolute',  zIndex: 999, left: '50%', top: '30%', transform: 'translate(-50%, -50%)'}}>
+                            <Spinner
+                                color="gray"
+                            />
+                        </div>
                 ) : null}
                 {/* 프로필 사진 */}
                 <div className="relative">
@@ -318,32 +320,60 @@ const ProfileEdit = ({ history }) => {
                 {/* 모든 Profile */}
                 <ul style={{marginTop: 20, padding: '0 10px 0 0'}}>
                     <h1 style={{fontSize: 18, margin: '30px 0', color: "#595959", fontWeight: 'bold'}}>Profile</h1>
-                    <li onClick={() => setPageType('location')} style={{margin: '20px 0'}} className="flex flex-row justify-between cursor-pointer">
-                        <p style={{color: "#595959"}}>위치</p>
-                        <span style={{color: "#B5B5B5"}}>{locationInEdit}{isLocationPublic ? null : "(비공개)"}</span>
+                    <li onClick={() => setPageType('location')} style={{margin: '30px 0'}} className="flex flex-row justify-between cursor-pointer">
+                        <p style={{color: "#595959", margin: 0}}>위치</p>
+                        <div className="flex flex-row items-center">
+                            <span style={{color: "#B5B5B5"}}>{locationInEdit}{isLocationPublic ? null : "(비공개)"}</span>
+                            <img 
+                                style={{width: 8, height: 10, margin: '0 0 0 10px'}}
+                                src="/UI/arrow_right_gray.svg"
+                                alt="arrow"
+                            />
+                        </div>
                     </li>
-                    <li onClick={() => setUnivClicked(true)} style={{margin: '20px 0'}} className="flex flex-row justify-between cursor-pointer">
-                        <p style={{color: "#595959"}}>학교</p>
-                        <p style={{color: "#B5B5B5"}}>{univInUser} {isGraduateInEdit  ? "졸업" : "재학"} {isPublicInEdit ? "(공개)" : "(비공개)"} </p>
+                    <li onClick={() => setUnivClicked(true)} style={{margin: '30px 0'}} className="flex flex-row justify-between cursor-pointer">
+                        <p style={{color: "#595959", margin: 0}}>학교</p>
+                        <div className="flex flex-row items-center">
+                            <span style={{color: "#B5B5B5"}}>{univInUser} {isGraduateInEdit  ? "졸업" : "재학"} {isPublicInEdit ? "(공개)" : "(비공개)"} </span>
+                            <img 
+                                style={{width: 8, height: 10, margin: '0 0 0 10px'}}
+                                src="/UI/arrow_right_gray.svg"
+                                alt="arrow"
+                            />
+                        </div>
                     </li>
-                    <li style={{margin: '20px 0'}} className="flex flex-row justify-between">
-                        <p style={{color: "#595959"}}>나이</p>
-                        <p style={{color: "#B5B5B5"}}>{age}살</p>
+                    <li style={{margin: '30px 0'}} className="flex flex-row justify-between">
+                        <p style={{color: "#595959", margin: 0}}>나이</p>
+                        <span style={{color: "#B5B5B5", marginRight: 18}}>{age}살</span>
                     </li>
-                    <li style={{margin: '20px 0'}} className="flex flex-row justify-between">
-                        <p style={{color: "#595959"}}>성별</p>
-                        <p style={{color: "#B5B5B5"}}>{gender === '남' ? "남성" : "여성"}</p>
+                    <li style={{margin: '30px 0'}} className="flex flex-row justify-between">
+                        <span style={{color: "#595959", margin: 0}}>성별</span>
+                        <p style={{color: "#B5B5B5", marginRight: 18}}>{gender === '남' ? "남성" : "여성"}</p>
                     </li>
-                    <li onClick={() => setAdjClicked(true)} style={{margin: '20px 0'}} className="flex flex-row justify-between cursor-pointer">
-                        <p  style={{color: "#595959"}}>수식어</p>
-                        <p style={{color: "#B5B5B5"}}>{adjInEdit}</p>
+                    <li onClick={() => setAdjClicked(true)} style={{margin: '30px 0'}} className="flex flex-row justify-between cursor-pointer">
+                        <p style={{color: "#595959", margin: 0}}>수식어</p>
+                        <div className="flex flex-row items-center">
+                            <span style={{color: "#B5B5B5"}}>{adjInEdit}</span>
+                            <img 
+                                style={{width: 8, height: 13, margin: '0 0 0 10px'}}
+                                src="/UI/arrow_right_gray.svg"
+                                alt="arrow"
+                            />    
+                        </div>
                     </li>
-                    <li onClick={() => setJobClicked(true)} style={{margin: '20px 0'}} className="flex flex-row justify-between cursor-pointer">
-                        <p style={{color: "#595959"}}>직업</p>
-                        <p style={{color: "#B5B5B5"}}>{jobInEdit}</p>
+                    <li onClick={() => setJobClicked(true)} style={{margin: '30px 0'}} className="flex flex-row justify-between cursor-pointer">
+                        <p style={{color: "#595959", margin: 0}}>직업</p>
+                        <div className="flex flex-row items-center">
+                            <span style={{color: "#B5B5B5"}}>{jobInEdit}</span>
+                            <img 
+                                style={{width: 8, height: 13, margin: '0 0 0 10px'}}
+                                src="/UI/arrow_right_gray.svg"
+                                alt="arrow"
+                            />    
+                        </div>
                     </li>
-                    <li style={{margin: '20px 0'}} style={{margin: "20px 0"}} className="flex flex-col justify-between">
-                        <p style={{color: "#595959", fontWeight: 500}}>프로필 소개</p>
+                    <li style={{margin: '30px 0'}} style={{margin: "20px 0"}} className="flex flex-col justify-between">
+                        <p style={{color: "#595959", marginBottom: 10, fontWeight: 500}}>프로필 소개</p>
                         <textarea
                             id="introText"
                             placeholder="나를 자유롭게 표현해봐요!"
@@ -596,23 +626,24 @@ const ProfileEdit = ({ history }) => {
     
     return (
         <Layout footerNone>
-            <header style={{margin: '20px 0px 5px', paddingBottom: 10, borderBottom: '1px solid #EBEBEB'}} className="flex flex-row items-center justify-between px-5 mt-1 ">
-                <img 
-                    src="/arrow-back-outline.svg"
-                    alt="뒤로가기"
-                    style={{width: 20, heiht: 20, cursor: 'pointer'}}
-                    onClick={() => { if(pageType === 'default') {history.goBack()} else {setPageType('default')} }}
-                />
-                {pageType === 'default' ? (
-                <>
-                    <p style={{margin: '5px 0 5px 10px'}}> 프로필 편집 </p>
-                    <div onClick={() => profileEditSubmit()} style={{width: 25, color: "#2F51F0", cursor: 'pointer'}}>수정</div>
-                </>
-                ) : <div style={{height: 29}}></div>}
-            </header>
+            <div style={{opacity: editLoading ? 0.5 : 1, zIndex: 999, height: '100%'}}>
+                <header style={{margin: '20px 0px 5px', paddingBottom: 10, borderBottom: '1px solid #EBEBEB'}} className="flex flex-row items-center justify-between px-5 mt-1 ">
+                    <img 
+                        src="/arrow-back-outline.svg"
+                        alt="뒤로가기"
+                        style={{width: 20, heiht: 20, cursor: 'pointer'}}
+                        onClick={() => { if(pageType === 'default') {history.goBack()} else {setPageType('default')} }}
+                    />
+                    {pageType === 'default' ? (
+                    <>
+                        <p style={{margin: '5px 0 5px 10px'}}> 프로필 수정 </p>
+                        <div onClick={() => profileEditSubmit()} style={{width: 25, color: "#2F51F0", cursor: 'pointer'}}>수정</div>
+                    </>
+                    ) : <div style={{height: 29}}></div>}
+                </header>
 
-            {contents}
-
+                {contents}
+            </div>
         </Layout>
     )
 }

@@ -16,6 +16,7 @@ export const initialState = {
     
     // 로그인 성공 후
     token: null,
+    myUserId: null,
 }
 
 const reducer = (state=initialState, action) => {
@@ -84,6 +85,7 @@ const reducer = (state=initialState, action) => {
                 isConfirmed: true,
                 displayName: action.displayName,
                 token: action.token,
+                myUserId: action.userId,
                 errCode: 0
             }
         case actionTypes.LOGIN_FAIL:

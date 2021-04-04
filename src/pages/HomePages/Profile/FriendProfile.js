@@ -58,9 +58,8 @@ const heightGenerator = (idx) => {
 };
 
 const FriendProfile = ({ history }) => {
-    const { isPublic, isGraduate, displayNameInFriend, gender, univInFriend, age, job, adj, location, interestArr, articleImgSrc, articleTag, introText, profileImgSrc, resume, workPlace } 
+    const { userId, isPublic, isGraduate, displayNameInFriend, gender, univInFriend, age, job, adj, location, interestArr, introText, profileImgSrc, resume, workPlace } 
         = useSelector(store => store.friend);
-    const MyprofileImgSrc = useSelector(store => store.user.profileImgSrc);
 
     const [pageNum, setPageNum] = useState(2);
     const [selectedInterest, setSelectedInterest] = useState(null); //관심사 네비게이션에서 선택된 관심사. (1, 스타트업) (2, 동네친구) ..등등
@@ -71,7 +70,6 @@ const FriendProfile = ({ history }) => {
 
     const tokenInUser = useSelector(store => store.user.token);
     const tokenInAuth = useSelector(store => store.auth.token);
-    const userId = useSelector(store => store.friend.userId);
     
     const token = tokenInUser || tokenInAuth;
     const articleObjInFriend = useSelector(store => store.friend.articleObjInFriend);
@@ -87,9 +85,7 @@ const FriendProfile = ({ history }) => {
         if(!tokenInRedux) { // 토큰이 없는 상태라면(refreshing) /my-profile로 리다이렉션
             history.push('/my-profile');
         }else {
-            if(userId)  // 리덕스에 friend 데이터가 있으면 http 통신 금지
-                return null;
-            
+            if(userId) return null;  // 리덕스에 friend 데이터가 있으면 http 통신 금지
             dispatch(actions.getFriend(tokenInRedux));
             setSelectedInterest('x');
             setArticleClicked([false, null]);
@@ -213,7 +209,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -281,7 +277,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -348,7 +344,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -415,7 +411,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -482,7 +478,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -549,7 +545,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -616,7 +612,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -683,7 +679,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -750,7 +746,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -817,7 +813,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -884,7 +880,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}
@@ -951,7 +947,7 @@ const FriendProfile = ({ history }) => {
                             </div>
                             <div style={{zIndex: 10, opacity: articleClickedArr[1] === id ? 1 : 0, padding: '0 20px'}} className="h-full flex flex-row justify-center items-center relative">
                                 <p style={{color: "#000", fontSize: 12, fontWeight: 300, fontFamily: 'sans-serif', lineHeight: '20px'}}>{article.articleTitle}</p>
-                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>더보기</p>
+                                <p style={{position: 'absolute', bottom: 10, right: 10, fontSize: 10, fontWeight: 300, color: "#8D8D8D"}}>자세히보기</p>
                             </div>
                         </li>
                     ))}

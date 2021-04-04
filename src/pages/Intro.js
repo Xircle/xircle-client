@@ -12,9 +12,12 @@ import { scrolltoTop } from '../components/scrolltoTop';
 const Intro = ({ history }) => {
   const [btnClicked, setBtnClicked] = useState(false);
   const [tkInLocalStorage, setTkInLocalStorage] = useState(null);
+  const [userIDInLocalStorage, setUserIDInLocalStorage] = useState(null);
+
   useEffect(() => {
     Aos.init();
     setTkInLocalStorage(localStorage.getItem('tk'));
+    setUserIDInLocalStorage(localStorage.getItem('_UID'));
   }, []);
 
   useEffect(() => {
@@ -55,7 +58,7 @@ const Intro = ({ history }) => {
                     <p style={{fontSize: 18, color: 'white', whiteSpace: 'nowrap', margin: '20px 0'}}>사전신청에 오신걸 환영합니다.</p>
                     <p style={{color: 'white', fontSize: '12px', margin: '10px 0 5px', wordBreak: 'keep-all', whiteSpace: 'nowrap'}}>고려대/연세대 재학생들이 만든 프로젝트입니다. <br/> 가벼운 마음으로 함께 저희와 써클을 만들어주시면 감사하겠습니다</p>
                   </div>
-                ) : tkInLocalStorage ? ( //바로 프로필 페이지로 보내기
+                ) : tkInLocalStorage && userIDInLocalStorage ? ( //바로 프로필 페이지로 보내기
                   <>
                     <button 
                       onClick={() => window.location.href = 'my-profile'} 

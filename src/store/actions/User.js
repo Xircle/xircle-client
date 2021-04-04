@@ -198,8 +198,10 @@ export const submitToServer = (userDataFormData) => {
                 console.log(res);
                 const isSuccess = res.data.success;
                 const token = res.data.data.token;
+                const userId = res.data.data.userId;
                 if(isSuccess) {
                     localStorage.setItem('tk', token);
+                    localStorage.setItem('_UID', userId);
                     dispatch(submitToServerSuccess());
                     dispatch(submitToServerInit());
                 }else{
@@ -245,13 +247,14 @@ export const getInterestArticle = (interest, tokenInUser) => {
     return dispatch => {
         dispatch(getInterestArticleStart());
         
+        const userId = localStorage.getItem('_UID');
         let realInterest;
         if(interest === '술_맛집탐방')
             realInterest = '술/맛집탐방';
         else 
             realInterest = interest;
         
-        AxiosForTest.get(`/user/profile/post?interest=${realInterest}&page=0`, {
+        AxiosForTest.get(`/user/${userId}/profile/post?interest=${realInterest}&page=0`, {
             headers: {
                 'access-token': `${tokenInUser}`
             }

@@ -1,12 +1,15 @@
 import React, {useState, useCallback, useRef, useEffect} from 'react';
 import Layout from '../../../components/layout';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Placeholder } from 'semantic-ui-react';
 import Drawer from '../../../components/UI/Drawer';
 import { Axios } from '../../../axios-instance';
 import Spinner from 'react-spinner-material';
 import { scrolltoTop } from '../../../components/scrolltoTop';
+import * as actions from '../../../store/actions/index';
 
+let searchFriendArr = [];
+let page = 0;
 const { kakao } = window;
 
 const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
@@ -27,46 +30,47 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
     const [filteredAge, setFilteredAge] = useState(null);
     const [filteredLocation, setFilteredLocation] = useState(null);
     const [filteredGender, setFilteredGender] = useState(null);
-    const [isFiltering, setIsFiltering] = useState(true);
+    const [isFiltering, setIsFiltering] = useState(null);
 
-    const [filteredFriend, setFilteredFriend] = useState([]); // [{ profileImgSrc, adj, job, displayName, introText, sameInterest}]
-    const [filteringPage, setFilteringPage] = useState(0);
+    const [filteringPage, setFilteringPage] = useState(page);
     const observer = useRef()
+    const dispatch = useDispatch();
 
     // 리다이렉션
     useEffect(() => {
-        if(!token)
-            return window.location.href = '/my-profile';
+        if(searchFriendArr.length !== 0) return null;
+        if(!token) return window.location.href = '/my-profile';
+        if(searchFriendArr.length !== 0) return null; // 뭔가 있으면 http 금지
 
         scrolltoTop();
         filteringSubmitHandler();
     }, []);
 
     const lastFriendElementRef = useCallback(node => {
-        if(isFiltering || filteredFriend.length === 0) 
+        if(isFiltering) 
             return null;
         if(observer.current) 
             observer.current.disconnect();
         observer.current = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
-                setFilteringPage(prevPageNumber => prevPageNumber + 1)
+                page++;
+                setFilteringPage(prev => prev + 1);
             }
         })
         if(node) 
             observer.current.observe(node);
-    }, [isFiltering, filteredFriend])
+    }, [isFiltering, filteringPage])
     
+    console.log(isFiltering)
     // Filtering dispatching 
     const filteringSubmitHandler = useCallback(() => {
-        console.log(filteringPage);
-
         setIsFiltering(true);
         const finalGender = filteredGender === null ? null : filteredGender ? "남" : "여";
         
         console.log(filteredUniv, filteredAge, filteredLocation, finalGender, filteringPage);
 
         console.log(filteringPage)
-        Axios.get(`/users?university=고려대학교&page=0`, {
+        Axios.get(`/users?university=고려대학교&page=${filteringPage}`, {
             headers: {
                 'access-token': token
             }
@@ -76,20 +80,18 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
             const isSuccess = res.data.success;
             if(isSuccess) {
                 const newFriend = res.data.data; // [{userId, sameInterest, profileImgSrc, adj, job, displayName, introText}]
-                setFilteredFriend(prevFriend => {
-                    return [...prevFriend, ...newFriend]
-                });
+                searchFriendArr = [...searchFriendArr, ...newFriend];
                 // setHasMore(res.data.data.length > 0)
                 setIsFiltering(false);
             }else {
                 setIsFiltering(false);
-                // alert("필터링 실패. 다시 시도해주세요.");
+                alert("필터링 실패. 다시 시도해주세요.");
             }
         })
         .catch(err => {
             console.log(err);
             setIsFiltering(false);
-            // alert("필터링 실패. 다시 시도해주세요.");
+            alert("필터링 실패. 다시 시도해주세요.");
         })
 
     }, [token, filteredAge, filteredLocation, filteredGender, filteredUniv, filteringPage]);
@@ -129,7 +131,6 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
     }, []);
     // Location
     const rangeChangeHandler = useCallback((e) => {
-        console.log(e.target.value);
         const step = e.target.value;
         switch(Number(step)) {
             case 1:
@@ -155,9 +156,7 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
     }, []);
 
     useEffect(() => {
-        if(!locationClicked || isFiltering)
-            return null;
-
+        if(!locationClicked || isFiltering) return null;
             let level = null;
             if(rangeValue === 2) {
                 level = 7; // 1km -> 2km
@@ -356,38 +355,42 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                                 src="/UI/refresh.svg"
                                 alt="refresh"
                             />    
-                            <p onClick={() => {setFilteredFriend([]); setFilteringPage(0); filteringSubmitHandler()}} style={{color: "#2F51F0", margin: '0 15px', cursor: 'pointer'}}>검색하기</p>
+                            <p onClick={() => {searchFriendArr = []; setFilteringPage(0); filteringSubmitHandler()}} style={{color: "#2F51F0", margin: '0 15px', cursor: 'pointer'}}>검색하기</p>
                         </section>
 
-                        {/* 친구들 프로필 컨테이너 */}
+                        {/* 친구들 프로필 */}
                         <section className="px-2">
-                            {filteredFriend.map((friend, index) => {
-                                if(filteredFriend.length === index + 1) {
+                            {searchFriendArr.map((friend, index) => {
+                                console.log(searchFriendArr);
+                                console.log(page);
+                                if(searchFriendArr.length === index + 1) {
                                     return (
-                                        <div ref={lastFriendElementRef} key={friend.postId} className="flex flex-row items-center px-3 my-10">
+                                        <div ref={lastFriendElementRef} onClick={() => {history.push('/friend-profile'); dispatch(actions.getFriend(token, friend.userId))}} key={friend.userId} className="flex flex-row items-center px-3 my-10 cursor-pointer">
                                             <img 
+                                                loading="lazy"
                                                 style={{width: 60, height: 60, borderRadius: 30}}
                                                 src={friend.profileImgSrc}
                                                 alt="profile"
                                             />
                                             <div className="px-5 flex flex-col justify-center ">
                                                 <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest {friend.sameInterest}</p>
-                                                <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>{friend.adj} {friend.job} <span style={{fontWeight: 400, fontSize: 14}}>@{friend.displayName} </span></h2>
+                                                <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>{friend.adj} {friend.job} <span style={{fontWeight: 400, fontSize: 14}}>{friend.displayName} </span></h2>
                                                 <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{friend.introText}</p>
                                             </div>
                                         </div>
                                     )
                                 }else {
                                     return (
-                                        <div key={friend.postId} className="flex flex-row items-center px-3 my-10">
+                                        <div onClick={() => { history.push('/friend-profile'); dispatch(actions.getFriend(token, friend.userId))}} key={friend.userId} className="flex flex-row items-center px-3 my-10 cursor-pointer">
                                             <img 
+                                                loading="lazy"
                                                 style={{width: 60, height: 60, borderRadius: 30}}
                                                 src={friend.profileImgSrc}
                                                 alt="profile"
                                             />
                                             <div className="px-5 flex flex-col justify-center ">
                                                 <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest {friend.sameInterest}</p>
-                                                <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>{friend.adj} {friend.job} <span style={{fontWeight: 400, fontSize: 14}}>@{friend.displayName} </span></h2>
+                                                <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>{friend.adj} {friend.job} <span style={{fontWeight: 400, fontSize: 14}}>{friend.displayName} </span></h2>
                                                 <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{friend.introText}</p>
                                             </div>
                                         </div>

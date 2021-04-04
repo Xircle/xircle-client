@@ -22,12 +22,12 @@ export const getFriendInit = () => {
         type: actionTypes.GET_FRIEND_INIT,
     }
 }
-export const getFriend = (token) => {
+export const getFriend = (token, userId=0) => {
     return dispatch => {
         dispatch(getFriendInit());
         dispatch(getFriendStart());
 
-        AxiosForTest.get('/randomUser/profile', {
+        AxiosForTest.get(`/user/${userId}/profile`, { // 랜덤유저 프로필 조회
             headers: {
                 'access-token': `${token}`
             }
@@ -36,8 +36,8 @@ export const getFriend = (token) => {
             console.log(res);
             const isSuccess = res.data.success;
             if(isSuccess) {
-                const { id, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr } = res.data.data;
-                dispatch(getFriendSuccess(id, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr));
+                const { userId, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr } = res.data.data;
+                dispatch(getFriendSuccess(userId, profileImgSrc, adj, job, displayName, gender, university, isGraduate, isPublic, location, age, resume, workPlace, introText, interestArr));
             }else {
                 dispatch(getFriendFail());
                 dispatch(getFriendInit());
@@ -51,7 +51,9 @@ export const getFriend = (token) => {
             dispatch(getFriendInit());
             console.log('오류 발생.')
             alert("네트워크 오류입니다.");
+            window.location.href = 'my-profile';
         })
+    
     }
 }
 export const getFriendArticleStart = () => {
@@ -87,7 +89,7 @@ export const getFriendArticle = (interest, token, userId) => {
         else 
             realInterest = interest;
 
-        AxiosForTest.get(`/randomUser/${userId}/profile/post?interest=${realInterest}`, {
+        AxiosForTest.get(`/user/${userId}/profile/post?interest=${realInterest}&page=0`, {
             headers: {
                 'access-token': `${token}`
             }
@@ -96,7 +98,7 @@ export const getFriendArticle = (interest, token, userId) => {
             console.log(res);
             const isSuccess = res.data.success;
             if(isSuccess) {
-                const articleDataArr = res.data.data; // [{articleImgSrc, articleContent}, {articleImgSrc, articleContent}]
+                const articleDataArr = res.data.data.post; // [{articleImgSrc, articleContent}, {articleImgSrc, articleContent}]
                 
                 if(articleDataArr.length === 0) { // 해당 관심사에 대한 게시글이 없으면 
                     dispatch(getFriendArticleSuccess(interest, null));
@@ -107,7 +109,7 @@ export const getFriendArticle = (interest, token, userId) => {
                 dispatch(getFriendArticleFail());
                 dispatch(getFriendArticleInit());
                 alert(res.data.message);
-                window.location.href = 'my-profile';
+                // window.location.href = 'my-profile';
             }
         })
         .catch(err => {
@@ -140,43 +142,5 @@ export const getFriendInterestArticleDetailFail = () => {
 export const getFriendInterestArticleDetailInit = () => {
     return {
         type: actionTypes.GET_FRIEND_INTEREST_ARTICLE_DETAIL_INIT,
-    }
-}
-export const getFriendInterestArticleDetail = (token, interest, page) => {
-    return dispatch => {
-        dispatch(getFriendInterestArticleDetailStart());
-            
-        let realInterest;
-        if(interest === '술_맛집탐방')
-            realInterest = '술/맛집탐방';
-        else 
-            realInterest = interest;
-        // AxiosForTest.get(`/post?interest=${realInterest}&page=${page}`, {
-        //     headers: {
-        //         'access-token': `${token}`
-        //     }
-        // })
-        //     .then(res => {
-        //         console.log(res);
-        //         const isSuccess = res.data.success;
-        //         if(isSuccess) {
-        //             const articleDataArr = res.data.data;
-        //             let hasMoreArticle = true;
-        //             if(articleDataArr.length === 0)
-        //                 hasMoreArticle = false;
-        //             dispatch(getFriendInterestArticleDetailSuccess(interest, articleDataArr, hasMoreArticle));
-        //         }
-        //         else{
-        //             dispatch(getFriendInterestArticleDetailFail());
-        //             dispatch(getFriendInterestArticleDetailInit());
-        //             alert(res.data.message);
-        //         }
-        //     })
-        //     .catch(err => {
-        //         console.log(err);
-        //         dispatch(getFriendInterestArticleDetailFail());
-        //         dispatch(getFriendInterestArticleDetailInit());
-        //         alert('Something went wrong.');
-        //     })
     }
 }

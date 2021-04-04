@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../../components/layout';
 import * as actions from '../../../store/actions/index';
-import Modal from '../../../components/UI/modal';
 import { interest2Object } from '../../../components/interest2Object';
 import airpod_event_1 from '../../../images/my-profile/airpod_event_1.svg'
 import airpod_event_2 from '../../../images/my-profile/airpod_event_2.svg'
@@ -54,7 +53,8 @@ const heightGenerator = (idx) => {
         }
     }
 };
-
+// 사전신청(/user)으로 등록시 user reducer에 token넣고 localstorage 토큰 넣음.
+// 로그인(/login)할 시 token, userId 둘다 넣음
 const MyProfile = ({ history }) => {
     const { isPublic, isGraduate, isLocationPublic, displayNameInUser, gender, univInUser, age, job, adj, location, interestArr, introText, profileImgSrc, resume, workPlace } = useSelector(store => store.user);
     const { displayName, univ } = useSelector(store => store.auth);
@@ -71,7 +71,6 @@ const MyProfile = ({ history }) => {
     const articleArrInProfile = useSelector(store => store.user.articleObjInMyProfile);
     const isLoading = useSelector(store => store.user.loading);
     const articleIsLoading = useSelector(store => store.user.articleIsLoading);
-    const hasError = useSelector(store => store.user.error);
     const dispatch = useDispatch();
     
     // interestArr의 activity가 삭제될때마다 새롭게 렌더링
@@ -80,21 +79,12 @@ const MyProfile = ({ history }) => {
     }, [interestArr]);
 
     useEffect(() => {
-        // 하나라도 없으면 
         const storedToken = localStorage.getItem('tk');
-        const tokenInRedux = token;
-        if(storedToken) {
-            if(!profileImgSrc) // /pre/user로 오면 무조건 다시 로딩
-                return dispatch(actions.getUser(storedToken));
-            if(interestArr.length !== 0) { // 이게 하나라도 있으면 전부 다 있다고 가정
-                return null;
-            }
-            if(tokenInRedux) { // (/pre/user로 온 유저) 리덕스에 토큰이 있으면 서버로 보낼 때, 그 토큰으로 보내기
-                return dispatch(actions.getUser(tokenInRedux));
-            } 
-            else { // 리덕스에 토큰이 없으면, 로컬스토리지 토큰으로 보내기.
-                return dispatch(actions.getUser(storedToken));
-            } 
+        const storedUserId = localStorage.getItem('_UID');
+
+        if(storedToken && storedUserId) { // 로컬스토리지에 2개 있어야 바로 프로필 조회가능(login 한번이라도 했을때)
+            if(interestArr.length !== 0) return null; // 이게 하나라도 있으면 전부 다 있다고 가정
+            else return dispatch(actions.getUser(storedToken, storedUserId));
         }else {
             alert("로그인 해주세요.");
             window.location.href = "auth";
@@ -251,7 +241,7 @@ const MyProfile = ({ history }) => {
                 articleIsLoading ? (
                     <div style={{height: 100, position: 'relative'}}>
                         <div className="flex flex-col items-center" style={{position: 'absolute', left: '50%', top: 10, transform: 'translate(-50%, 0)'}}>
-                            <Spinner 
+                            <Spinner  
                                 color={"#aaa"}
                             />
                             <p style={{marginTop: 10, fontSize: 12, color: "#8D8D8D"}}>게시글 로딩중...</p>

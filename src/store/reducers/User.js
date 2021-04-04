@@ -6,6 +6,7 @@ export const initialState = {
     errCode: null,
     // data
     token: null,
+    _myUserId: null,
     isPublic: null,
     isGraduate: null,
     isLocationPublic: null,
@@ -220,13 +221,13 @@ const reducer = (state=initialState, action) => {
                 articleIsLoading: true
             }
         case actionTypes.GET_INTEREST_ARTICLE_DETAIL_SUCCESS:
-            const _interest = action.interest;
+            const my_interest = action.interest;
             const dataArr = action.articleDataArr; // 최신순으로 배열에 담김
             const hasMoreArticle = action.hasMoreArticle;
             
             let newArticleObj = JSON.parse(JSON.stringify(state.articleObjInMyProfile)); //깊은복사
             
-            newArticleObj[_interest] = newArticleObj[_interest].map((el, id) => {
+            newArticleObj[my_interest] = newArticleObj[my_interest].map((el, id) => {
                 return {
                     ...el,
                     postId: dataArr[id].postId,
@@ -301,6 +302,51 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 error: null,
                 loading: null,
+            }
+        case actionTypes.DELETE_MY_ARTICLE_START:
+            return {
+                ...state,
+                articleIsLoading: true
+            }
+        case actionTypes.DELETE_MY_ARTICLE_SUCCESS:
+            let interest1 = action.interest;
+            const postId = action.postId;
+            if(interest1 === '술_맛집탐방')
+                interest1 = '술/맛집탐방';
+
+            // for articleObjInMyProfile (delete article)
+            const prevArticleArr = state.articleObjInMyProfile; // 실제 객체 데이터
+            let newArticleArr1 = JSON.parse(JSON.stringify(state.articleObjInMyProfile)) //깊은복사
+            let idx = prevArticleArr[interest1].findIndex(article => article.postId === postId);
+            newArticleArr1[interest1].splice(idx, 1);
+
+            // for interestArr (-1 activity)
+            const prevInterestArr = state.interestArr; // 실제 객체 데이터
+            let newInterestArr = JSON.parse(JSON.stringify(state.interestArr)) //깊은복사
+            idx = prevInterestArr.findIndex(el => el.interest === interest1);
+            console.log(prevInterestArr, prevInterestArr[idx]);
+            newInterestArr.splice(idx, 1, {
+                ...prevInterestArr[idx],
+                activity: prevInterestArr[idx].activity - 1
+            });
+            return {
+                ...state,
+                error: false,
+                articleIsLoading: false,
+                interestArr: newInterestArr,
+                articleObjInMyProfile: newArticleArr1,
+            }
+        case actionTypes.DELETE_MY_ARTICLE_FAIL:
+            return {
+                ...state,
+                articleIsLoading: false,
+                error: true,
+            }
+        case actionTypes.DELETE_MY_ARTICLE_INIT:
+            return {
+                ...state,
+                error: null,
+                articleIsLoading: null,
             }
         default:
             return state

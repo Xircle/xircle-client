@@ -234,11 +234,12 @@ export const loginFail = (errCode) => {
         errCode,
     }
 }
-export const loginSuccess = (displayName, token) => {
+export const loginSuccess = (displayName, token, userId) => {
     return {
         type: actionTypes.LOGIN_SUCCESS,
         displayName,
         token,
+        userId
     }
 }
 export const loginInit = () => {
@@ -259,9 +260,10 @@ export const loginSubmit = (displayName, password) => {
                 const isSuccess = res.data.success;
                 if(isSuccess) {
                     const token = res.data.data.token;
-                    dispatch(loginSuccess(displayName, token));
+                    const userId = res.data.data.userId;
+                    dispatch(loginSuccess(displayName, token, userId));
                     localStorage.setItem('tk', token);
-                    dispatch(getUser(token));
+                    localStorage.setItem('_UID', userId);
                 }else {
                     const errCode = res.data.code;
                     console.log(errCode);
@@ -310,11 +312,12 @@ export const getUserFail = () => {
         type: actionTypes.GET_USER_FAIL,
     }
 }
-export const getUser = (token) => {
+export const getUser = (token, userId) => {
     return dispatch => {
-        dispatch(getUserStart());
+        if(userId === undefined) return null;
 
-        AxiosForTest.get('/user/profile', {
+        dispatch(getUserStart());
+        AxiosForTest.get(`/user/${userId}/profile`, {
             headers: {
                 'access-token': `${token}`
             }
@@ -330,10 +333,12 @@ export const getUser = (token) => {
                 alert(res.data.message);
                 window.location.href = 'auth';
             }
+            
         })
         .catch(err => {
             console.log(err);
             alert("네트워크 오류입니다.");
+            window.location.href = 'auth';
         })
     }
 }

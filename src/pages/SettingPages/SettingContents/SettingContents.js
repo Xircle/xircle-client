@@ -118,9 +118,6 @@ const SettingContents = ({ history, questionNum }) => {
             default:
                 return null;
         }
-        return () => {
-            setDefaultArticleHashTag('');
-        }
     }, []);
 
     // 모든 서버로의 로딩 + /pre/user 할때 에러코드 리다이렉션.
@@ -297,11 +294,7 @@ const SettingContents = ({ history, questionNum }) => {
             return alert("게시물 관심사를 적어도 하나 선택해주세요.");
         
         // 2) (필수) interestArr @ 빼서 저장
-        const articleInterestArray = defaultArticleHashTag.split(" ");
-        const articleInterestArr = articleInterestArray.map(el => {
-            return el.replace('@', '');
-        });
-
+        const finalInterestString = defaultArticleHashTag.replace('@', '');
         if(articleTagRef.current.value) { // articleTagRef => "@hello @hi @무야호"
             const articleTagText = articleTagRef.current.value.trim();
             let articleTagArr = articleTagText.split(" ");  // articleTagArr = ["@hello", "@hi", "@무야호"]
@@ -324,7 +317,7 @@ const SettingContents = ({ history, questionNum }) => {
             });
             dispatch(actions.addArticleContents(articleTitle, articleText, articleInterestArr, finalArticleTagArr));
         }else { // articleTag 사용안했을 때도 고려
-            dispatch(actions.addArticleContents(articleTitle, articleText, articleInterestArr, []));
+            dispatch(actions.addArticleContents(articleTitle, articleText, [finalInterestString], []));
         }
         history.push('/setting/8')
     }, [defaultArticleHashTag]);

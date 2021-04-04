@@ -89,9 +89,10 @@ const reducer = (state = initialState, action) => {
                 };
             const newArticleArr = JSON.parse(JSON.stringify(state.articleObjInFriend)) //깊은복사
             newArticleArr[interest] = [];
+            console.log(articleDataArr);
             articleDataArr.map(el => {
                 newArticleArr[interest].push({
-                    articleImgSrc: el.uploadedPhoto[0],
+                    articleImgSrc: el.articleImgSrc,
                     articleTitle: el.articleTitle
                 })
             });
@@ -134,7 +135,6 @@ const reducer = (state = initialState, action) => {
                     articleTagArr: dataArr[id].extraHashtags,
                 }
             })
-            console.log(newArticleObj)
             return {
                 ...state,
                 articleIsLoading: false,
