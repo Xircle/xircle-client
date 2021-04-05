@@ -354,8 +354,7 @@ const ArticleDetail = ({ history, match }) => { //postNum 최신부터 0 ~ n
                             <p onClick={() => setSettingType('delete')} style={{fontSize: 18, fontWeight: 300, margin: '15px 0', width: '100%', textAlign: 'left', cursor: 'pointer'}}>삭제</p>
                             <p 
                                 style={{fontSize: 18, fontWeight: 300, margin: '10px 0', width: '100%', textAlign: 'left', cursor: 'pointer'}}
-                                onClick={() => alert("수정하기는 개발중입니다!")}
-                                // onClick={() => {history.push(`/article/edit?interest=${interest}&postId=${selectedPostId}&articleImgSrc=${selectedArticleImgSrc}&articleTitle=${selectedTitle}&articleContent=${selectedContent}`)}} 
+                                onClick={() => {history.push(`/article/edit?interest=${interest}&postId=${selectedPostId}&articleImgSrc=${selectedArticleImgSrc}&articleTitle=${selectedTitle}&articleContent=${selectedContent}`)}} 
                             >
                                 수정
                             </p>
