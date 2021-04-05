@@ -8,18 +8,16 @@ import Modal from '../../../components/UI/modal';
 
 const ArticleEdit = ({ location, history }) => {
     const query = queryString.parse(location.search);
-    console.log(query);
 
+    const [isSent, setIsSent] = useState(false);
     const [imgSrc, setImgSrc] = useState(query.articleImgSrc); // 이미지 뷰용
-    const [articleImgSrcFormData, setArticleImgSrcFormData] = useState(null); // 이미지 서버 제출용
     const articleTitleRef = useRef(); // 게시글 제목
     const articleContentRef = useRef(); // 게시글 내용
-    const [defaultArticleHashTag, setDefaultArticleHashTag] = useState('');// 필수 관심사 택1
+    const [defaultArticleHashTag, setDefaultArticleHashTag] = useState('@' + query.interest);// 필수 관심사 택1
     const tokenInRedux = useSelector(store => store.user.token);
     const interestArrInRedux = useSelector(store => store.user.interestArr);
     const newProfileImgSrc = useSelector(store => store.user.newArticleImgSrc);
     const isLoading = useSelector(store => store.user.loading);
-    const hasError = useSelector(store => store.user.error);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -27,27 +25,30 @@ const ArticleEdit = ({ location, history }) => {
             return window.location.href = '/my-profile';
     }, []);
 
+    useEffect(() => {
+        if(isSent) history.goBack();
+    }, [isSent]);
+
     const articleHashTagClickHandler = useCallback((clickedHashTag) => {
         const newHashTag = '@' + clickedHashTag;
 
         setDefaultArticleHashTag(newHashTag);
     }, [defaultArticleHashTag]);
     
-    const articleSubmitHandler = useCallback((event) => {
+    const articleSubmitHandler = useCallback(async (event) => {
         event.preventDefault();
         // 1) article Title
         const articleTitleText = articleTitleRef.current.value;
         if(articleTitleText.length === 0)
             return alert("제목을 적어도 1자 이상은 작성해주세요.")
-
         // 2) article Content
         const articleContentText = articleContentRef.current.value;
         if(articleContentText.length < 3)
             return alert("본문내용을 적어도 3자 이상은 작성해주세요.")
+        // 3-1) interest 
         if(defaultArticleHashTag.length < 1) 
             return alert("게시물 관심사를 적어도 하나 선택해주세요.");
-        
-        // 3) article defaultArticleHashTag @ 빼서 저장
+        // 3-2) article defaultArticleHashTag @ 빼서 저장
         const newDefaultArticleHashTag = defaultArticleHashTag.replace('@', '');
         
         const data = {
@@ -55,11 +56,15 @@ const ArticleEdit = ({ location, history }) => {
             articleContent: articleContentText,
             articleInterest: newDefaultArticleHashTag,
         };
-
+        const articleImgSrcFormData = new FormData();
         articleImgSrcFormData.append('data', JSON.stringify(data));
-        dispatch(actions.createNewArticle(tokenInRedux, articleImgSrcFormData));
-
-    }, [defaultArticleHashTag, articleImgSrcFormData]);
+        async function editStart() {
+            const originalInterest = query.interest;
+            dispatch(actions.editMyArticle(tokenInRedux, articleImgSrcFormData, data, originalInterest, query.postId));
+        }
+        await editStart();
+        setIsSent(true);
+    }, [defaultArticleHashTag]);
 
     return (
         <Layout footerNone>
