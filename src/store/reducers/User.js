@@ -348,6 +348,57 @@ const reducer = (state=initialState, action) => {
                 error: null,
                 articleIsLoading: null,
             }
+        case actionTypes.EDIT_MY_ARTICLE_START:
+            return {
+                ...state,
+                articleIsLoading: true
+            }
+        case actionTypes.EDIT_MY_ARTICLE_SUCCESS:
+            let { articleTitle, articleContent, articleInterest} = action.data;
+            let { originalInterest } = action;
+            const postId2 = action.postId;
+            
+            if(articleInterest === '술_맛집탐방') articleInterest = '술/맛집탐방';
+
+            // Immutable state
+            let newArticleArr2 = JSON.parse(JSON.stringify(state.articleObjInMyProfile)) //깊은복사
+            let idx2 = newArticleArr2[originalInterest].findIndex(article => article.postId === postId2);
+
+            // 만약 다른 관심사면, 기존의 배열에서 지우고, 새로운 관심사에 추가
+            if(originalInterest === articleInterest) { // 같으면 수정만
+                newArticleArr2[originalInterest].splice(idx2, 1, {
+                    ...newArticleArr2[originalInterest][idx2],
+                    articleTitle,
+                    articleContent,
+                })
+            }else { // 다르면 지우고, 다른 배열에 추가
+                const originalArticleData = newArticleArr2[originalInterest][idx2];
+                newArticleArr2[originalInterest].splice(idx2, 1);
+
+                if(newArticleArr2[articleInterest] === undefined)  // 기존에 없는 관심사면 []로 만들고
+                    newArticleArr2[articleInterest] = [];
+                newArticleArr2[articleInterest].push({
+                    ...originalArticleData,
+                    articleTitle,
+                    articleContent
+                });   
+            }
+            return {
+                ...state,
+                articleIsLoading: false,
+                articleObjInMyProfile: newArticleArr2,
+            }
+        case actionTypes.EDIT_MY_ARTICLE_FAIL:
+            return {
+                ...state,
+                articleIsLoading: false,
+            }
+        case actionTypes.EDIT_MY_ARTICLE_INIT:
+            return {
+                ...state,
+                articleIsLoading: null,
+            }
+
         default:
             return state
     }

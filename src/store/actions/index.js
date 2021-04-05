@@ -31,6 +31,7 @@ export {
     createNewArticle,
     updateProfile,
     deleteMyArticle,
+    editMyArticle
 } from './User';
 
 export {

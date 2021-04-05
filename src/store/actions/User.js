@@ -510,3 +510,59 @@ export const deleteMyArticle = (token, interest, postId) => {
             })
     }
 }
+// Edit article
+
+export const editMyArticleStart = () => {
+    return {
+        type: actionTypes.EDIT_MY_ARTICLE_START,
+    }
+}
+export const editMyArticleSuccess = (data, originalInterest, postId) => {
+    return {
+        type: actionTypes.EDIT_MY_ARTICLE_SUCCESS,
+        data,
+        originalInterest,
+        postId,
+    }
+}
+export const editMyArticleFail = () => {
+    return {
+        type: actionTypes.EDIT_MY_ARTICLE_FAIL,
+    }
+}
+export const editMyArticleInit = () => {
+    return {
+        type: actionTypes.EDIT_MY_ARTICLE_INIT,
+    }
+}
+export const editMyArticle = (token, editedFormData, data, originalInterest, postId) => {
+    return dispatch => {
+        dispatch(editMyArticleStart());
+        AxiosForTest.put(`/post/${postId}`, editedFormData, {
+            headers: {
+                'access-token': `${token}`
+            }
+        })
+            .then(res => {
+                console.log(res);
+                const isSuccess = res.data.success;
+                if(isSuccess) {
+                    dispatch(editMyArticleSuccess(data, originalInterest, postId));
+                    dispatch(editMyArticleInit());
+                }
+                else{
+                    dispatch(editMyArticleFail());
+                    dispatch(editMyArticleInit());
+                    alert(res.data.message);
+                    // window.location.href = '/my-profile';
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(editMyArticleFail());
+                dispatch(editMyArticleInit());
+                alert('Something went wrong.');
+                // window.location.href = '/my-profile';
+            })
+    }
+}
