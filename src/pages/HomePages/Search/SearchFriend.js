@@ -8,8 +8,6 @@ import Spinner from 'react-spinner-material';
 import { scrolltoTop } from '../../../components/scrolltoTop';
 import * as actions from '../../../store/actions/index';
 
-let searchFriendArr = [];
-let page = 0;
 const { kakao } = window;
 
 const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
@@ -30,71 +28,95 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
     const [filteredAge, setFilteredAge] = useState(null);
     const [filteredLocation, setFilteredLocation] = useState(null);
     const [filteredGender, setFilteredGender] = useState(null);
-    const [isFiltering, setIsFiltering] = useState(null);
-
-    const [filteringPage, setFilteringPage] = useState(page);
-    const observer = useRef()
+    const [isFiltering, setIsFiltering] = useState(false); // 맨 처음 || 필터링 할때 로딩
+    const [filteredFriend, setFilteredFriend] = useState([]); // [{ profileImgSrc, adj, job, displayName, introText, sameInterest}]
     const dispatch = useDispatch();
+    
+    const [isLoading, setIsLoading] = useState(null); // infinite scroll 할 때 로딩
+    const [error, setError] = useState(false); // infinite scroll 할 때 에러
+    const currentPage = useRef(0);
+    const totalPage = useRef(10);
+    const rootRef = useRef(null);
+    const [targetRef, setTargetRef] = useState(null);
 
     // 리다이렉션
     useEffect(() => {
-        if(searchFriendArr.length !== 0) return null;
+        if(filteredFriend.length !== 0) return null;
         if(!token) return window.location.href = '/my-profile';
-        if(searchFriendArr.length !== 0) return null; // 뭔가 있으면 http 금지
-
+        if(filteredFriend.length !== 0) return null; // 뭔가 있으면 http 금지
         scrolltoTop();
-        filteringSubmitHandler();
+        loadData(0);
     }, []);
 
-    const lastFriendElementRef = useCallback(node => {
-        if(isFiltering) 
-            return null;
-        if(observer.current) 
-            observer.current.disconnect();
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                page++;
-                setFilteringPage(prev => prev + 1);
-            }
-        })
-        if(node) 
-            observer.current.observe(node);
-    }, [isFiltering, filteringPage])
-    
-    console.log(isFiltering)
-    // Filtering dispatching 
-    const filteringSubmitHandler = useCallback(() => {
-        setIsFiltering(true);
-        const finalGender = filteredGender === null ? null : filteredGender ? "남" : "여";
-        
-        console.log(filteredUniv, filteredAge, filteredLocation, finalGender, filteringPage);
+    // first data fetching == 최초에 하는 fetching
+    const loadData = useCallback(async (page) => {
+        try {
+            page === 0 ? setIsFiltering(true) : setIsLoading(true);
+            const finalGender = filteredGender === null ? null : filteredGender ? "남" : "여";
+            console.log(filteredUniv, filteredAge, filteredLocation, finalGender);
 
-        console.log(filteringPage)
-        Axios.get(`/users?university=고려대학교&page=${filteringPage}`, {
-            headers: {
-                'access-token': token
-            }
-        })
-        .then(res => {
+            const res = await Axios.get(`/users?${filteredUniv ? `university=${filteredUniv}&` : ''}${filteredLocation ? `location=${filteredLocation*1000}&` : ''}${filteredAge ? `age=${filteredAge}&` : ''}${finalGender ? `gender=${finalGender}&` : ''}page=${page}`, {
+                headers: {
+                    'access-token': token
+                }
+            });
             console.log(res);
             const isSuccess = res.data.success;
-            if(isSuccess) {
-                const newFriend = res.data.data; // [{userId, sameInterest, profileImgSrc, adj, job, displayName, introText}]
-                searchFriendArr = [...searchFriendArr, ...newFriend];
-                // setHasMore(res.data.data.length > 0)
-                setIsFiltering(false);
-            }else {
-                setIsFiltering(false);
-                alert("필터링 실패. 다시 시도해주세요.");
+            if(!isSuccess) {
+                if(res.data.code === 458)
+                    alert('위치허용을 하셔야 친구검색 기능을 사용하실 수 있습니다! ');
+                return history.push('/my-profile/edit');
+            } 
+            const dataArr = res.data.data;
+            // totalPage.current = res.data.data.totalPage;
+            setFilteredFriend(prevArr => {
+                console.log([...prevArr, ...dataArr]);
+                return [...prevArr, ...dataArr]
+            });
+        }catch(err) {
+            setError(true);
+        }finally {
+            page === 0 ? setIsFiltering(false) : setIsLoading(false);
+        }
+        return () => setError(null);
+    }, [filteredUniv, filteredAge, filteredGender, filteredLocation]);
+
+    // InfiniteScroll -> 화면에 닿았을 때 fired
+    const loadMoreData = useCallback(async (page) => {
+        if(filteredFriend.length > 0) {
+            loadData(page);
+        }
+    }, [token, filteredFriend]);
+    // intersectionObserver 등록
+    async function onIntersect (entries, observer) {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                console.log('intersecting');
+                observer.unobserve(entry.target);
+                currentPage.current++;
+                console.log(currentPage.current);
+                loadMoreData(currentPage.current);
             }
         })
-        .catch(err => {
-            console.log(err);
-            setIsFiltering(false);
-            alert("필터링 실패. 다시 시도해주세요.");
-        })
+    }
+    useEffect(() => {
+        // 최초에는 loadData 호출하니까 거부
+        if(rootRef.current === null || targetRef === null) return null;
 
-    }, [token, filteredAge, filteredLocation, filteredGender, filteredUniv, filteringPage]);
+        const io = new IntersectionObserver(onIntersect, {threshold: 0.2});
+        io.observe(targetRef);
+
+        return () => {
+            io.unobserve(targetRef);
+        }
+    }, [rootRef.current, targetRef]);
+
+    // Filtering dispatching 
+    const filteringSubmitHandler = useCallback((page) => {
+        setFilteredFriend([]);
+        currentPage.current = 0;
+        loadData(currentPage.current);
+    }, [token, filteredAge, filteredLocation, filteredGender, filteredUniv]);
 
     // Age
     const ageRangeHandler = useCallback((e) => {
@@ -277,240 +299,218 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                 />
                 <p style={{textAlign: 'center', width: '100%', marginRight: 35, fontSize: 15, color: "#595959"}}>친구탐색</p>
             </nav>
-            <div style={{minHeight: '100vh'}}>
-                {isFiltering ? ( // filteredFriend.length === 0
-                    <div style={{borderRadius: 25, maxheight: 1000, backgroundColor: "#fff"}}>
-                        <section className="my-5 flex flex-row ">
-                            <button style={{backgroundColor: "#F7F7FA", margin: '0 7px', padding: '10px 23px', borderRadius: 50, fontSize: 13, fontWeight: 400, outline: 'none'}}>학교</button>
-                            <button style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, fontSize: 13, fontWeight: 400, outline: 'none'}}>나이</button>
-                            <button style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, fontSize: 13, fontWeight: 400, outline: 'none'}}>위치</button>
-                            <button style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, fontSize: 13, fontWeight: 400, outline: 'none'}}>성별</button>
-                        </section>
-                        <div style={{padding: 10}} className="flex px-5 py-5 flex-col items-center">
-                            <Placeholder style={{width: '95%', margin: '30px 0'}}>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                            <Placeholder style={{width: '95%', margin: '30px 0'}}>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                            <Placeholder style={{width: '95%', margin: '30px 0'}}>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                            <Placeholder style={{width: '95%', margin: '30px 0'}}>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                            <Placeholder style={{width: '95%', margin: '30px 0'}}>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                            <Placeholder style={{width: '95%', margin: '30px 0'}}>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                            <Placeholder style={{width: '95%', margin: '30px 0'}}>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                            <Placeholder style={{width: '95%', margin: '30px 0'}}>
-                                <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                                </Placeholder.Header>
-                            </Placeholder>
-                            
-                        </div>
+            <div ref={rootRef} style={{minHeight: '100vh'}}>
+            {isFiltering ? ( // filteredFriend.length === 0
+                <div style={{borderRadius: 25, maxheight: 1000, backgroundColor: "#fff"}}>
+                    <section style={{height: 55}}></section>
+                    <div style={{padding: 10}} className="flex px-5 py-5 flex-col items-center">
+                        <Placeholder style={{width: '95%', margin: '30px 0'}}>
+                            <Placeholder.Header image>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
+                        <Placeholder style={{width: '95%', margin: '30px 0'}}>
+                            <Placeholder.Header image>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
+                        <Placeholder style={{width: '95%', margin: '30px 0'}}>
+                            <Placeholder.Header image>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
+                        <Placeholder style={{width: '95%', margin: '30px 0'}}>
+                            <Placeholder.Header image>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
+                        <Placeholder style={{width: '95%', margin: '30px 0'}}>
+                            <Placeholder.Header image>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
+                        <Placeholder style={{width: '95%', margin: '30px 0'}}>
+                            <Placeholder.Header image>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
+                        <Placeholder style={{width: '95%', margin: '30px 0'}}>
+                            <Placeholder.Header image>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
+                        <Placeholder style={{width: '95%', margin: '30px 0'}}>
+                            <Placeholder.Header image>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
                     </div>
-                ) : (
-                    <section>
-                        {/* 필터링 네비게이션 */}
-                        <section className="mt-5 flex flex-row ">
-                            <button onClick={() => setUnivClicked(true)} style={{backgroundColor: "#F7F7FA", margin: '0 7px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredUniv ? filteredUniv : "학교"}</p></button>
-                            <button onClick={() => setAgeClicked(true)} style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredAge ? filteredAge : "나이"}</p></button>
-                            <button onClick={() => setLocationClicked(true)} style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredLocation ? filteredLocation + 'km' : "위치"}</p></button>
-                            <button onClick={() => setFilteredGender(!filteredGender)} style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredGender === null ? "성별" : filteredGender ? "남성" : "여성" }</p></button>
-                        </section>
-
-                        <section style={{marginTop: 15, marginLeft: 15}} className="flex flex-row">
-                            <img
-                                onClick={() => {setFilteredAge(); setFilteredGender(null); setFilteredLocation(); setFilteredUniv();}} 
-                                className="cursor-pointer"
-                                src="/UI/refresh.svg"
-                                alt="refresh"
-                            />    
-                            <p onClick={() => {searchFriendArr = []; setFilteringPage(0); filteringSubmitHandler()}} style={{color: "#2F51F0", margin: '0 15px', cursor: 'pointer'}}>검색하기</p>
-                        </section>
-
-                        {/* 친구들 프로필 */}
-                        <section className="px-2">
-                            {searchFriendArr.map((friend, index) => {
-                                console.log(searchFriendArr);
-                                console.log(page);
-                                if(searchFriendArr.length === index + 1) {
-                                    return (
-                                        <div ref={lastFriendElementRef} onClick={() => {history.push('/friend-profile'); dispatch(actions.getFriend(token, friend.userId))}} key={friend.userId} className="flex flex-row items-center px-3 my-10 cursor-pointer">
-                                            <img 
-                                                loading="lazy"
-                                                style={{width: 60, height: 60, borderRadius: 30}}
-                                                src={friend.profileImgSrc}
-                                                alt="profile"
-                                            />
-                                            <div className="px-5 flex flex-col justify-center ">
-                                                <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest {friend.sameInterest}</p>
-                                                <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>{friend.adj} {friend.job} <span style={{fontWeight: 400, fontSize: 14}}>{friend.displayName} </span></h2>
-                                                <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{friend.introText}</p>
-                                            </div>
-                                        </div>
-                                    )
-                                }else {
-                                    return (
-                                        <div onClick={() => { history.push('/friend-profile'); dispatch(actions.getFriend(token, friend.userId))}} key={friend.userId} className="flex flex-row items-center px-3 my-10 cursor-pointer">
-                                            <img 
-                                                loading="lazy"
-                                                style={{width: 60, height: 60, borderRadius: 30}}
-                                                src={friend.profileImgSrc}
-                                                alt="profile"
-                                            />
-                                            <div className="px-5 flex flex-col justify-center ">
-                                                <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest {friend.sameInterest}</p>
-                                                <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>{friend.adj} {friend.job} <span style={{fontWeight: 400, fontSize: 14}}>{friend.displayName} </span></h2>
-                                                <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{friend.introText}</p>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            })}
-                            {isFiltering && (
-                                <Spinner 
-                                    color='#ccc'
-                                />
-                            )}
-                        </section>
-
-                        {/* University  */}
-                        <Drawer show={!isFiltering && univClicked} clicked={() => setUnivClicked(false)} type="univ">
-                            <section className="flex flex-col justify-between mx-5 my-3">
-                                <img 
-                                    onClick={() => setUnivClicked(false)}
-                                    style={{width: 20, height: 20, alignSelf: 'flex-end'}}
-                                    className="cursor-pointer"
-                                    src="/close-outline.svg"
-                                    alt="close"
-                                />
-                                <p style={{textAlign: 'left'}}>학교를 선택하세요.</p>   
-                            </section>
-                            <section className="mt-5 mb-10 flex flex-row justify-between mx-5">
-                                <img onClick={() => {setFilteredUniv('서울대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/snu_univ.svg" alt="snu"/>
-                                <img onClick={() => {setFilteredUniv('고려대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/korea_univ.svg" alt="korea"/>
-                                <img onClick={() => {setFilteredUniv('연세대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/yonsei_univ.svg" alt="yonsei"/>
-                            </section>
-                            <section className="my-5 flex flex-row justify-between mx-5">
-                                <img onClick={() => {setFilteredUniv('서강대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/sogang_univ.svg" alt="sogang"/>
-                                <img onClick={() => {setFilteredUniv('성균관대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/skku_univ.svg" alt="skku"/>
-                                <img onClick={() => {setFilteredUniv('한양대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/hanyang_univ.svg" alt="hanyang"/>
-                            </section>
-                        </Drawer>
-                        
-                        {/* Age */}
-                        <Drawer show={!isFiltering && ageClicked} clicked={() => setAgeClicked(false)} type="age">
-                            <section className="flex flex-col justify-between mx-3 mt-3">
-                                <img 
-                                    onClick={() => setAgeClicked(false)}
-                                    style={{width: 20, height: 20, alignSelf: 'flex-end'}}
-                                    className="cursor-pointer"
-                                    src="/close-outline.svg"
-                                    alt="close"
-                                />
-                            </section>
-                            <section style={{marginTop: 10}} className="flex flex-col justify-between">
-                                <label style={{textAlign: 'left', margin: '10px 0 40px 10px'}}>친구 나이대를 설정하세요.</label>   
-                                <input 
-                                    type="range" 
-                                    min="1" 
-                                    max="8" 
-                                    defaultValue="50"
-                                    onChange={(e) => ageRangeHandler(e)} 
-                                    style={{width: "100%", margin: '0 auto', cursor: 'pointer', outline: 'none'}}
-                                    step='1'
-                                />
-                                <datalist style={{marginTop: 10, width: '100%'}} className="flex flex-row justify-evenly">
-                                    <option value="20초" label="20초" style={{fontWeight: 300, textAlign: 'left', padding: 0, paddingLeft: 3, width: '12.5%', fontSize: 9}}>20 초</option>
-                                    <option value="20중" label="20중" style={{fontWeight: 300, textAlign: 'left', padding: 0, paddingLeft: 3, width: '12.5%', fontSize: 9}}>20 중</option>
-                                    <option value="20후" label="20후" style={{fontWeight: 300, textAlign: 'left', padding: 0, paddingLeft: 5, width: '12.5%', fontSize: 9}}>20 후</option>
-                                    <option value="30초" label="30초" style={{fontWeight: 300, textAlign: 'center', padding: 0, paddingRight: 7,  width: '12.5%', fontSize: 9}}>30 초</option>
-                                    <option value="30중" label="30중" style={{fontWeight: 300, textAlign: 'center', padding: 0, paddingLeft: 5, width: '12.5%', fontSize: 9}}>30 중</option>
-                                    <option value="30후" label="30후" style={{fontWeight: 300, textAlign: 'center', padding: 0, paddingLeft: 12, width: '12.5%', fontSize: 9}}>30 후</option>
-                                    <option value="40대" label="40대" style={{fontWeight: 300, textAlign: 'right', padding: 0, width: '12.5%', fontSize: 9}}>40대</option>
-                                    <option value="50대" label="50대" style={{fontWeight: 300, textAlign: 'right', padding: 0, width: '12.5%', fontSize: 9}}>50대</option>
-                                </datalist>
-                            </section>
-
-                            <section style={{margin: '30px 0'}}>
-                                <button onClick={() => {setFilteredAge(ageValue); setAgeClicked(false);}} style={{color: "#fff", outline: 'none', backgroundColor: "#2F363E", borderRadius: 4, padding: '10px 30px', width: '100%', fontSize: 12}}>확인</button>
-                            </section>
-
-                        </Drawer>
-
-                        {/* Location */}
-                        <Drawer show={locationClicked} clicked={() => setLocationClicked(false)} type="location">
-                            <section className="flex flex-row justify-between mx-5 my-5">
-                                <p>찾고싶은 친구들의 위치범위를 설정하세요</p>   
-                                <img 
-                                    onClick={() => setLocationClicked(false)}
-                                    className="cursor-pointer"
-                                    style={{width: 20, height: 20}}
-                                    src="/close-outline.svg"
-                                    alt="close"
-                                />
-                            </section>
-                            <section className="flex flex-col justify-between mx-5">
-                                <div id="map" onClick={(e) => e.preventDefault()}  style={{ opacity: isLocationLoading ? 0.5 : 1, width: '100%', height: 300}}>
-                                    {isLocationLoading ? (
-                                        <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
-                                            <Spinner
-                                                color="#2F51F0"
-                                            />
-                                        </div>
-                                    ) : <div style={{width: 200, height: 200, borderRadius: 100, backgroundColor :"#2F51F0", opacity: .25, zIndex: 999, position: 'absolute', left: '50%', top: '47%', transform: 'translate(-50%, -50%)'}}></div>}
-                                </div>
-                                <p style={{color: "#8D8D8D", fontSize: 12, margin: '5px 0'}}>내위치 {addr || location}</p>
-
-                                <label style={{fontSize: 16, color: "#2F51F0", margin: '15px', textAlign: 'right'}}>{rangeValue}km</label>
-                                <input 
-                                    type="range"
-                                    min="1" // 2km 
-                                    max="8" 
-                                    step="1"
-                                    defaultValue="2"
-                                    className="cursor-pointer"
-                                    onChange={(e) => rangeChangeHandler(e)}
-                                />
-                            </section>
-                            <section style={{margin: '50px 0'}}>
-                                <button onClick={() => {setFilteredLocation(rangeValue); setLocationClicked(false)}} style={{color: "#fff", outline: 'none', backgroundColor: "#2F363E", borderRadius: 4, padding: '10px 30px', width: '90%', fontSize: 12}}>확인</button>
-                            </section>
-                        </Drawer>
-
+                </div>
+            ) : (
+                <section>
+                    {/* 필터링 네비게이션 */}
+                    <section className="mt-5 flex flex-row ">
+                        <button onClick={() => setUnivClicked(true)} style={{backgroundColor: "#F7F7FA", margin: '0 7px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredUniv ? filteredUniv : "학교"}</p></button>
+                        <button onClick={() => setAgeClicked(true)} style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredAge ? filteredAge : "나이"}</p></button>
+                        <button onClick={() => setLocationClicked(true)} style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredLocation ? filteredLocation + 'km' : "위치"}</p></button>
+                        <button onClick={() => setFilteredGender(!filteredGender)} style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredGender === null ? "성별" : filteredGender ? "남성" : "여성" }</p></button>
                     </section>
-                )}
-                
+
+                    <section style={{marginTop: 15, marginLeft: 15}} className="flex flex-row">
+                        <img
+                            onClick={() => {setFilteredAge(); setFilteredGender(null); setFilteredLocation(); setFilteredUniv();}} 
+                            className="cursor-pointer"
+                            src="/UI/refresh.svg"
+                            alt="refresh"
+                        />    
+                        <p onClick={() => {filteringSubmitHandler()}} style={{color: "#18A0FB", margin: '0 15px', cursor: 'pointer'}}>검색하기</p>
+                    </section>
+                    
+                    {/* 친구들 프로필 | Infinite Scroll Container */}
+                    <section className="px-2">
+                        {filteredFriend.map((friend, index) => {    
+                            const lastEl = filteredFriend.length === index + 1;
+                            return (
+                                <div ref={lastEl ? setTargetRef : null} onClick={() => { history.push('/friend-profile?search=true'); dispatch(actions.getFriend(token, friend.userId))}} key={friend.userId} className="flex flex-row items-center px-3 my-10 cursor-pointer">
+                                    <img 
+                                        loading="lazy"
+                                        style={{width: 60, height: 60, borderRadius: 30}}
+                                        src={friend.profileImgSrc}
+                                        alt="profile"
+                                    />
+                                    <div className="px-5 flex flex-col justify-center ">
+                                        <p style={{color: "#9A9A9A", margin: 0, fontSize: 12}}>same interest {friend.sameInterest}</p>
+                                        <h2 style={{margin: '0 0 5px 0', fontSize: 14, lineHeight: 1.5, fontWeight: 700}}>{friend.adj} {friend.job} <span style={{fontWeight: 400, fontSize: 14}}>{friend.displayName} </span></h2>
+                                        <p style={{color: "#9A9A9A", fontWeight: 300, fontSize: 11, width: 200, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>{friend.introText}</p>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                        {isLoading ? (
+                            <div style={{position: 'relative', height: 50}}>
+                                <div style={{left: '50%', height: 50, position: 'absolute', transform: 'translate(-50%, -50%)'}}>
+                                    <Spinner
+                                        color='#ccc'
+                                    />
+                                </div>
+                            </div>
+                        ) : <div style={{height: 50}}></div>}
+                    </section>
+
+                    {/* University  */}
+                    <Drawer show={!isFiltering && univClicked} clicked={() => setUnivClicked(false)} type="univ">
+                        <section className="flex flex-col justify-between mx-5 my-3">
+                            <img 
+                                onClick={() => setUnivClicked(false)}
+                                style={{width: 20, height: 20, alignSelf: 'flex-end'}}
+                                className="cursor-pointer"
+                                src="/close-outline.svg"
+                                alt="close"
+                            />
+                            <p style={{textAlign: 'left'}}>학교를 선택하세요.</p>   
+                        </section>
+                        <section className="mt-5 mb-10 flex flex-row justify-between mx-5">
+                            <img onClick={() => {setFilteredUniv('서울대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/snu_univ.svg" alt="snu"/>
+                            <img onClick={() => {setFilteredUniv('고려대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/korea_univ.svg" alt="korea"/>
+                            <img onClick={() => {setFilteredUniv('연세대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/yonsei_univ.svg" alt="yonsei"/>
+                        </section>
+                        <section className="my-5 flex flex-row justify-between mx-5">
+                            <img onClick={() => {setFilteredUniv('서강대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/sogang_univ.svg" alt="sogang"/>
+                            <img onClick={() => {setFilteredUniv('성균관대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/skku_univ.svg" alt="skku"/>
+                            <img onClick={() => {setFilteredUniv('한양대'); setUnivClicked(false)}} style={{cursor: 'pointer', width: 70, height: 68, objectFit: 'fill'}} src="/Univ/hanyang_univ.svg" alt="hanyang"/>
+                        </section>
+                    </Drawer>
+                    
+                    {/* Age */}
+                    <Drawer show={!isFiltering && ageClicked} clicked={() => setAgeClicked(false)} type="age">
+                        <section className="flex flex-col justify-between mx-3 mt-3">
+                            <img 
+                                onClick={() => setAgeClicked(false)}
+                                style={{width: 20, height: 20, alignSelf: 'flex-end'}}
+                                className="cursor-pointer"
+                                src="/close-outline.svg"
+                                alt="close"
+                            />
+                        </section>
+                        <section style={{marginTop: 10}} className="flex flex-col justify-between">
+                            <label style={{textAlign: 'left', margin: '10px 0 40px 10px'}}>친구 나이대를 설정하세요.</label>   
+                            <input 
+                                type="range" 
+                                min="1" 
+                                max="8" 
+                                defaultValue="50"
+                                onChange={(e) => ageRangeHandler(e)} 
+                                style={{width: "100%", margin: '0 auto', cursor: 'pointer', outline: 'none'}}
+                                step='1'
+                            />
+                            <datalist style={{marginTop: 10, width: '100%'}} className="flex flex-row justify-evenly">
+                                <option value="20초" label="20초" style={{fontWeight: 300, textAlign: 'left', padding: 0, paddingLeft: 3, width: '12.5%', fontSize: 9}}>20 초</option>
+                                <option value="20중" label="20중" style={{fontWeight: 300, textAlign: 'left', padding: 0, paddingLeft: 3, width: '12.5%', fontSize: 9}}>20 중</option>
+                                <option value="20후" label="20후" style={{fontWeight: 300, textAlign: 'left', padding: 0, paddingLeft: 5, width: '12.5%', fontSize: 9}}>20 후</option>
+                                <option value="30초" label="30초" style={{fontWeight: 300, textAlign: 'center', padding: 0, paddingRight: 7,  width: '12.5%', fontSize: 9}}>30 초</option>
+                                <option value="30중" label="30중" style={{fontWeight: 300, textAlign: 'center', padding: 0, paddingLeft: 5, width: '12.5%', fontSize: 9}}>30 중</option>
+                                <option value="30후" label="30후" style={{fontWeight: 300, textAlign: 'center', padding: 0, paddingLeft: 12, width: '12.5%', fontSize: 9}}>30 후</option>
+                                <option value="40대" label="40대" style={{fontWeight: 300, textAlign: 'right', padding: 0, width: '12.5%', fontSize: 9}}>40대</option>
+                                <option value="50대" label="50대" style={{fontWeight: 300, textAlign: 'right', padding: 0, width: '12.5%', fontSize: 9}}>50대</option>
+                            </datalist>
+                        </section>
+
+                        <section style={{margin: '30px 0'}}>
+                            <button onClick={() => {setFilteredAge(ageValue); setAgeClicked(false);}} style={{color: "#fff", outline: 'none', backgroundColor: "#2F363E", borderRadius: 4, padding: '10px 30px', width: '100%', fontSize: 12}}>확인</button>
+                        </section>
+
+                    </Drawer>
+
+                    {/* Location */}
+                    <Drawer show={locationClicked} clicked={() => setLocationClicked(false)} type="location">
+                        <section className="flex flex-row justify-between mx-5 my-5">
+                            <p>찾고싶은 친구들의 위치범위를 설정하세요</p>   
+                            <img 
+                                onClick={() => setLocationClicked(false)}
+                                className="cursor-pointer"
+                                style={{width: 20, height: 20}}
+                                src="/close-outline.svg"
+                                alt="close"
+                            />
+                        </section>
+                        <section className="flex flex-col justify-between mx-5">
+                            <div id="map" onClick={(e) => e.preventDefault()}  style={{ opacity: isLocationLoading ? 0.5 : 1, width: '100%', height: 300}}>
+                                {isLocationLoading ? (
+                                    <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
+                                        <Spinner
+                                            color="#2F51F0"
+                                        />
+                                    </div>
+                                ) : <div style={{width: 200, height: 200, borderRadius: 100, backgroundColor :"#2F51F0", opacity: .25, zIndex: 999, position: 'absolute', left: '50%', top: '47%', transform: 'translate(-50%, -50%)'}}></div>}
+                            </div>
+                            <p style={{color: "#8D8D8D", fontSize: 12, margin: '5px 0'}}>내위치 {addr || location}</p>
+
+                            <label style={{fontSize: 16, color: "#2F51F0", margin: '15px', textAlign: 'right'}}>{rangeValue}km</label>
+                            <input 
+                                type="range"
+                                min="1" // 2km 
+                                max="8" 
+                                step="1"
+                                defaultValue="2"
+                                className="cursor-pointer"
+                                onChange={(e) => rangeChangeHandler(e)}
+                            />
+                        </section>
+                        <section style={{margin: '50px 0'}}>
+                            <button onClick={() => {setFilteredLocation(rangeValue); setLocationClicked(false)}} style={{color: "#fff", outline: 'none', backgroundColor: "#2F363E", borderRadius: 4, padding: '10px 30px', width: '90%', fontSize: 12}}>확인</button>
+                        </section>
+                    </Drawer>
+
+                </section>
+            )}
             </div>
         </Layout>
     )
