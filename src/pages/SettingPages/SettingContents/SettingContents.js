@@ -243,14 +243,17 @@ const SettingContents = ({ history, questionNum }) => {
     const uploadPhoto = useCallback((event) => {
         event.preventDefault();
         // file을 읽을 reader 객체 생성
-        if(!event.target.files)
-            return null;
+        if(!event.target.files) return alert("다시 업로드해주세요!");
+            
         const files = event.target.files;
+        console.log(event);
+        console.log(files);
+        if(files[0] === undefined) return alert("다시 업로드해주세요!");
         const __file = files[0];
         const __size = files[0].size;
 
         if(__size > 10000000) { // 10MB 이상이면 용량 제한
-            return alert("사진 최대 용량을 초과했습니다. 사진 용량은 최대 10MB입니다. ")
+            return alert("사진 최대 용량을 초과했습니다. 사진 용량은 최대 10MB입니다.")
         } 
         // 미리보기용
         const fileReader = new FileReader();
