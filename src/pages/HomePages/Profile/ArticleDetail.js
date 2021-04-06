@@ -89,22 +89,6 @@ const ArticleDetail = ({ history, match }) => { //postNum 최신부터 0 ~ n
         }
     }, [articleObjInMyProfile, articleObjInFriend, hasMoreArticleInProfile, hasMoreArticleInFriend, pageNum]);
    
-    const observer = useRef()
-    const lastArticleRef = useCallback(node => {
-      if(isLoading || isLoadingFriend) 
-        return null;
-      if(observer.current) 
-        observer.current.disconnect()
-
-      observer.current = new IntersectionObserver(entries => {
-        if(entries[0].isIntersecting && (hasMoreArticleInProfile || hasMoreArticleInFriend)) {
-          setPageNum(prevPageNumber => prevPageNumber + 1)
-        }
-      })
-      if(node)
-        observer.current.observe(node);
-    }, [isLoading, isLoadingFriend, hasMoreArticleInProfile, hasMoreArticleInFriend])
-
     const deletePostHandler = useCallback((interest, postId) => {
         console.log('delete postId', postId);
 
@@ -112,7 +96,7 @@ const ArticleDetail = ({ history, match }) => { //postNum 최신부터 0 ~ n
     }, [token]);
 
     let contents;
-    if(who === 'my') {
+    if(who === 'my') { // 내 세부 게시글
         contents = (
             <div style={{minHeight: '100vh', height: '110%'}}>
                 {isLoading ? (
@@ -137,84 +121,63 @@ const ArticleDetail = ({ history, match }) => { //postNum 최신부터 0 ~ n
                     </div>
                 ) : (
                 articleObjInMyProfile[interest] && articleObjInMyProfile[interest].map((post, index) => {
-                    if((pageNum * 8) === index+1) { // 마지막 게시물일 때
-                        return (
-                            <article ref={lastArticleRef} key={index} style={{height: 800, backgroundColor: "#fff"}}>
-                                {/* 형용사, 직업, 닉네임 */}
-                                <div 
-                                    className="flex flex-row items-center cursor-pointer" 
-                                    onClick={() => history.push('/my-profile')}
-                                >
-                                    <img style={{width: 32, height: 32, margin: '20px 10px', borderRadius: 16}} src={profileImgSrc} alt="profile" />
-                                    <h1 style={{margin: 0, fontWeight: 700, fontSize: 14}}>{adj} {job} <span style={{fontWeight: 400, fontSize: 14}}>{displayNameInUser}</span></h1>
-                                </div>
+                    return (
+                        <article key={index} style={{height: 800, backgroundColor: "#fff"}}>
+                            {/* 형용사, 직업, 닉네임 */}
+                            <div 
+                                className="flex flex-row items-center cursor-pointer" 
+                                onClick={() => history.push('/my-profile')}
+                            >
+                                <img style={{width: 32, height: 32, margin: '20px 10px', borderRadius: 16}} src={profileImgSrc} alt="profile" />
+                                <h1 style={{margin: 0, fontWeight: 700, fontSize: 14}}>{adj} {job} <span style={{fontWeight: 400, fontSize: 14}}>{displayNameInUser}</span></h1>
+                            </div>
 
-                                <div style={{padding: '0 10px'}}>
-                                    {/* 게시글 이미지 */}
-                                    <img 
-                                        src={post.articleImgSrc}
-                                        style={{height: 496,  objectFit: 'cover', width: '100%', borderRadius: 25}}
-                                    />
-                                    {/* 제목, 날짜, 본문 */}
-                                    <div style={{margin: '15px 0', paddingBottom: 30}} className="px-3">
-                                        <h1 style={{fontWeight: 700, fontSize: 18, margin: '5px 0'}}>{post.articleTitle ? post.articleTitle : "제목이 없습니다."}</h1>
-                                        <p style={{fontSize: 10, fontWeight: 400, margin: '10px 0', color: '#C4C4C4'}}>20{post.createdAt}기록</p>
-                                        <div style={{border: '0.5px solid rgba(0, 0, 0, 0.15)', margin: '5px 0', opacity: .35}}></div>
-                                        <p id="line-clamp" style={{fontWeight: 400, margin: '20px 0', lineHeight: 1.5, textOverflow: 'ellipsis', overflow: 'hidden'}}>{post.articleContent}asdsdasdsdasdsdasdsdasdsdasdsdasdsdasdsdasdsdasdsdasdsdasdsdasdsdasdsdasdsd</p>
-                                    </div>
-                                </div>
-                            </article>
-                        )
-                    }
-                    else { // 내 게시글
-                        return (
-                            <article key={index} style={{height: 760, backgroundColor: "#fff"}}>
-                                {/* 형용사, 직업, 닉네임 */}
-                                <div 
-                                    className="flex flex-row items-center cursor-pointer" 
-                                    onClick={() => history.push('/my-profile')}
-                                >
-                                    <img style={{width: 32, height: 32, margin: '20px 10px', borderRadius: 16}} src={profileImgSrc} alt="profile" />
-                                    <h1 style={{margin: 0, fontWeight: 700, fontSize: 14}}>{adj} {job} <span style={{fontWeight: 400, fontSize: 14}}>{displayNameInUser}</span></h1>
-                                </div>
-
-                                <div style={{padding: '0 10px', backgroundColor: "#fff"}}>
-                                    {/* 게시글 이미지 */}
-                                    <img 
-                                        src={post.articleImgSrc}
-                                        style={{ height: 496,  objectFit: 'cover', width: '100%', borderRadius: 25}}
-                                    />
-                                    {/* 제목, 날짜, 본문 */}
-                                    <div style={{margin: '15px 0', paddingBottom: 30}} className="px-3">
-                                        <div className="flex flex-row justify-between">
-                                            <div>
-                                                <h1 style={{fontWeight: 700, fontSize: 18, margin: '5px 0'}}>{post.articleTitle ? post.articleTitle : "제목이 없습니다."}</h1>
-                                                <p style={{fontSize: 10, fontWeight: 400, margin: '10px 0', color: '#C4C4C4'}}>20{post.createdAt}기록</p>
-                                            </div>
-                                            <div className="flex flex-row items-center justify-between">
-                                                <div className="flex flex-col justify-center items-center mx-5">
+                            <div style={{padding: '0 10px'}}>
+                                {/* 게시글 이미지 */}
+                                <img 
+                                    src={post.articleImgSrc}
+                                    style={{height: 496,  objectFit: 'cover', width: '100%', borderRadius: 25}}
+                                />
+                                {/* 제목, 날짜, 본문 */}
+                                <div style={{margin: '15px 0', paddingBottom: 30}} className="px-3">
+                                    <div className="flex flex-row justify-between">
+                                        <div>
+                                            <h1 style={{fontWeight: 700, fontSize: 18, margin: '5px 0'}}>{post.articleTitle ? post.articleTitle : "제목이 없습니다."}</h1>
+                                            <p style={{fontSize: 10, fontWeight: 400, margin: '10px 0', color: '#C4C4C4'}}>20{post.createdAt}기록</p>
+                                        </div>
+                                        <div className="flex flex-row items-center justify-between">
+                                            <div className="flex flex-col justify-center items-center mx-5">
+                                                {post.isHeartClicked ? (
                                                     <img 
+                                                        // onClick={() => console.log('hi')}
+                                                        style={{margin: '5px 0', cursor: 'pointer'}}
+                                                        src="/UI/heart-outline.svg"
+                                                        alt="heart-clicked"
+                                                    />
+                                                ) : (
+                                                    <img 
+                                                        // onClick={() => console.log('hi')}
                                                         style={{margin: '5px 0', cursor: 'pointer'}}
                                                         src="/UI/heart.svg"
                                                         alt="heart"
                                                     />
-                                                    <p style={{color: "#585858", fontSize: 13, fontWeight: 300}}>123</p>
-                                                </div>
-                                                <img 
-                                                    onClick={() => {setSettingClicked(true); setSelectedPostId(post.postId); setSelectedArticleImgSrc(post.articleImgSrc); setSelectedTitle(post.articleTitle); setSelectedContent(post.articleContent); }}
-                                                    style={{padding: 10, cursor: 'pointer'}}
-                                                    src="/UI/ellipsis-vertical.svg"
-                                                    alt="ellipsis"
-                                                />
+                                                )}
+                                                <p style={{color: "#585858", fontSize: 13, fontWeight: 300}}>준비중</p>
                                             </div>
-                                        </div>    
-                                        <div style={{border: '0.5px solid rgba(0, 0, 0, 0.15)', margin: '5px 0', opacity: .35}}></div>
-                                        <p id="line-clamp" style={{fontWeight: 400, margin: '20px 0', lineHeight: 1.5, textOverflow: 'ellipsis', overflow: 'hidden'}}>{post.articleContent}<span style={{color: "#7C7C7C", cursor: 'pointer'}}>...더보기</span></p>
-                                    </div>
+                                            <img 
+                                                onClick={() => {setSettingClicked(true); setSelectedPostId(post.postId); setSelectedArticleImgSrc(post.articleImgSrc); setSelectedTitle(post.articleTitle); setSelectedContent(post.articleContent); }}
+                                                style={{padding: 10, cursor: 'pointer'}}
+                                                src="/UI/ellipsis-vertical.svg"
+                                                alt="ellipsis"
+                                            />
+                                        </div>
+                                    </div>    
+                                    <div style={{border: '0.5px solid rgba(0, 0, 0, 0.15)', margin: '5px 0', opacity: .35}}></div>
+                                    <p id="line-clamp" style={{fontWeight: 400, margin: '20px 0', lineHeight: 1.5, textOverflow: 'ellipsis', overflow: 'hidden'}}>{post.articleContent}<span style={{color: "#7C7C7C", cursor: 'pointer'}}>...더보기</span></p>
                                 </div>
-                            </article>
-                        )
-                    }
+                            </div>
+                        </article>
+                    )
                 }))}
 
                 {isLoading && (
@@ -226,7 +189,7 @@ const ArticleDetail = ({ history, match }) => { //postNum 최신부터 0 ~ n
                 )}
             </div>
         )
-    }else {
+    }else { // 친구 세부 게시글
         contents = (
             <div style={{minHeight: '100vh', height: '110%', backgroundColor: "#fff"}}>
                 {isLoadingFriend ? (
@@ -251,64 +214,63 @@ const ArticleDetail = ({ history, match }) => { //postNum 최신부터 0 ~ n
                     </div>
                 ) : (
                 articleObjInFriend[interest] && articleObjInFriend[interest].map((post, index) => {
-                    if(((pageNum+1) * 8) === index+1) { // 마지막 게시물일 때
-                        return (
-                            <article ref={lastArticleRef} key={index} style={{height: 800, backgroundColor: "#fff"}}>
-                                {/* 형용사, 직업, 닉네임 */}
-                                <div 
-                                    className="flex flex-row items-center cursor-pointer" 
-                                    onClick={() => history.push('/friend-profile')}
-                                >
-                                    <img style={{width: 32, height: 32, margin: '20px 10px', borderRadius: 16}} src={profileImgSrc_f} alt="profile" />
-                                    <h1 style={{margin: 0, fontWeight: 700, fontSize: 14}}>{adj_f} {job_f} <span style={{fontWeight: 400, fontSize: 14}}>{displayNameInFriend}</span></h1>
-                                </div>
+                    return (
+                        <article key={index} style={{height: 800, backgroundColor: "#fff"}}>
+                            {/* 형용사, 직업, 닉네임 */}
+                            <div 
+                                className="flex flex-row items-center cursor-pointer" 
+                                onClick={() => history.push('/friend-profile')}
+                            >
+                                <img style={{width: 32, height: 32, margin: '20px 10px', borderRadius: 16}} src={profileImgSrc_f} alt="profile" />
+                                <h1 style={{margin: 0, fontWeight: 700, fontSize: 14}}>{adj_f} {job_f} <span style={{fontWeight: 400, fontSize: 14}}>{displayNameInFriend}</span></h1>
+                            </div>
 
-                                <div style={{padding: '0 10px'}}>
-                                    {/* 게시글 이미지 */}
-                                    <img 
-                                        src={post.articleImgSrc}
-                                        style={{height: 496, objectFit: 'cover', width: '100%', borderRadius: 25}}
-                                    />
-                                    {/* 제목, 날짜, 본문 */}
-                                    <div style={{margin: '15px 0', paddingBottom: 30}} className="px-3">
-                                        <h1 style={{fontWeight: 700, fontSize: 18, margin: '5px 0'}}>{post.articleTitle ? post.articleTitle : "제목이 없습니다."}</h1>
-                                        <p style={{fontSize: 10, fontWeight: 400, margin: '10px 0', color: '#C4C4C4'}}>20{post.createdAt}기록</p>
-                                        <div style={{border: '0.5px solid rgba(0, 0, 0, 0.15)', margin: '5px 0', opacity: .35}}></div>
-                                        <p id="line-clamp" style={{fontWeight: 400, margin: '20px 0', lineHeight: 1.5, textOverflow: 'ellipsis', overflow: 'hidden'}}>{post.articleContent}</p>
-                                    </div>
+                            <div style={{padding: '0 10px'}}>
+                                {/* 게시글 이미지 */}
+                                <img 
+                                    src={post.articleImgSrc}
+                                    style={{height: 496, objectFit: 'cover', width: '100%', borderRadius: 25}}
+                                />
+                                {/* 제목, 날짜, 본문 */}
+                                <div style={{margin: '15px 0', paddingBottom: 30}} className="px-3">
+                                    <div className="flex flex-row justify-between">
+                                        <div>
+                                            <h1 style={{fontWeight: 700, fontSize: 18, margin: '5px 0'}}>{post.articleTitle ? post.articleTitle : "제목이 없습니다."}</h1>
+                                            <p style={{fontSize: 10, fontWeight: 400, margin: '10px 0', color: '#C4C4C4'}}>20{post.createdAt}기록</p>
+                                        </div>
+                                        <div className="flex flex-row items-center justify-between">
+                                            <div className="flex flex-col justify-center items-center mx-5">
+                                                {post.isHeartClicked ? (
+                                                    <img 
+                                                        // onClick={() => console.log('hi')}
+                                                        style={{margin: '5px 0', cursor: 'pointer'}}
+                                                        src="/UI/heart-outline.svg"
+                                                        alt="heart-clicked"
+                                                    />
+                                                ) : (
+                                                    <img 
+                                                        // onClick={() => console.log('hi')}
+                                                        style={{margin: '5px 0', cursor: 'pointer'}}
+                                                        src="/UI/heart.svg"
+                                                        alt="heart"
+                                                    />
+                                                )}
+                                                <p style={{color: "#585858", fontSize: 13, fontWeight: 300}}>준비중</p>
+                                            </div>
+                                            <img 
+                                                onClick={() => {setSettingClicked(true); setSelectedPostId(post.postId); setSelectedArticleImgSrc(post.articleImgSrc); setSelectedTitle(post.articleTitle); setSelectedContent(post.articleContent); }}
+                                                style={{padding: 10, cursor: 'pointer'}}
+                                                src="/UI/ellipsis-vertical.svg"
+                                                alt="ellipsis"
+                                            />
+                                        </div>
+                                    </div>    
+                                    <div style={{border: '0.5px solid rgba(0, 0, 0, 0.15)', margin: '5px 0', opacity: .35}}></div>
+                                    <p id="line-clamp" style={{fontWeight: 400, margin: '20px 0', lineHeight: 1.5, textOverflow: 'ellipsis', overflow: 'hidden'}}>{post.articleContent}<span style={{color: "#7C7C7C", cursor: 'pointer'}}>...더보기</span></p>
                                 </div>
-                            </article>
-                        )
-                    }
-                    else {
-                        return (
-                            <article key={index} style={{height: 800, backgroundColor: "#fff"}}>
-                                {/* 형용사, 직업, 닉네임 */}
-                                <div 
-                                    className="flex flex-row items-center cursor-pointer" 
-                                    onClick={() => history.push('/friend-profile')}
-                                >
-                                    <img style={{width: 32, height: 32, margin: '20px 10px', borderRadius: 16}} src={profileImgSrc_f} alt="profile" />
-                                    <h1 style={{margin: 0, fontWeight: 700, fontSize: 14}}>{adj_f} {job_f} <span style={{fontWeight: 400, fontSize: 14}}>{displayNameInFriend}</span></h1>
-                                </div>
-
-                                <div style={{padding: '0 10px'}}>
-                                    {/* 게시글 이미지 */}
-                                    <img 
-                                        src={post.articleImgSrc}
-                                        style={{height: 496, objectFit: 'cover', width: '100%', borderRadius: 25}}
-                                    />
-                                    {/* 제목, 날짜, 본문 */}
-                                    <div style={{margin: '15px 0', paddingBottom: 30}} className="px-3">
-                                        <h1 style={{fontWeight: 700, fontSize: 18, margin: '5px 0'}}>{post.articleTitle ? post.articleTitle : "제목이 없습니다."}</h1>
-                                        <p style={{fontSize: 10, fontWeight: 400, margin: '10px 0', color: '#C4C4C4'}}>20{post.createdAt}기록</p>
-                                        <div style={{border: '0.5px solid rgba(0, 0, 0, 0.15)', margin: '5px 0', opacity: .35}}></div>
-                                        <p id="line-clamp" style={{fontWeight: 400, margin: '20px 0', lineHeight: 1.5, textOverflow: 'ellipsis', overflow: 'hidden'}}>{post.articleContent}</p>
-                                    </div>
-                                </div>
-                            </article>
-                        )
-                    }
+                            </div>
+                        </article>
+                    )
                 }))}
 
                 {isLoadingFriend && (
@@ -339,7 +301,7 @@ const ArticleDetail = ({ history, match }) => { //postNum 최신부터 0 ~ n
             
             {/* Drawer */}
             <Drawer show={settingClicked} clicked={() => {setSettingClicked(false); setSettingType(null)}} type="setting">
-                {settingType === null && (
+                {(settingType === null && who === 'my') ? (
                     <>
                         <section className="flex flex-col justify-between mx-5 my-5">
                             <img 
@@ -357,6 +319,27 @@ const ArticleDetail = ({ history, match }) => { //postNum 최신부터 0 ~ n
                                 onClick={() => {history.push(`/article/edit?interest=${interest}&postId=${selectedPostId}&articleImgSrc=${selectedArticleImgSrc}&articleTitle=${selectedTitle}&articleContent=${selectedContent}`)}} 
                             >
                                 수정
+                            </p>
+                        </section>
+                    </>
+                ) : (
+                    <>
+                        <section className="flex flex-col justify-between mx-5 my-5">
+                            <img 
+                                onClick={() => setSettingClicked(false)}
+                                style={{width: 20, height: 20, alignSelf: 'flex-end'}}
+                                className="cursor-pointer"
+                                src="/close-outline.svg"
+                                alt="close"
+                            />
+                        </section>
+                        <section className="my-5 flex flex-col items-start mx-5">
+                            <p onClick={() => { alert("숨기기 기능 개발중입니다!"); setSettingType('hide'); }} style={{fontSize: 18, fontWeight: 300, margin: '15px 0', width: '100%', textAlign: 'left', cursor: 'pointer'}}>게시글 숨기기</p>
+                            <p 
+                                style={{ fontSize: 18, fontWeight: 300, margin: '10px 0', width: '100%', textAlign: 'left', cursor: 'pointer'}}
+                                onClick={() => { alert("신고하기 기능 개발중입니다!"); setSettingType('report')}} 
+                            >
+                                신고하기
                             </p>
                         </section>
                     </>
