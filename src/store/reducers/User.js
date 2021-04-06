@@ -321,13 +321,12 @@ const reducer = (state=initialState, action) => {
             newArticleArr1[interest1].splice(idx, 1);
 
             // for interestArr (-1 activity)
-            const prevInterestArr = state.interestArr; // 실제 객체 데이터
             let newInterestArr = JSON.parse(JSON.stringify(state.interestArr)) //깊은복사
-            idx = prevInterestArr.findIndex(el => el.interest === interest1);
-            console.log(prevInterestArr, prevInterestArr[idx]);
+            idx = newInterestArr.findIndex(el => el.interest === interest1);
+            console.log(newInterestArr, newInterestArr[idx]);
             newInterestArr.splice(idx, 1, {
-                ...prevInterestArr[idx],
-                activity: prevInterestArr[idx].activity - 1
+                ...newInterestArr[idx],
+                activity: newInterestArr[idx].activity - 1
             });
             return {
                 ...state,
@@ -363,6 +362,7 @@ const reducer = (state=initialState, action) => {
             // Immutable state
             let newArticleArr2 = JSON.parse(JSON.stringify(state.articleObjInMyProfile)) //깊은복사
             let idx2 = newArticleArr2[originalInterest].findIndex(article => article.postId === postId2);
+            let newInterestArr2 = JSON.parse(JSON.stringify(state.interestArr));
 
             // 만약 다른 관심사면, 기존의 배열에서 지우고, 새로운 관심사에 추가
             if(originalInterest === articleInterest) { // 같으면 수정만
@@ -373,7 +373,7 @@ const reducer = (state=initialState, action) => {
                 })
             }else { // 다르면 지우고, 다른 배열에 추가
                 const originalArticleData = newArticleArr2[originalInterest][idx2];
-                newArticleArr2[originalInterest].splice(idx2, 1);
+                newArticleArr2[originalInterest].splice(idx2, 1); // 지우고
 
                 if(newArticleArr2[articleInterest] === undefined)  // 기존에 없는 관심사면 []로 만들고
                     newArticleArr2[articleInterest] = [];
@@ -382,10 +382,23 @@ const reducer = (state=initialState, action) => {
                     articleTitle,
                     articleContent
                 });   
+                // original interestArr (-1 activity)
+                let originalArrIdx = newInterestArr2.findIndex(el => el.interest === originalInterest);
+                newInterestArr2.splice(originalArrIdx, 1, {
+                    ...newInterestArr2[originalArrIdx],
+                    activity: newInterestArr2[originalArrIdx].activity - 1
+                })
+                // new interestArr (+1 activity)
+                let editedArrIdx = newInterestArr2.findIndex(el => el.interest === articleInterest);
+                newInterestArr2.splice(editedArrIdx, 1, {
+                    ...newInterestArr2[editedArrIdx],
+                    activity: newInterestArr2[editedArrIdx].activity + 1
+                })
             }
             return {
                 ...state,
                 articleIsLoading: false,
+                interestArr: newInterestArr2,
                 articleObjInMyProfile: newArticleArr2,
             }
         case actionTypes.EDIT_MY_ARTICLE_FAIL:
