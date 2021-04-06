@@ -191,8 +191,8 @@ export const submitToServerInit = () => {
 export const submitToServer = (userDataFormData) => {
     return dispatch => {
         dispatch(submitToServerStart());
-        
 
+        
         AxiosForTest.post('/user', userDataFormData)
             .then(res => {
                 console.log(res);

@@ -236,6 +236,7 @@ const reducer = (state=initialState, action) => {
                     articleTitle: dataArr[id].articleTitle,
                     articleContent: dataArr[id].content,
                     articleTagArr: dataArr[id].extraHashtags,
+                    isHeartClicked: true,
                 }
             })
             return {
