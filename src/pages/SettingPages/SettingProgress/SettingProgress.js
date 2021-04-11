@@ -10,26 +10,12 @@ function SettingProgress({questionNum}) {
     } else if (questionNum === '3') {
         ProgressPercent = '30%';
     } else if (questionNum === '4') {
-        ProgressPercent = '47%';
+        ProgressPercent = '57%';
     } else if (questionNum === '5') {
-        ProgressPercent = '62%';
+        ProgressPercent = '72%';
     } else if (questionNum === '6') {
-        ProgressPercent = '80%';
-    } else if (questionNum === '7') {
-        ProgressPercent = '87%';
-    } else if (questionNum === '8') {
         ProgressPercent = '90%';
-    } else if (questionNum === '9') {
-        ProgressPercent = '93%';
-    } else if (questionNum === '10') {
-        ProgressPercent = '96%';
-    } else if (questionNum === '11') {
-        ProgressPercent = '100%';
-    }else if (questionNum === '12') {
-        ProgressPercent = '100%';
-    }else if (questionNum === '13') {
-        ProgressPercent = '100%';
-    } else {
+    }else {
         ProgressPercent = '0%';
     }
 
