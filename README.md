@@ -1,4 +1,4 @@
-# Xircle - 새로운 네트워킹 대학생 SNS 서비스
+# Xircle, 새로운 네트워킹 대학생 SNS 서비스
 
 ## Features
 - Route based [code spliting](https://ko.reactjs.org/docs/code-splitting.html#route-based-code-splitting) thanks to CRA(webpack, babel eslint)
