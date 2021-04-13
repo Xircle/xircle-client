@@ -1,9 +1,9 @@
-import React, { useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../../components/layout';
-import queryString from 'query-string';
 import * as actions from '../../../store/actions/index';
-import { interest2Object } from '../../../components/interest2Object';
+import { interest2Index, interest2Object} from '../../../components/interest2Object';
+import airpod from '../../../images/my-profile/airpod.svg';
 import airpod_event_1 from '../../../images/my-profile/airpod_event_1.svg'
 import airpod_event_2 from '../../../images/my-profile/airpod_event_2.svg'
 import airpod_event_3 from '../../../images/my-profile/airpod_event_3.svg'
@@ -57,10 +57,9 @@ const heightGenerator = (idx) => {
     }
 };
 
-const FriendProfile = ({ history, location }) => {
-    const { userId, isPublic, isGraduate, displayNameInFriend, gender, univInFriend, age, job, adj, interestArr, introText, profileImgSrc, resume, workPlace } 
+const FriendProfile = ({ history }) => {
+    const { userId, isPublic, isGraduate, displayNameInFriend, gender, univInFriend, age, job, adj, location, interestArr, introText, profileImgSrc, resume, workPlace } 
         = useSelector(store => store.friend);
-    const locationInRedux = useSelector(store => store.friend.location);
 
     const [pageNum, setPageNum] = useState(2);
     const [selectedInterest, setSelectedInterest] = useState(null); //관심사 네비게이션에서 선택된 관심사. (1, 스타트업) (2, 동네친구) ..등등
@@ -76,16 +75,17 @@ const FriendProfile = ({ history, location }) => {
     const articleObjInFriend = useSelector(store => store.friend.articleObjInFriend);
     const isLoading = useSelector(store => store.friend.loading);
     const articleIsLoading = useSelector(store => store.friend.articleIsLoading);
+    const hasError = useSelector(store => store.friend.error);
     const dispatch = useDispatch();
     
+
     const newArr = interest2Object(interestArr);
     useEffect(() => {
         const tokenInRedux = token;
         if(!tokenInRedux) { // 토큰이 없는 상태라면(refreshing) /my-profile로 리다이렉션
             history.push('/my-profile');
         }else {
-            if(userId) return null;  // 리덕스에 friend 데이터가 있으면, 친구탐색에서 넘어왔으면 http 통신 금지
-            if(queryString.parse(location.search).search === 'true') return null;
+            if(userId) return null;  // 리덕스에 friend 데이터가 있으면 http 통신 금지
             dispatch(actions.getFriend(tokenInRedux));
             setSelectedInterest('x');
             setArticleClicked([false, null]);
@@ -1052,14 +1052,14 @@ const FriendProfile = ({ history, location }) => {
                                 <p style={{margin: "0px 5px 0 10px"}} className="my-0">{resume}</p>
                             </li>
                             ) : null}
-                            {locationInRedux ? (
+                            {location ? (
                             <li className="flex flex-row items-start my-3">
                                 <img 
                                     style={{width: 15, height: 15, marginTop: 1}}
                                     src="/profile/location.svg"
                                     alt="location"
                                 />
-                                <p style={{margin: "0px 5px 0 10px", color: "#7C7C7C"}} className="my-0">{locationInRedux}</p>
+                                <p style={{margin: "0px 5px 0 10px", color: "#7C7C7C"}} className="my-0">{location}</p>
                             </li>
                             ) : null}
                             <li className="flex flex-row mb-2">
