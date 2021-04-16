@@ -6,6 +6,7 @@ import Drawer from '../../../components/UI/Drawer';
 import { Axios } from '../../../axios-instance';
 import Spinner from 'react-spinner-material';
 import { scrolltoTop } from '../../../components/scrolltoTop';
+import { useSearchUser } from '../../../data/use-user';
 import * as actions from '../../../store/actions/index';
 
 const { kakao } = window;
@@ -28,12 +29,12 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
     const [filteredAge, setFilteredAge] = useState(null);
     const [filteredLocation, setFilteredLocation] = useState(null);
     const [filteredGender, setFilteredGender] = useState(null);
-    const [isFiltering, setIsFiltering] = useState(false); // 맨 처음 || 필터링 할때 로딩
-    const [filteredFriend, setFilteredFriend] = useState([]); // [{ profileImgSrc, adj, job, displayName, introText, sameInterest}]
+
+    const { data: filteredData=[], error, isValidating, mutate } = useSearchUser(token, 0, filteredUniv, filteredAge, filteredGender, filteredLocation);
+
     const dispatch = useDispatch();
-    
     const [isLoading, setIsLoading] = useState(null); // infinite scroll 할 때 로딩
-    const [error, setError] = useState(false); // infinite scroll 할 때 에러
+    // const [error, setError] = useState(false); // infinite scroll 할 때 에러
     const currentPage = useRef(0);
     const totalPage = useRef(10);
     const rootRef = useRef(null);
@@ -41,52 +42,20 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
 
     // 리다이렉션
     useEffect(() => {
-        if(filteredFriend.length !== 0) return null;
+        if(filteredData && filteredData.length !== 0) return null;
         if(!token) return window.location.href = '/my-profile';
-        if(filteredFriend.length !== 0) return null; // 뭔가 있으면 http 금지
         scrolltoTop();
-        loadData(0);
     }, []);
-
-    // first data fetching == 최초에 하는 fetching
-    const loadData = useCallback(async (page) => {
-        try {
-            page === 0 ? setIsFiltering(true) : setIsLoading(true);
-            const finalGender = filteredGender === null ? null : filteredGender ? "남" : "여";
-            console.log(filteredUniv, filteredAge, filteredLocation, finalGender);
-
-            const res = await Axios.get(`/users?${filteredUniv ? `university=${filteredUniv}&` : ''}${filteredLocation ? `location=${filteredLocation*1000}&` : ''}${filteredAge ? `age=${filteredAge}&` : ''}${finalGender ? `gender=${finalGender}&` : ''}page=${page}`, {
-                headers: {
-                    'access-token': token
-                }
-            });
-            console.log(res);
-            const isSuccess = res.data.success;
-            if(!isSuccess) {
-                if(res.data.code === 458)
-                    alert('위치허용을 하셔야 친구검색 기능을 사용하실 수 있습니다! ');
-                return history.push('/my-profile/edit');
-            } 
-            const dataArr = res.data.data;
-            // totalPage.current = res.data.data.totalPage;
-            setFilteredFriend(prevArr => {
-                console.log([...prevArr, ...dataArr]);
-                return [...prevArr, ...dataArr]
-            });
-        }catch(err) {
-            setError(true);
-        }finally {
-            page === 0 ? setIsFiltering(false) : setIsLoading(false);
-        }
-        return () => setError(null);
-    }, [filteredUniv, filteredAge, filteredGender, filteredLocation]);
 
     // InfiniteScroll -> 화면에 닿았을 때 fired
     const loadMoreData = useCallback(async (page) => {
-        if(filteredFriend.length > 0) {
-            loadData(page);
+        if(filteredData.length > 0) {
+            const currCache = filteredData;
+            
+            // loadData(page);
         }
-    }, [token, filteredFriend]);
+    }, [token, filteredData]);
+
     // intersectionObserver 등록
     async function onIntersect (entries, observer) {
         entries.forEach(entry => {
@@ -113,9 +82,9 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
 
     // Filtering dispatching 
     const filteringSubmitHandler = useCallback((page) => {
-        setFilteredFriend([]);
+        // setFilteredFriend([]);
         currentPage.current = 0;
-        loadData(currentPage.current);
+        // loadData(currentPage.current);
     }, [token, filteredAge, filteredLocation, filteredGender, filteredUniv]);
 
     // Age
@@ -178,7 +147,7 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
     }, []);
 
     useEffect(() => {
-        if(!locationClicked || isFiltering) return null;
+        if(!locationClicked || isValidating) return null;
             let level = null;
             if(rangeValue === 2) {
                 level = 7; // 1km -> 2km
@@ -286,8 +255,9 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                     geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
             }
         
-    }, [locationClicked, isFiltering, rangeValue]);
+    }, [locationClicked, isValidating, rangeValue]);
 
+    console.log('filteredData : ', filteredData);
     return (
         <Layout>
             <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
@@ -300,7 +270,7 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                 <p style={{textAlign: 'center', width: '100%', marginRight: 35, fontSize: 15, color: "#595959"}}>친구탐색</p>
             </nav>
             <div ref={rootRef} style={{minHeight: '100vh'}}>
-            {isFiltering ? ( // filteredFriend.length === 0
+            {filteredData.length === 0 && ( // 최초에 placeHolder 보여주기
                 <div style={{borderRadius: 25, maxheight: 1000, backgroundColor: "#fff"}}>
                     <section style={{height: 55}}></section>
                     <div style={{padding: 10}} className="flex px-5 py-5 flex-col items-center">
@@ -354,7 +324,8 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                         </Placeholder>
                     </div>
                 </div>
-            ) : (
+            )}
+            {error ? <p style={{color: 'red', fontSize: 16, margin: 10}}>에러가 발생했습니다. 새로고침 해주세요</p> : (
                 <section>
                     {/* 필터링 네비게이션 */}
                     <section className="mt-5 flex flex-row ">
@@ -363,21 +334,11 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                         <button onClick={() => setLocationClicked(true)} style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredLocation ? filteredLocation + 'km' : "위치"}</p></button>
                         <button onClick={() => setFilteredGender(!filteredGender)} style={{backgroundColor: "#F7F7FA", margin: '0 3px', padding: '10px 23px', borderRadius: 50, outline: 'none'}}><p style={{fontSize: 13, fontWeight: 300}}>{filteredGender === null ? "성별" : filteredGender ? "남성" : "여성" }</p></button>
                     </section>
-
-                    <section style={{marginTop: 15, marginLeft: 15}} className="flex flex-row">
-                        <img
-                            onClick={() => {setFilteredAge(); setFilteredGender(null); setFilteredLocation(); setFilteredUniv();}} 
-                            className="cursor-pointer"
-                            src="/UI/refresh.svg"
-                            alt="refresh"
-                        />    
-                        <p onClick={() => {filteringSubmitHandler()}} style={{color: "#18A0FB", margin: '0 15px', cursor: 'pointer'}}>검색하기</p>
-                    </section>
                     
                     {/* 친구들 프로필 | Infinite Scroll Container */}
                     <section className="px-2">
-                        {filteredFriend.map((friend, index) => {    
-                            const lastEl = filteredFriend.length === index + 1;
+                        {filteredData.map((friend, index) => {    
+                            const lastEl = filteredData.length === index + 1;
                             return (
                                 <div ref={lastEl ? setTargetRef : null} onClick={() => { history.push('/friend-profile?search=true'); dispatch(actions.getFriend(token, friend.userId))}} key={friend.userId} className="flex flex-row items-center px-3 my-10 cursor-pointer">
                                     <img 
@@ -394,7 +355,7 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                                 </div>
                             )
                         })}
-                        {isLoading ? (
+                        {isValidating ? (
                             <div style={{position: 'relative', height: 50}}>
                                 <div style={{left: '50%', height: 50, position: 'absolute', transform: 'translate(-50%, -50%)'}}>
                                     <Spinner
@@ -406,7 +367,7 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                     </section>
 
                     {/* University  */}
-                    <Drawer show={!isFiltering && univClicked} clicked={() => setUnivClicked(false)} type="univ">
+                    <Drawer show={!isValidating && univClicked} clicked={() => setUnivClicked(false)} type="univ">
                         <section className="flex flex-col justify-between mx-5 my-3">
                             <img 
                                 onClick={() => setUnivClicked(false)}
@@ -430,7 +391,7 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                     </Drawer>
                     
                     {/* Age */}
-                    <Drawer show={!isFiltering && ageClicked} clicked={() => setAgeClicked(false)} type="age">
+                    <Drawer show={!isValidating && ageClicked} clicked={() => setAgeClicked(false)} type="age">
                         <section className="flex flex-col justify-between mx-3 mt-3">
                             <img 
                                 onClick={() => setAgeClicked(false)}
@@ -486,14 +447,14 @@ const SearchFriend = ({ history }) => { //postNum 최신부터 0 ~ n
                                 {isLocationLoading ? (
                                     <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}}>
                                         <Spinner
-                                            color="#2F51F0"
+                                            color="#18A0FB"
                                         />
                                     </div>
                                 ) : <div style={{width: 200, height: 200, borderRadius: 100, backgroundColor :"#2F51F0", opacity: .25, zIndex: 999, position: 'absolute', left: '50%', top: '47%', transform: 'translate(-50%, -50%)'}}></div>}
                             </div>
                             <p style={{color: "#8D8D8D", fontSize: 12, margin: '5px 0'}}>내위치 {addr || location}</p>
 
-                            <label style={{fontSize: 16, color: "#2F51F0", margin: '15px', textAlign: 'right'}}>{rangeValue}km</label>
+                            <label style={{fontSize: 16, color: "#18A0FB", margin: '15px', textAlign: 'right'}}>{rangeValue}km</label>
                             <input 
                                 type="range"
                                 min="1" // 2km 
