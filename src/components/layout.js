@@ -18,7 +18,7 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
     useEffect(() => {
         const currPath = window.location.pathname;
         let NavInterval;
-        if(currPath === '/' || currPath === '/my-profile' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article')) {
+        if(currPath === '/' || currPath === '/search' || currPath === '/my-profile' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article')) {
             NavInterval = setInterval(() => {
                 window.addEventListener('scroll', handleScroll)
             }, 150);
@@ -43,7 +43,7 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
                 setHeaderColor('white');
             }else
                 setHeaderColor('black')
-        }else if(currPath === '/my-profile' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article')) {
+        }else if(currPath === '/my-profile' || currPath === '/search' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article') ) {
             const newScroll = window.pageYOffset;
             const willHide = newScroll > oldScroll;
             setShouldNavHide(willHide);
@@ -78,12 +78,6 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
                         src="/setting/write.svg"
                         alt="write"
                     />
-                    {/* <img
-                        style={{width: '60px', height: '60px', position: 'fixed', right: 10, bottom: 10, cursor: 'pointer'}} 
-                        onClick={() => scrolltoTop()}
-                        src="/arrow-up-circle.svg"
-                        alt="scroll-top"
-                    /> */}
                 </aside>
             ) : null}
             <Modal show={isWriteClicked} clicked={() => setIsWriteClicked(false)} type="directInput">
