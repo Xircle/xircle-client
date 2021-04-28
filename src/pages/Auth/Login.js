@@ -77,7 +77,7 @@ const Login = ({ history }) => {
     return (
         <Layout headerNone footerNone={true}>
             <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
-                <Link to="/auth">
+                <Link to="/select">
                     <img
                         style={{width: '25px', height: '25px', marginLeft: 10, cursor: 'pointer'}}
                         src="/arrow-back-outline.svg"
