@@ -15,7 +15,6 @@
 
 ## 구동영상
 
-[![haru_app](https://img.youtube.com/vi/GY6mwkAIv84/0.jpg)](https://www.youtube.com/watch?v=GY6mwkAIv84&t=1s)
-<img width="80%" src=""/>
+[![Xircle](https://img.youtube.com/vi/GY6mwkAIv84/0.jpg)](https://www.youtube.com/watch?v=GY6mwkAIv84&t=1s)
 
 
