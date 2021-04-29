@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FormEvent } from 'react'
 import { Form, Radio } from 'semantic-ui-react'
+import { HtmlInputrops } from 'semantic-ui-react/dist/commonjs/generic';
 
-const RadioUI = ({ subject, isFirstValue, changeHandler }) => { 
-    const [valueArr, setValueArr] = useState([]);
+type RadioUIProps = {
+  subject: string;
+  isFirstValue: boolean;
+  changeHandler: (e: FormEvent<HtmlInputrops>) => void;
+}
+const RadioUI = ({ subject, isFirstValue, changeHandler }: RadioUIProps) => { 
+    const [valueArr, setValueArr] = useState<string []>([]);
     
-    useEffect(() => {
-      if(!subject)
-        return null
+    useEffect((): void => {
+      if(!subject) return
 
       if(subject === 'privateOrNot') {
         setValueArr(['public', 'private', '공개', '비공개']);

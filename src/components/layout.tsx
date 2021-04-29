@@ -1,33 +1,38 @@
+/** @jsxImportSource @emotion/react */
 import React, { useCallback, useState, useEffect, useRef } from 'react'
+import { css } from '@emotion/react';
 import { useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router';
 import Footer_nav from './footer_nav';
-import { scrolltoTop } from '../components/scrolltoTop';
-import Modal from '../components/UI/modal';
+import Modal from './UI/modal';
 import * as actions from '../store/actions/index';
 
-const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnClicked, setBtnClicked }) => {
+interface LayoutProps extends RouteComponentProps<{}> {
+    children: React.ReactNode;
+    isIntro?: Boolean;
+    footerNone?: Boolean;
+    num?: String;
+}
+
+function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
     const [headerColor, setHeaderColor] = useState('black');
     const [isWriteClicked, setIsWriteClicked] = useState(false);
     const [oldScroll, setOldScroll] = useState(window.pageYOffset);
     const [shouldNavHide, setShouldNavHide] = useState(false);
 
-    const directRef = useRef();
+    const directRef = useRef<HTMLTextAreaElement>(null!);
     const dispatch = useDispatch();
 
     useEffect(() => {
         const currPath = window.location.pathname;
-        let NavInterval;
+        let NavInterval: NodeJS.Timeout;
         if(currPath === '/' || currPath === '/search' || currPath === '/my-profile' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article')) {
             NavInterval = setInterval(() => {
                 window.addEventListener('scroll', handleScroll)
             }, 150);
         }
 
-        if(isIntro) 
-            document.body.style.backgroundColor = 'black';
-        else
-            document.body.style.backgroundColor = '#E4E4E4';
         return () => {
             window.removeEventListener('scroll', handleScroll);
             clearInterval(NavInterval);
@@ -69,7 +74,17 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
     }, []);
 
     return (
-        <div id="layout" style={{backgroundColor: isIntro ? 'black' : "white"}} className="flex flex-col mx-auto md:w-full relative">
+        <div 
+            id="layout" 
+            css={css`
+                background-color: ${isIntro ? "#F7F7FA" : '#fff'};
+                @media (min-width: 700px) {
+                    width: 400px;
+                };
+                margin: 0 auto;
+                position: relative;
+            `} 
+        >
             {num === '3' || num === '4' ? (
                 <aside>
                     <img
@@ -102,26 +117,43 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
                     </button>
                 </form>
             </Modal>
-            {isIntro && !btnClicked ? (
+            {isIntro ? (
                 <>
                     <header>
                         <div
                             id="introHeader"
-                            style={{
-                                position: 'fixed', 
-                                zIndex: 200,
-                                width: '100%',
-                                backgroundColor: headerColor,
-                                WebkitTransition: 'all .5s ease-in-out',
-                                MozTransition: 'all .5s ease-in-out',
-                                OTransition: 'all .5s ease-in-out',
-                                transition: 'all .5s ease-in-out',
-                            }}
+                            css={css`
+                                position: fixed;
+                                width: 100%;
+                                z-index: 300;
+                                background-color: ${headerColor};
+                                -webkit-transition: all .5s ease-in-out;
+                                -moz-transition: all .5s ease-in-out;
+                                -o-transition: all .5s ease-in-out;
+                                transition: all .5s ease-in-out;
+                                @media (min-width: 700px) {
+                                    width: 400px;
+                                }
+                            `}
                         >
                             <div className="flex flex-row items-center justify-between px-5 py-7">
                                 <h3 style={{color: headerColor === 'black' ? 'white' : 'black'}} className="m-0 text-xl font-bold text-white">XIRCLE</h3>
                                 <nav>
-                                    <label onClick={() => scrolltoTop(setBtnClicked)} style={{border: '1px solid black'}} className="text-black cursor-pointer px-5 py-2 rounded-lg font-bold bg-white focus:outline-none">사전신청하기</label>
+                                    <label 
+                                        onClick={() => history.push('/select')} 
+                                        style={{border: '1px solid black'}} 
+                                        css={css`
+                                            border-radius: 1px solid black;
+                                            cursor: pointer;
+                                            padding: 8px 24px;
+                                            border-radius: 3px;
+                                            font-size: bold;
+                                            background-color: ${headerColor === 'black' ? 'white' : 'black'};
+                                            color: ${headerColor === 'black' ? 'black' : 'white'};
+                                        `}
+                                        className="font-bold bg-white focus:outline-none"
+                                    >
+                                        구경하기</label>
                                 </nav>
                             </div>
                         </div>
@@ -133,13 +165,14 @@ const Layout = ({ children, history, isIntro, invitement, num, footerNone, btnCl
             <main className="min-h-screen w-full relative">
                 {children}
                 <footer style={{position: 'fixed', zIndex: 200, left: '50%', bottom: -20, transition: '.5s ease', transform: shouldNavHide ? 'translate(-50%, 50px)' : 'translate(-50%, -50px)'}}>
-                    <Footer_nav history={history} footerNone={footerNone}/>
+                    <Footer_nav footerNone/>
                 </footer>
             </main>
 
             {/* footer */}
             {isIntro ? (
-                <footer style={{height: '40vh', padding: '50px 20px 60px'}}>
+                <footer 
+                    style={{height: '40vh', backgroundColor: '#000', padding: '50px 20px 60px'}}>
                     <div style={{color: '#D9D9D9'}}>
                         <p style={{margin: 0}}>고객센터 (팀) 연고링</p> <br/>
                         <p style={{margin: 0}}>각종 문의 : <a style={{color: '#4183c4'}} href="https://pf.kakao.com/_kDxhtK">[XIRCLE] 카카오톡 채널</a></p>

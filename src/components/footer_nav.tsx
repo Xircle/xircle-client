@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 
-const Footer_nav = ({ history, footerNone }) => {
+interface FooterNavProps extends RouteComponentProps {
+    footerNone: boolean;
+}
+
+const Footer_nav = ({ history, footerNone }: FooterNavProps) => {
     const [selectedPage, setSelectedPage] = useState(4);
 
     useEffect(() => {
@@ -11,12 +16,11 @@ const Footer_nav = ({ history, footerNone }) => {
             setSelectedPage(2);
         else if(currPath.includes('/my/article') || currPath.includes('/friend/article'))
             setSelectedPage(4);
-        else
-            return null;
+        else return;
     }, []);
 
+    if(footerNone) return null;
     return (
-        !footerNone && (
         <nav
             style={{width: 231, zIndex: 100, padding: '16px 0', backgroundColor: '#fff', boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.3)', borderRadius: 30 }}
             className="flex flex-row w-full justify-evenly"
@@ -59,8 +63,7 @@ const Footer_nav = ({ history, footerNone }) => {
                 onClick={() => history.push('/createArticle/1')}
             />
         </nav>
-        )
     )
 }
 
-export default Footer_nav;
+export default withRouter(Footer_nav);

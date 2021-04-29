@@ -1,7 +1,14 @@
 import Backdrop from './backdrop';
 import React from 'react';
 
-const Drawer = ({ children, show, clicked, type }) => {
+type DrawerProps = {
+    children: React.ReactNode;
+    show: boolean;
+    clicked: () => void;
+    type: string;
+}
+
+const Drawer = ({ children, show, clicked, type }: DrawerProps) => {
     let height;
     if(type === 'univ') {
         height = 300;

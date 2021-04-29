@@ -1,6 +1,6 @@
 import { Axios } from '../axios-instance';
 
-export const SearchFriend = async (url, token) => {
+export const SearchFriend = async (url: string, token: string) => {
     const res = await Axios.get(url, {
         headers: {
             'access-token': token

@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ValidationTextFields({ confirmAuth, history, type }) {
+export default function ValidationTextFields({ history, type }) {
     const classes = useStyles();
     
     const [isBtnDisabled, setIsBtnDisabled] = useState(true);
@@ -26,7 +26,7 @@ export default function ValidationTextFields({ confirmAuth, history, type }) {
 
     const isLoading = useSelector(store => store.auth.loading);
     const errCode = useSelector(store => store.auth.errCode);
-    const emailRegex = /^[a-zA-Z0-9]([-_]?[a-zA-Z0-9])*@(korea.ac.kr|yonsei.ac.kr|snu.ac.kr|sogang.ac.kr|g.skku.edu|skku.edu|hanyang.ac.kr)$/;
+    const emailRegex = /^[a-zA-Z0-9-_]*@(korea.ac.kr|yonsei.ac.kr|snu.ac.kr|sogang.ac.kr|g.skku.edu|skku.edu|hanyang.ac.kr)$/;
 
     useEffect(() => {
       if(errCode === 0) {

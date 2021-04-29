@@ -1,6 +1,4 @@
-export const scrolltoTop = (setBtnClicked) => {
-    if(setBtnClicked)
-      setBtnClicked(true);
+export const scrolltoTop = () => {
     const rootEl = document.documentElement;
     rootEl.scrollTo({
       top: 0,
@@ -8,7 +6,7 @@ export const scrolltoTop = (setBtnClicked) => {
     })
 };  
 
-export const scrolltoPostNum = (postNum) => {
+export const scrolltoPostNum = (postNum: number) => {
   const rootEl = document.documentElement;
   let top;
   top = 760 * postNum;

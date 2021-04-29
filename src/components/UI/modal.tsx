@@ -3,7 +3,13 @@ import Backdrop from './backdrop';
 
 let memoizedModal = null;
 
-const Modal = ({ children, show, clicked, type }) => {
+type ModalProps = {
+    children: React.ReactNode;
+    show: boolean;
+    clicked: () => void;
+    type: string;
+}
+const Modal = ({ children, show, clicked, type }: ModalProps) => {
     let top;
     if(type === 'directInput') {
         top = '10%';

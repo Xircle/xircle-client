@@ -1,13 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState }  from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import Layout from '../../components/layout';
-import * as actions from '../../store/actions/index';
-import LoadingIndicator from 'react-loading-indicator';
+import { RouteComponentProps } from 'react-router';
 import ValidationButton from '../../components/UI/validationButton';
 
-const FindAuth = ({ history }) => {
+const FindAuth = ({ history }: RouteComponentProps) => {
     return (
-        <Layout headerNone footerNone={true}>
+        <Layout footerNone>
             <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
                 <img
                     onClick={() => history.goBack()} 

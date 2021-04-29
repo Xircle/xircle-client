@@ -11,7 +11,7 @@ import graduate from '../images/my-profile/graduate.svg';
 import startup from '../images/my-profile/startUp.svg';
 import jobfinder from '../images/my-profile/jobfinder.svg';
 
-export function interest2Index(interest){
+export function interest2Index(interest: string): number | undefined{
     switch(interest) {
         case "스타트업":
             return 0
@@ -42,7 +42,7 @@ export function interest2Index(interest){
     }
 }
 
-export function interest2Object(interestArr){
+export function interest2Object(interestArr: any[]){
     const newArr = interestArr.map(el => {
         let value;
         if(el.interest) {

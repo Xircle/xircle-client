@@ -1,19 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import airpod_bg from '../images/airpod_bg.png';
 import airpod from '../images/my-profile/airpod.svg';
 import Aos from 'aos';
-import first_bg from '../images/first_scroll.jpg';
-import second_bg from '../images/second_scroll.jpg';
-import third_bg from '../images/third_scroll.png';
 import 'aos/dist/aos.css';
 import Layout from '../components/layout';
 
-const Intro = ({ history }) => {
-  const [tkInLocalStorage, setTkInLocalStorage] = useState(null);
-  const [userIDInLocalStorage, setUserIDInLocalStorage] = useState(null);
+
+const Intro = ({ history }: RouteComponentProps) => {
+  const [tkInLocalStorage, setTkInLocalStorage] = useState<string | null>(null);
+  const [userIDInLocalStorage, setUserIDInLocalStorage] = useState<string | null>(null);
 
   useEffect(() => {
     Aos.init();
@@ -21,9 +20,8 @@ const Intro = ({ history }) => {
     setUserIDInLocalStorage(localStorage.getItem('_UID'));
   }, []);
 
-    
   return (
-    <Layout isIntro footerNone headerNone>
+    <Layout isIntro footerNone>
       <>
         {/* 1번째 Slide */}
         <section css={css`min-height: 100vh;`}>
@@ -33,7 +31,7 @@ const Intro = ({ history }) => {
                 css={css`
                   object-fit: cover; 
                   height: 100vh;
-                `} autoPlay loop muted playsInline preload="metadata" src="/Intro/intro-video.mp4" type="video/mp4" width="100%"
+                `} autoPlay loop muted playsInline preload="metadata" src="/Intro/intro-video.mp4" width="100%"
               >
                 Your browser doesn't support video.
               </video>
@@ -198,7 +196,7 @@ const Intro = ({ history }) => {
               }
             >
               <img 
-                src="/Intro/circle_man.svg"
+                src="/Intro/circle_man.png"
                 alt="남자"
               />
               <h1
@@ -221,7 +219,7 @@ const Intro = ({ history }) => {
               }
             >
               <img 
-                src="/Intro/circle_woman.svg"
+                src="/Intro/circle_woman.png"
                 alt="여자"
               />
               <h1
@@ -354,7 +352,7 @@ const Intro = ({ history }) => {
                       transform: scale(1.7);
                       margin-bottom: 10px;
                     `} 
-                    src="/Intro/User1.svg"
+                    src="/Intro/User1.png"
                     alt="유저1"
                   />
                   <ReviewerInfo>
@@ -382,7 +380,7 @@ const Intro = ({ history }) => {
                       margin-bottom: 10px;
                     `} 
                     
-                    src="/Intro/User2.svg"
+                    src="/Intro/User2.png"
                     alt="유저2"
                   />
                   <ReviewerInfo>
@@ -406,7 +404,7 @@ const Intro = ({ history }) => {
                       bottom: 5px;
                       margin-bottom: 20px;
                     `} 
-                    src="/Intro/User3.svg"
+                    src="/Intro/User3.png"
                     alt="유저3"
                   />
                   <ReviewerInfo>
@@ -427,7 +425,7 @@ const Intro = ({ history }) => {
                       margin-bottom: 10px;
                     `} 
                     
-                    src="/Intro/User4.svg"
+                    src="/Intro/User4.png"
                     alt="유저4"
                   />
                   <ReviewerInfo>
@@ -453,7 +451,7 @@ const Intro = ({ history }) => {
               <p>나를 가장 잘 표현 할 수 있는 프로필</p>
             </PreviewText>
             <PreviewImg
-              src="/Intro/preview_1.svg"
+              src="/Intro/preview_1.png"
               alt="preview_1"
             />
           </PreviewContainer>
@@ -466,7 +464,7 @@ const Intro = ({ history }) => {
               <p>관심사, 학교, 위치, 나이, 성별로 필터링</p>
             </PreviewText>
             <PreviewImg
-              src="/Intro/preview_2.svg"
+              src="/Intro/preview_2.png"
               alt="preview_2"
             />
           </PreviewContainer>
@@ -479,7 +477,7 @@ const Intro = ({ history }) => {
               <p>프로필을 보고 친해지고 싶은 친구와</p>
             </PreviewText>
             <PreviewImg
-              src="/Intro/preview_3.svg"
+              src="/Intro/preview_3.png"
               alt="preview_3"
             />
           </PreviewContainer>
@@ -492,7 +490,7 @@ const Intro = ({ history }) => {
               <p>소모임/스터디/번개/미팅 등등</p>
             </PreviewText>
             <PreviewImg
-              src="/Intro/preview_4.svg"
+              src="/Intro/preview_4.png"
               alt="preview_4"
             />
           </PreviewContainer>
@@ -715,7 +713,7 @@ const PreviewImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  margin: 30px 0;
+  margin: 50px 0;
 `;
 
 const QNAContainer = styled.div`

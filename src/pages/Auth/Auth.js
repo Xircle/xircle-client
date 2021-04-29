@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useState, useRef }  from 'react';
+import { RouteComponentProps } from 'react-router';
 import Layout from '../../components/layout';
 import ValidationButton from '../../components/UI/validationButton';
 import { useSelector, useDispatch } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import Spinner from 'react-spinner-material';
 import universitySwitcher from '../../components/universitySwitcher';
+import { RootState } from '../../index';
 
 const Auth = ({ history }) => {
-    const isLoading = useSelector(store => store.auth.loading);
+    const isLoading = useSelector((store) => store.auth.loading);
     const isEmailSent = useSelector(store => store.auth.isEmailSent); //만약 토큰이 있으면 AUTH_SUCCESS 이므로
     const errCodeInRedux = useSelector(store => store.auth.errCode);
     const emailInRedux = useSelector(store => store.auth.email); 

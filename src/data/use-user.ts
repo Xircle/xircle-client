@@ -1,7 +1,7 @@
 import useSWR, { useSWRInfinite } from 'swr';
 import { SearchFriend } from '../api/api-user';
 
-export function useInfiniteScroll(url, token) {
+export function useInfiniteScroll(url: string, token: string) {
     if(!url) throw new Error('url must be required');
 
     const { data, error, isValidating, size, setSize } = useSWRInfinite((pageIndex, previousPageData) => {

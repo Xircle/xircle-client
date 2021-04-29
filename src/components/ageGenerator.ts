@@ -1,4 +1,4 @@
-function ageGenerator(age){
+function ageGenerator(age: number): string {
     if(age >= 20 && age <= 23)
         return "20초"
     else if(age >= 24 && age <= 27)

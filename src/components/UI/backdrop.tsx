@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 
-function Backdrop({ show, clicked }) {
+type BackdropProps = {
+    show: boolean;
+    clicked: (e: MouseEvent<HTMLDivElement>) => void;
+}
+
+function Backdrop({ show, clicked }: BackdropProps) {
     return (
         show ? ( 
             <div 

@@ -15,12 +15,13 @@ import friendReducer from './store/reducers/Friend';
 
 // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; 
 
-
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   friend: friendReducer,
 })
+
+export type RootState = ReturnType<typeof rootReducer>;
 
 const store = createStore(
   rootReducer,

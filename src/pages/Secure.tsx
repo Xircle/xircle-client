@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+/** @jsxImportSource @emotion/react */
+import React from 'react';
+import { css } from '@emotion/react';
 import Layout from '../components/layout';
 
-const Secure = ({ history }) => {
+type SecureProps = {
+    history: any
+}
+
+function Secure({ history }: SecureProps) {
     return (
         <div className="w-full overflow-x-hidden">
-            <Layout headerNone footerNone={true}>
+            <Layout footerNone>
                 <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
                     <img
                         onClick={() => history.goBack()} 
@@ -20,7 +25,15 @@ const Secure = ({ history }) => {
                         <p style={{fontSize: '10px', color: "#858585", textAlign: 'left', margin: '20px auto', whiteSpace: 'pre-line'}}>XIRCLE은 이용자의 사전 동의 없이는 이용자의 개인정보를 함부로 공개하지 않으며, 수집된 정보는 아래와 같이 이용하고 있습니다. 이용자가 제공한 모든 정보는 아래의 목적에 필요한 용도 이외로는  사용되지 않으며 이용 목적이 변경될 시에는 이를 알리고 동의를 구할 것입니다.</p>
                     </section>
                     <div style={{padding: '0 30px'}}>
-                        <section style={{height: '300px', width: '100%', margin: '10px auto',  padding: '20px', backgroundColor: "#F7F7FA"}} className=" overflow-y-scroll">
+                        <section 
+                            css={css`
+                                height: 300px;
+                                margin: 10px auto;
+                                padding: 20px;
+                                background-color: #F7F7FA;
+                                overflow-y: auto;
+                            `}
+                        >
                             <span className="text-xs text-gray-400">
                                 [정보통신망 이용 촉진 및 정보보호 등에 관한 법률 제30조의 2] 에 따라 써클서비스 회원의 개인 정보 이용내역을 다음과 같이 안내해 드립니다.
                                 <br/>
@@ -52,7 +65,7 @@ const Secure = ({ history }) => {
                         </section>
                     </div>
                     <div style={{width: '90%', margin: '0 auto'}}>
-                        <button onClick={() => history.push('/auth')} className="w-full rounded-lg px-5 py-3 mt-10 bg-gray-400 text-white focus:text-white focus:bg-black focus:outline-none">
+                        <button onClick={() => history.goBack()} className="w-full rounded-lg px-5 py-3 mt-10 bg-gray-400 text-white focus:text-white focus:bg-black focus:outline-none">
                             알겠습니다.
                         </button>
                     </div>
