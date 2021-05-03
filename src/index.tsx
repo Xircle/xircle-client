@@ -13,8 +13,6 @@ import authReducer from './store/reducers/Auth';
 import userReducer from './store/reducers/User';
 import friendReducer from './store/reducers/Friend';
 
-// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose; 
-
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,

@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react'
 
-export const createKakaoButton = (btnId) => {
-  const kakao = window.Kakao;
+declare global {
+  interface Window {
+    kakao: any
+  }
+
+}
+export const createKakaoButton = (btnId: string) => {
+  const kakao = window.kakao;
   if (!kakao.isInitialized()) { //중복 방지
     // 두번째 step 에서 가져온 javascript key 를 이용하여 initialize
     kakao.init(process.env.REACT_APP_KAKAO_KEY)

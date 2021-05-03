@@ -1,19 +1,24 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
+import { RouteComponentProps } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../store/actions/index';
 import Spinner from 'react-spinner-material';
 
-const { kakao } = window;
+declare global {
+  interface Window {
+    kakao: any
+  }
+}
 
-const KakaoMap = ({ history }) => {
+const kakao = window.kakao;
+
+const KakaoMap = ({ history }: RouteComponentProps) => {
   const [isMapSupported, setIsMapSupported] = useState(true);
   const [location, setLocation] = useState('');
   const [addr, setAddr] = useState('');
-  const [longitude, setLongitude] = useState(null);
-  const [latitude, setLatitude] = useState(null);
-  const [isLoading ,setIsLoading] = useState(true);
-
-  const addrRef = useRef();
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const dispatch = useDispatch();
 
@@ -22,8 +27,8 @@ const KakaoMap = ({ history }) => {
     
     return () => {
       setIsMapSupported(true);
-      setLocation(null);
-      setAddr(null);
+      setLocation('');
+      setAddr('');
       setLongitude(null);
       setLatitude(null);
     }
@@ -57,7 +62,7 @@ const KakaoMap = ({ history }) => {
         level: 5
       };
       const map = new kakao.maps.Map(container, options);
-      let marker = null;
+      let marker: any = null;
       const geocoder = new kakao.maps.services.Geocoder();
       const infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
       
@@ -72,7 +77,7 @@ const KakaoMap = ({ history }) => {
             displayMarker(locPosition);
 
             // latitude, longitude로 현재 위치정보 반환하는 콜백함수.
-            searchDetailAddrFromCoords({ lat: lat, lng: lon}, function(result, status) {
+            searchDetailAddrFromCoords({ lat: lat, lng: lon}, function(result: any, status: boolean) {
               if (status === kakao.maps.services.Status.OK) {
                 const fullAddr = result[0].address.address_name; 
                 const newAddr = fullAddr.split(' ');
@@ -102,7 +107,7 @@ const KakaoMap = ({ history }) => {
       }
       
       // 지도에 마커와 인포윈도우를 표시하는 함수입니다
-      function displayMarker(locPosition) {
+      function displayMarker(locPosition: any) {
           marker = new kakao.maps.Marker({  
               map: map, 
               position: locPosition
@@ -113,10 +118,10 @@ const KakaoMap = ({ history }) => {
       }
 
       // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
-      kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+      kakao.maps.event.addListener(map, 'click', function(mouseEvent: any) {
         if(isLoading)
           return null;
-        searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+        searchDetailAddrFromCoords(mouseEvent.latLng, function(result: any, status: boolean) {
             if (status === kakao.maps.services.Status.OK) {
                 let detailAddr = !!result[0].road_address ? result[0].road_address.address_name : '';
                 detailAddr += result[0].address.address_name;
@@ -142,7 +147,7 @@ const KakaoMap = ({ history }) => {
           });
       });
       
-      function searchDetailAddrFromCoords(coords, callback) {
+      function searchDetailAddrFromCoords(coords: any, callback: (result: any, status: boolean) => void) {
           // 좌표로 법정동 상세 주소 정보를 요청합니다
           if(coords.lng)
             geocoder.coord2Address(coords.lng, coords.lat, callback);
@@ -159,6 +164,9 @@ const KakaoMap = ({ history }) => {
             <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, 0)'}}>
                 <Spinner
                     color="gray"
+                    visible
+                    stroke="5"
+                    radius={5}
                 />
             </div>
         ) : null}
@@ -172,7 +180,6 @@ const KakaoMap = ({ history }) => {
             placeholder="거주지"
             className="bg-gray-100 px-5 py-3"
             value={addr}
-            ref={addrRef}
             onChange={(e) => locationTextChangeHandler(e)}
             style={{width: 190}}
           />

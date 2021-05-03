@@ -8,7 +8,7 @@ import Footer_nav from './footer_nav';
 import Modal from './UI/modal';
 import * as actions from '../store/actions/index';
 
-interface LayoutProps extends RouteComponentProps<{}> {
+interface LayoutProps extends RouteComponentProps {
     children: React.ReactNode;
     isIntro?: Boolean;
     footerNone?: Boolean;

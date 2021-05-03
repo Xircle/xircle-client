@@ -1,4 +1,5 @@
 import React, { useState, useReducer, useCallback} from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import graduateSchool from '../images/setting/interest_1.svg';
 import startUp from '../images/setting/startUp.jpg';
@@ -12,11 +13,40 @@ import health from '../images/setting/interest_8.svg';
 import art from '../images/setting/art.png';
 import jobFinder from '../images/setting/interest_11.svg';
 import lawSchool from '../images/setting/interest_2.svg';
-
 import * as actions from '../store/actions/index';
 
-function reducer(state, action) {
-    let newArr = null;
+type InterestState = {
+    startUpClicked: boolean,
+    mukBangClicked: boolean,
+    dogLoverClicked: boolean,
+    friendClicked: boolean,
+    codingClicked: boolean,
+    fashionClicked: boolean,
+    healthClicked: boolean,
+    gameClicked: boolean,
+    artClicked: boolean,
+    prepareClicked: boolean,
+    graduateSchoolClicked: boolean,
+    lawSchoolClicked: boolean,
+    interestArr: string[],
+}
+
+type InterestAction = 
+    | ({ type: 'STARTUP_CLICKED'})
+    | ({ type: 'MUKBANG_CLICKED'})
+    | ({ type: 'DOGLOVER_CLICKED'})
+    | ({ type: 'FRIEND_CLICKED'})
+    | ({ type: 'CODING_CLICKED'})
+    | ({ type: 'FASHION_CLICKED'})
+    | ({ type: 'HEALTH_CLICKED'})
+    | ({ type: 'GAME_CLICKED'})
+    | ({ type: 'ART_CLICKED'})
+    | ({ type: 'PREPARE_CLICKED'})
+    | ({ type: 'LAWSCHOOL_CLICKED'})
+    | ({ type: 'GRADUATESCHOOL_CLICKED'});
+
+function reducer(state: InterestState, action: InterestAction) {
+    let newArr: string[] = [];
     switch (action.type) {
         case 'STARTUP_CLICKED':
             newArr = state.interestArr.slice(); // swallow copy
@@ -178,11 +208,12 @@ function reducer(state, action) {
             };
         
         default:
-            throw new Error(`Unhandled action type: ${action.type}`);
+            throw new Error(`Unhandled action type`);
     }
-  }
+}
 
-const InterestSetting = ({ history }) => {
+
+const InterestSetting = ({ history }: RouteComponentProps) => {
     const [state, dispatch] = useReducer(reducer, {
         startUpClicked: false,
         mukBangClicked: false,
@@ -230,7 +261,7 @@ const InterestSetting = ({ history }) => {
                 <div
                     style={{
                         margin: 5, width: 90, height: 90, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                        border: friendClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${friend})`
+                        border: friendClicked ? '6px solid orange' : undefined, backgroundSize: 'cover', backgroundImage: `url(${friend})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "FRIEND_CLICKED"})}
@@ -239,8 +270,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40,borderRadius: '100%', 
-                        border: mukBangClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${meet})`}} 
+                        margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: '100%', 
+                        border: mukBangClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${meet})`}} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "MUKBANG_CLICKED"})}
                 >
@@ -248,8 +279,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  borderRadius: 40, borderRadius: '100%', 
-                        border: dogLoverClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${dogLover})`
+                        margin: 5, width: 90, height: 90,  borderRadius: '100%', 
+                        border: dogLoverClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${dogLover})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "DOGLOVER_CLICKED"})}
@@ -258,8 +289,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40, borderRadius: '100%', 
-                        border: startUpClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${startUp})`
+                        margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: '100%', 
+                        border: startUpClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${startUp})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "STARTUP_CLICKED"})}
@@ -269,7 +300,7 @@ const InterestSetting = ({ history }) => {
                 <div
                     style={{
                         margin: 5, width: 90, height: 90, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                        border: codingClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${coding})`
+                        border: codingClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${coding})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "CODING_CLICKED"})}
@@ -278,8 +309,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  borderRadius: 40,borderRadius: '100%', 
-                        border: fashionClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${fashion})`
+                        margin: 5, width: 90, height: 90, borderRadius: '100%', 
+                        border: fashionClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${fashion})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "FASHION_CLICKED"})}
@@ -288,8 +319,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  borderRadius: 40,borderRadius: '100%', 
-                        border: healthClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${health})`
+                        margin: 5, width: 90, height: 90, borderRadius: '100%', 
+                        border: healthClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${health})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "HEALTH_CLICKED"})}
@@ -299,7 +330,7 @@ const InterestSetting = ({ history }) => {
                 <div
                     style={{
                         margin: 5, width: 90, height: 90, textAlign: 'center',  backgroundColor: "#C4C4C4", borderRadius: '100%', 
-                        border: gameClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${game})`
+                        border: gameClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${game})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "GAME_CLICKED"})}
@@ -308,8 +339,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  borderRadius: 40, borderRadius: '100%', 
-                        border: artClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${art})`
+                        margin: 5, width: 90, height: 90,  borderRadius: '100%', 
+                        border: artClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${art})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "ART_CLICKED"})}
@@ -318,8 +349,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA", borderRadius: 40,borderRadius: '100%', 
-                        border: prepareClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${jobFinder})`
+                        margin: 5, width: 90, height: 90,  backgroundColor: "#FFEAEA",borderRadius: '100%', 
+                        border: prepareClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${jobFinder})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "PREPARE_CLICKED"})}
@@ -328,8 +359,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  borderRadius: 40, borderRadius: '100%', 
-                        border: lawSchoolClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${lawSchool})`
+                        margin: 5, width: 90, height: 90,  borderRadius: '100%', 
+                        border: lawSchoolClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${lawSchool})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "LAWSCHOOL_CLICKED"})}
@@ -338,8 +369,8 @@ const InterestSetting = ({ history }) => {
                 </div>
                 <div 
                     style={{
-                        margin: 5, width: 90, height: 90,  borderRadius: 40,borderRadius: '100%', 
-                        border: graduateSchoolClicked && '6px solid orange', backgroundSize: 'cover', backgroundImage: `url(${graduateSchool})`
+                        margin: 5, width: 90, height: 90, borderRadius: '100%', 
+                        border: graduateSchoolClicked ? '6px solid orange': undefined, backgroundSize: 'cover', backgroundImage: `url(${graduateSchool})`
                     }} 
                     className="cursor-pointer"
                     onClick={() => dispatch({type: "GRADUATESCHOOL_CLICKED"})}

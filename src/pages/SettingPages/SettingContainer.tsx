@@ -1,15 +1,20 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import SettingProgress from './SettingProgress/SettingProgress';
 import SettingContents from './SettingContents/SettingContents';
 import Layout from '../../components/layout';
 
-const SettingContainer = ({ history, match }) => {
+interface MatchParams { 
+    questionNum: string;
+}
+
+const SettingContainer = ({ history, match }: RouteComponentProps<MatchParams>) => {
     const num = match.params.questionNum;
     return (
         <>
-        {num !== '11' ? (
+        {num !== '7' ? (
             <div className="overflow-x-hidden">
-                <Layout num={num} headerNone footerNone>
+                <Layout num={num} footerNone>
                     <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
                         <img
                             onClick={() => history.goBack()} 
@@ -23,7 +28,7 @@ const SettingContainer = ({ history, match }) => {
                 </Layout>
             </div>
         ) : (
-            <Layout headerNone footerNone>
+            <Layout footerNone>
                 <SettingContents history={history} questionNum={num}/>
             </Layout>
         )}
