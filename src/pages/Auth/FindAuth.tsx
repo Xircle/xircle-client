@@ -1,9 +1,9 @@
 import React from 'react';
+import { History } from 'history';
 import Layout from '../../components/layout';
-import { RouteComponentProps } from 'react-router';
 import ValidationButton from '../../components/UI/validationButton';
 
-const FindAuth = ({ history }: RouteComponentProps) => {
+const FindAuth = ({ history }: { history: History}) => {
     return (
         <Layout footerNone>
             <nav style={{height: '60px', borderBottom: '1px solid #eee'}} className="flex flex-row items-center justify-between ">
@@ -23,7 +23,7 @@ const FindAuth = ({ history }: RouteComponentProps) => {
                 </section>
                 <section className="px-10 mb-5">
                     <section className="text-center my-10">
-                        <ValidationButton history={history} type="find"/>
+                        <ValidationButton type="find"/>
                     </section>
                 </section>
             </section>

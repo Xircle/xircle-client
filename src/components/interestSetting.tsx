@@ -1,19 +1,20 @@
 import React, { useState, useReducer, useCallback} from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import graduateSchool from '../images/setting/interest_1.svg';
-import startUp from '../images/setting/startUp.jpg';
-import friend from '../images/setting/friend.svg';
-import meet from '../images/setting/meet.svg';
-import dogLover from '../images/setting/interest_10.svg';
-import game from '../images/setting/game.svg';
-import coding from '../images/setting/interest_5.svg';
-import fashion from '../images/setting/interest_12.svg';
-import health from '../images/setting/interest_8.svg';
-import art from '../images/setting/art.png';
-import jobFinder from '../images/setting/interest_11.svg';
-import lawSchool from '../images/setting/interest_2.svg';
-import * as actions from '../store/actions/index';
+import graduateSchool from '../static/images/setting/interest_1.svg';
+import startUp from '../static/images/setting/startUp.jpg';
+import friend from '../static/images/setting/friend.svg';
+import meet from '../static/images/setting/meet.svg';
+import dogLover from '../static/images/setting/interest_10.svg';
+import game from '../static/images/setting/game.svg';
+import coding from '../static/images/setting/interest_5.svg';
+import fashion from '../static/images/setting/interest_12.svg';
+import health from '../static/images/setting/interest_8.svg';
+import art from '../static/images/setting/art.png';
+import jobFinder from '../static/images/setting/interest_11.svg';
+import lawSchool from '../static/images/setting/interest_2.svg';
+// import {  } from '../store/modules/profile';
+import { useAppDispatch } from '../hooks/useSelector';
 
 type InterestState = {
     startUpClicked: boolean,
@@ -230,14 +231,14 @@ const InterestSetting = ({ history }: RouteComponentProps) => {
         interestArr: [],
     });
 
-    const dispatchRedux = useDispatch();
+    const dispatchRedux = useAppDispatch();
     const interestSubmitHandler = useCallback((event) => {
         event.preventDefault();
         if(state.interestArr.length < 2) {
             return alert("관심사를 2개 이상 골라주세요! 관심사가 많아질수록 다양한 친구들을 만날 확률이 높아집니다!")
         }
 
-        dispatchRedux(actions.addInterest(state.interestArr));
+        // dispatchRedux(actions.addInterest(state.interestArr));
         history.push('/setting/6');
     }, [state]);
     

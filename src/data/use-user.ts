@@ -1,5 +1,5 @@
 import useSWR, { useSWRInfinite } from 'swr';
-import { SearchFriend } from '../api/api-user';
+import { SearchFriend } from '../lib/api/search';
 
 export function useInfiniteScroll(url: string, token: string) {
     if(!url) throw new Error('url must be required');

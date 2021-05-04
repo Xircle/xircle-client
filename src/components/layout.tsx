@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { css } from '@emotion/react';
-import { useDispatch } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { RouteComponentProps } from 'react-router';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Footer_nav from './footer_nav';
 import Modal from './UI/modal';
-import * as actions from '../store/actions/index';
+import { useAppDispatch } from '../hooks/useSelector';
+import * as actions from '../store/index';
+
+
 
 interface LayoutProps extends RouteComponentProps {
     children: React.ReactNode;
@@ -22,7 +23,7 @@ function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
     const [shouldNavHide, setShouldNavHide] = useState(false);
 
     const directRef = useRef<HTMLTextAreaElement>(null!);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         const currPath = window.location.pathname;
@@ -57,21 +58,21 @@ function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
 
     }, [oldScroll]);
     
-    const jobAdjSubmitHandler = useCallback((e) => {
-        e.preventDefault();
-        const currPath = window.location.pathname;
-        const text = directRef.current.value;
-        console.log(text);
-        if(currPath === '/setting/3') { //job
-            dispatch(actions.addJob(text));
-            history.push('/setting/4');
-        }else {  //adj
-            dispatch(actions.addAdj(text));
-            history.push('/setting/5');
-        }
-        setIsWriteClicked(false);
-        directRef.current.value = '';
-    }, []);
+    // const jobAdjSubmitHandler = useCallback((e) => {
+    //     e.preventDefault();
+    //     const currPath = window.location.pathname;
+    //     const text = directRef.current.value;
+    //     console.log(text);
+    //     if(currPath === '/setting/3') { //job
+    //         dispatch(actions.addJob(text));
+    //         history.push('/setting/4');
+    //     }else {  //adj
+    //         dispatch(actions.addAdj(text));
+    //         history.push('/setting/5');
+    //     }
+    //     setIsWriteClicked(false);
+    //     directRef.current.value = '';
+    // }, []);
 
     return (
         <div 
@@ -102,7 +103,9 @@ function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
                     src="/close-outline.svg"
                     alt="x"
                 />
-                <form onSubmit={(e) => jobAdjSubmitHandler(e)}>
+                <form 
+                    // onSubmit={(e) => jobAdjSubmitHandler(e)}
+                >
                     <textarea 
                         name="directInput"
                         id="directInput"
@@ -112,7 +115,10 @@ function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
                         style={{height: '100px', backgroundColor: "#F7F7FA", textAlign: 'center'}}
                         className="my-10 px-3 py-5 w-full text-base placeholder-gray-300">
                     </textarea>
-                    <button onClick={(e) => jobAdjSubmitHandler(e)} style={{backgroundColor: "#979B9F", color: '#fff', padding: "10px 60px", borderRadius: 2}}>
+                    <button 
+                        // onClick={(e) => jobAdjSubmitHandler(e)} 
+                        style={{backgroundColor: "#979B9F", color: '#fff', padding: "10px 60px", borderRadius: 2}}
+                    >
                         확인
                     </button>
                 </form>

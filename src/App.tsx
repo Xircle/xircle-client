@@ -13,7 +13,6 @@ const Start = React.lazy(() => import('./pages/Auth/Start'));
 const SettingCotainer = React.lazy(() => import('./pages/SettingPages/SettingContainer'));
 const MyProfile = React.lazy(() => import('./pages/HomePages/Profile/MyProfile'));
 const FriendProfile = React.lazy(() => import('./pages/HomePages/Profile/FriendProfile'));
-const DeveloperProfile = React.lazy(() => import('./pages/HomePages/Profile/DeveloperProfile'));
 const AirpodEvent = React.lazy(() => import('./pages/HomePages/Profile/AirpodEvent'));
 const CreateArticle = React.lazy(() => import('./pages/HomePages/Profile/createArticle'));
 const ProfileEdit = React.lazy(() => import('./pages/HomePages/Profile/ProfileEdit'));
@@ -51,7 +50,6 @@ const App = () => {
           <Route path="/start" component={Start} exact/>
           <Route path="/setting/:questionNum" component={SettingCotainer} exact/>
           <Route path="/event" component={AirpodEvent} exact/>
-          <Route path="/developer-profile" component={DeveloperProfile} exact/>
           <Route path="/friend-profile" component={FriendProfile} exact/>
           <Route path="/my-profile" component={MyProfile} exact/>
           <Route path="/my-profile/edit" component={ProfileEdit} exact/>

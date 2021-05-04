@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { RouteComponentProps } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import * as actions from '../store/actions/index';
+import { useAppDispatch, useAppSelector } from '../hooks/useSelector';
 import Spinner from 'react-spinner-material';
+import { addLocation } from '../store/modules/profile';
 
 declare global {
   interface Window {
@@ -20,7 +20,7 @@ const KakaoMap = ({ history }: RouteComponentProps) => {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     mapScript();
@@ -46,7 +46,12 @@ const KakaoMap = ({ history }: RouteComponentProps) => {
     }
 
     const finalLocation = addr || location;
-    dispatch(actions.addLocation(finalLocation, longitude, latitude));
+    dispatch(addLocation({ 
+      location: finalLocation, 
+      longitude, 
+      latitude 
+    }));
+    
     history.push('/setting/2'); 
   }, [addr, location, longitude, latitude]);
 

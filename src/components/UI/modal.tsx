@@ -7,9 +7,9 @@ type ModalProps = {
     children: React.ReactNode;
     show: boolean;
     clicked: () => void;
-    type: string;
+    type?: string;
 }
-const Modal = ({ children, show, clicked, type }: ModalProps) => {
+const Modal = ({ children, show, clicked, type = '' }: ModalProps) => {
     let top;
     if(type === 'directInput') {
         top = '10%';

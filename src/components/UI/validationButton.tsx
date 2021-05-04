@@ -1,10 +1,11 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
-import * as actions from '../../store/actions/index';
+import { useAppSelector, useAppDispatch } from '../../hooks/useSelector';
+import { Link } from 'react-router-dom';
 import Modal from './modal';
 import Spinner from 'react-spinner-material';
+import { sendEmailThunk, findAuthThunk } from '../../store/modules/auth';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,18 +15,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ValidationTextFields({ history, type }) {
+type ValidationBtnProps = {
+  type: string
+}
+
+export default function ValidationTextFields({ type }: ValidationBtnProps) {
     const classes = useStyles();
     
     const [isBtnDisabled, setIsBtnDisabled] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [email, setEmail] = useState('');
-    
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const isLoading = useSelector(store => store.auth.loading);
-    const errCode = useSelector(store => store.auth.errCode);
+    const status = useAppSelector(store => store.auth.status);
+    const errCode = useAppSelector(store => store.auth.error_code);
     const emailRegex = /^[a-zA-Z0-9-_]*@(korea.ac.kr|yonsei.ac.kr|snu.ac.kr|sogang.ac.kr|g.skku.edu|skku.edu|hanyang.ac.kr)$/;
 
     useEffect(() => {
@@ -53,7 +57,7 @@ export default function ValidationTextFields({ history, type }) {
         return alert('올바른 메일로 입력해주세요.');
       }
       
-      dispatch(actions.auth(email));
+      dispatch(sendEmailThunk(email));
     }, [email]);
 
     const findSubmitHandler = useCallback((event) => {
@@ -62,9 +66,7 @@ export default function ValidationTextFields({ history, type }) {
         event.preventDefault();
         return alert('올바른 메일로 입력해주세요.');
       }
-      
-      // redux 스토어에 dispatch
-      dispatch(actions.findAuth(email));
+      dispatch(findAuthThunk(email));
     }, [email]);
     
 
@@ -85,10 +87,13 @@ export default function ValidationTextFields({ history, type }) {
         </div>
 
         {/* 로딩 인디케이터 */}
-        {isLoading ? (
+        {status === 'pending' ? (
         <div style={{height: '40px', margin: '20px 0'}}>
           <div className="flex flex-col items-center">
-              <Spinner 
+              <Spinner
+                  stroke={10}
+                  radius="10"
+                  visible
                   size={10}
                   color={"#aaa"}
               />
@@ -113,7 +118,10 @@ export default function ValidationTextFields({ history, type }) {
           <div className="py-5">
             <h1 className="text-xl mb-5">이메일을 확인해주세요!</h1>
             <p style={{color: '#aaa'}} className="text-base my-10">이메일로 기존 닉네임과 비밀번호를 <br/> 전송해드렸습니다.</p>
-            <p onClick={() => history.push('/login')} style={{cursor: 'pointer'}} >로그인하러가기</p>
+            <Link to="/login">
+              <p>로그인하러가기</p>
+            </Link>
+            {/* <p onClick={() => history.push('/login')} style={{cursor: 'pointer'}}>로그인하러가기</p> */}
           </div>
         </Modal>
 
