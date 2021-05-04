@@ -4,60 +4,58 @@ import { AxiosError } from 'axios';
 import * as AuthAPI from '../../lib/api/auth';
 import { addUniv } from './profile';
 
-// 원래는 errorCode로 validation 했었는데 이제는 message로 컴포넌트에서 분기해줘야 할듯.
-type ErrorRes = {
-    errorMessage: string
-}
 
 type PreJoinUserResponse = {
     token: string,
     userId: string
 }
 
+// Thunk actionCreator
 export const preUserJoinThunk = createAsyncThunk<
     PreJoinUserResponse,
-    FormData,
-    { rejectValue: string }
+    FormData
 >(
     'auth/join',
-    async (form, thunkAPi) => {
+    async (form) => {
         try {
             const res = await AuthAPI.userJoin(form);
-            if(!res.data.success) thunkAPi.rejectWithValue(res.data.message);
+            if(!res.data.success) {
+                const errorMsg = res.data.message;
+                alert(errorMsg);
+                throw new Error(errorMsg);
+            }
             return {
                 token: res.data.token,
                 userId: res.data.userId
             }
         }catch(err) {
-            let error: AxiosError<ErrorRes> = err;
-            if(!error.response) throw err;
-            return thunkAPi.rejectWithValue(error.response.data.errorMessage);
+            throw err
         }
     }
 );
+
 export const sendEmailThunk = createAsyncThunk<
     string,
-    string,
-    { rejectValue: string }
+    string
 >(
     'auth/sendEmail',
-    async (email, thunkAPi) => {
+    async (email) => {
         try {
             const res = await AuthAPI.sendEmail(email);
             if(res.data.success) {
                 return email // success
             }else {
-                const errCode = res.data.code;
+                const errCode: number = res.data.code;
                 if(errCode === 451) 
                     alert("이메일 전송을 실패했습니다 다시 보내주세요.");
                 else 
                     alert("이미 가입된 이메일입니다 로그인해주세요.");
-                return thunkAPi.rejectWithValue('')
+                throw new Error(res.data.message);
             }
         }catch(err) {
             console.log(err);
             alert('Something went wrong')
-            return thunkAPi.rejectWithValue('');
+            throw new Error(err);
         }
     }
 )
@@ -65,7 +63,7 @@ export const sendEmailThunk = createAsyncThunk<
 export const checkEmailThunk = createAsyncThunk<
     void,
     { email: string, code: number, univKor: string},
-    { rejectValue: number | null }
+    { rejectValue: number }
 >(
     'auth/checkEmail',
     async ({ email, code, univKor }, thunkAPi) => {
@@ -74,39 +72,38 @@ export const checkEmailThunk = createAsyncThunk<
             if(res.data.success) {
                 thunkAPi.dispatch(addUniv(univKor));
             }else {
-                const errCode = res.data.code;
+                const errCode: number = res.data.code;
                 return thunkAPi.rejectWithValue(errCode);
             }
         }catch(err) {
             console.log(err);
             alert('Something went wrong')
-            thunkAPi.rejectWithValue(null);
+            throw err;
         }
     }
 )
 
 export const findAuthThunk = createAsyncThunk<
     void,
-    string,
-    { rejectValue: null }
+    string
 >(
     'auth/findAuth',
     async (email, thunkAPi) => {
         try {
             const res = await AuthAPI.findInfo(email);
             if(!res.data.success) {
-                const errCode = res.data.code;
+                const errCode: number = res.data.code;
                 if(errCode == 457) {
                     alert("가입되지 않은 이메일입니다.")
                 }else if(errCode === 451) {
                     alert('네트워크 혹은 서버에 일시적인 오류가 있습니다. 잠시 후에 다시 시도해주세요');
                 }
-                thunkAPi.rejectWithValue(null);
+                throw new Error(res.data.message);
             }
         }catch(err) {
             console.log(err);
             alert('Something went wrong')
-            thunkAPi.rejectWithValue(null);
+            throw err;
         }
     }
 )
@@ -114,7 +111,7 @@ export const findAuthThunk = createAsyncThunk<
 export const checkNameThunk = createAsyncThunk<
     void,
     { displayName: string, pwd: string, phoneNumber: string},
-    { rejectValue: number | null }
+    { rejectValue: number }
 >(
     'auth/checkName',
     async ({ displayName, pwd, phoneNumber }, thunkAPi) => {
@@ -127,47 +124,51 @@ export const checkNameThunk = createAsyncThunk<
                     phoneNumber
                 }))
             }else {
-                const errCode = res.data.code;
+                const errCode: number = res.data.code;
                 return thunkAPi.rejectWithValue(errCode);
             }
         }catch(err) {
             console.log(err);
             alert('Something went wrong')
-            return thunkAPi.rejectWithValue(null);
+            throw err;
         }
     }
 )
 
 export const loginThunk = createAsyncThunk<
-    void,
-    { displayName: string, pwd: string, phoneNumber: string},
-    { rejectValue: number | null }
+    { displayName: string, password: string},
+    { displayName: string, password: string },
+    { rejectValue: number }
 >(
     'auth/login',
-    async ({ displayName, pwd, phoneNumber }, thunkAPi) => {
+    async ({ displayName, password }, thunkAPi) => {
         try {
-            const res = await AuthAPI.checkName(displayName);
+            const res = await AuthAPI.login(displayName, password);
             if(res.data.success) {
-                thunkAPi.dispatch(preUserSlice.actions.saveAuthData({ 
+                const token = res.data.data.token;
+                const userId = res.data.data.userId;
+                localStorage.setItem('tk', token);
+                localStorage.setItem('_UID', userId);
+                return {
                     displayName,
-                    pwd,
-                    phoneNumber
-                }))
+                    password
+                }
             }else {
-                const errCode = res.data.code;
+                const errCode: number = res.data.code;
                 return thunkAPi.rejectWithValue(errCode);
             }
         }catch(err) {
             console.log(err);
             alert('Something went wrong')
-            return thunkAPi.rejectWithValue(null);
+            throw err;
         }
     }
 )
 
+// Store & Reducer, with createSlice
 type Auth = {
     status: 'idle' | 'pending',
-    error: string | null | undefined,
+    error_code: number | null | undefined,
     data: {
         email: string | null,
         displayName: string | null,
@@ -179,7 +180,7 @@ type Auth = {
 }
 const initialState: Auth = {
     status: 'idle',
-    error: null,
+    error_code: null,
     data: {
         email: null,
         displayName: null,
@@ -214,9 +215,8 @@ const preUserSlice = createSlice({
             state.data.token = payload.token;
             state.data.userId = payload.userId;
         })
-        .addCase(preUserJoinThunk.rejected, (state, { payload }) => {
+        .addCase(preUserJoinThunk.rejected, (state) => {
             state.status = 'idle';
-            state.error = payload;
         })
     // Send email
         .addCase(sendEmailThunk.pending, (state) => {
@@ -229,6 +229,17 @@ const preUserSlice = createSlice({
         .addCase(sendEmailThunk.rejected, (state) => {
             state.status = 'pending';
         })
+    // Check email
+        .addCase(checkEmailThunk.pending, (state) => {
+            state.status = 'pending';
+        })
+        .addCase(checkEmailThunk.fulfilled, (state) => {
+            state.status = 'idle';
+        })
+        .addCase(checkEmailThunk.rejected, (state, { payload }) => {
+            state.status = 'idle';
+            state.error_code = payload;
+        })
     // Find auth info
         .addCase(findAuthThunk.pending, (state) => {
             state.status = 'pending';
@@ -240,15 +251,29 @@ const preUserSlice = createSlice({
             state.status = 'pending';
         })
     // Check displayName
-        .addCase(findAuthThunk.pending, (state) => {
+        .addCase(checkNameThunk.pending, (state) => {
             state.status = 'pending';
         })
-        .addCase(findAuthThunk.fulfilled, (state) => {
+        .addCase(checkNameThunk.fulfilled, (state) => {
             state.status = 'idle';
         })
-        .addCase(findAuthThunk.rejected, (state) => {
+        .addCase(checkNameThunk.rejected, (state, { payload }) => {
+            state.status = 'pending';
+            state.error_code = payload;
+        })
+    // Login thunk
+        .addCase(loginThunk.pending, (state) => {
+            state.status = 'pending';
+        })
+        .addCase(loginThunk.fulfilled, (state, { payload }) => {
+            state.status = 'pending';
+            state.data.displayName = payload.displayName;
+            state.data.password = payload.password;
+        })
+        .addCase(loginThunk.rejected, (state) => {
             state.status = 'pending';
         })
 })
 
 export default preUserSlice.reducer;
+export const { saveAuthData } = preUserSlice.actions;
