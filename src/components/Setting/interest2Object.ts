@@ -1,15 +1,15 @@
-import coding from '../static/images/my-profile/coding.svg';
-import lawschool from '../static/images/my-profile/lawSchool.svg';
-import art from '../static/images/my-profile/art.svg';
-import friend from '../static/images/my-profile/friend.svg';
-import game from '../static/images/my-profile/game.svg';
-import meet from '../static/images/my-profile/meet.svg';
-import fashion from '../static/images/my-profile/fashion.svg';
-import dog from '../static/images/my-profile/dog.svg';
-import health from '../static/images/my-profile/health.svg';
-import graduate from '../static/images/my-profile/graduate.svg';
-import startup from '../static/images/my-profile/startUp.svg';
-import jobfinder from '../static/images/my-profile/jobfinder.svg';
+import coding from '../../static/images/my-profile/coding.svg';
+import lawschool from '../../static/images/my-profile/lawSchool.svg';
+import art from '../../static/images/my-profile/art.svg';
+import friend from '../../static/images/my-profile/friend.svg';
+import game from '../../static/images/my-profile/game.svg';
+import meet from '../../static/images/my-profile/meet.svg';
+import fashion from '../../static/images/my-profile/fashion.svg';
+import dog from '../../static/images/my-profile/dog.svg';
+import health from '../../static/images/my-profile/health.svg';
+import graduate from '../../static/images/my-profile/graduate.svg';
+import startup from '../../static/images/my-profile/startUp.svg';
+import jobfinder from '../../static/images/my-profile/jobfinder.svg';
 
 export function interest2Index(interest: string): number | undefined{
     switch(interest) {

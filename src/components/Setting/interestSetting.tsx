@@ -1,20 +1,20 @@
 import React, { useState, useReducer, useCallback} from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import graduateSchool from '../static/images/setting/interest_1.svg';
-import startUp from '../static/images/setting/startUp.jpg';
-import friend from '../static/images/setting/friend.svg';
-import meet from '../static/images/setting/meet.svg';
-import dogLover from '../static/images/setting/interest_10.svg';
-import game from '../static/images/setting/game.svg';
-import coding from '../static/images/setting/interest_5.svg';
-import fashion from '../static/images/setting/interest_12.svg';
-import health from '../static/images/setting/interest_8.svg';
-import art from '../static/images/setting/art.png';
-import jobFinder from '../static/images/setting/interest_11.svg';
-import lawSchool from '../static/images/setting/interest_2.svg';
+import graduateSchool from '../../static/images/setting/interest_1.svg';
+import startUp from '../../static/images/setting/startUp.jpg';
+import friend from '../../static/images/setting/friend.svg';
+import meet from '../../static/images/setting/meet.svg';
+import dogLover from '../../static/images/setting/interest_10.svg';
+import game from '../../static/images/setting/game.svg';
+import coding from '../../static/images/setting/interest_5.svg';
+import fashion from '../../static/images/setting/interest_12.svg';
+import health from '../../static/images/setting/interest_8.svg';
+import art from '../../static/images/setting/art.png';
+import jobFinder from '../../static/images/setting/interest_11.svg';
+import lawSchool from '../../static/images/setting/interest_2.svg';
 // import {  } from '../store/modules/profile';
-import { useAppDispatch } from '../hooks/useSelector';
+import { useAppDispatch } from '../../hooks/useSelector';
 
 type InterestState = {
     startUpClicked: boolean,

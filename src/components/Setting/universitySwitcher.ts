@@ -1,4 +1,3 @@
-
 function universitySwitcher(universityEng: string): string | null{
     switch(universityEng) {
         case 'korea.ac.kr':
