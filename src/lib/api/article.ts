@@ -1,6 +1,6 @@
 import Axios from '../defaultClient';
 
-const userId = localStorage.getItem('UID');
+const userId = localStorage.getItem('_UID');
 
 export type ArticleForm = {
     profileImgSrc: File,
@@ -13,7 +13,10 @@ export type ArticleForm = {
 }
 export type ArticlePayload = ArticleForm
 
-export const getArticles = (interest: string) => Axios.get(`/user/${userId}/profile/post?interest=${interest}&page=0`);
+export const getArticles = (interest: string) => {
+    return Axios.get(`/user/${userId}/profile/post?interest=${interest}&page=0`);
+}
+
 export const getDetailArticles = (
     interest: string, 
     page: number,

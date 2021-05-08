@@ -1,12 +1,12 @@
 import axios, { AxiosInstance } from 'axios';
 
-axios.defaults.withCredentials = true;
+const token = localStorage.getItem('tk');
 
 const Axios: AxiosInstance = axios.create({
     baseURL: 'https://api.xircle.org',
-    withCredentials: true,
+    timeout: 5000,
     headers: {
-        'access-token': localStorage.getItem('tk')
+        'access-token': token
     }
 })
 
