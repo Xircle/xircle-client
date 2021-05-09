@@ -1,20 +1,20 @@
-import * as React from 'react';
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Notifications } from 'react-ionicons'
 import { Menu } from 'react-ionicons'
-
+import { Link } from 'react-router-dom';
 type Props = {
     displayName: string
 }
 function ProfileHeader ({ displayName }: Props) {
     return (
         <ProfileHeaderBlock>
-            <IconBlock>
+            <IconBlock href="https://www.notion.so/XIRCLE-1ac1183aa4804e8e9b6bdef420842155">
                 <Notifications
                     color={'#00000'} 
                     title="notification"
-                    height="45px"
-                    width="45px"
+                    height="40px"
+                    width="40px"
                 />
             </IconBlock>
             <NameBlock> {displayName} </NameBlock>
@@ -23,8 +23,8 @@ function ProfileHeader ({ displayName }: Props) {
                     onClick={() => console.log('hi')}
                     color={'#00000'} 
                     title={'hamburger'}
-                    height="45px"
-                    width="45px"
+                    height="40px"
+                    width="40px"
                 />
             </IconBlock>
         </ProfileHeaderBlock>
@@ -50,10 +50,11 @@ const NameBlock = styled.div`
     color: #fff;
 `
 
-const IconBlock = styled.div`
+const IconBlock = styled.a`
     background-color: #F9F9F9;
     box-shadow: -10px -10px 30px #FFFFFF, 10px 10px 20px rgba(174, 174, 192, 0.3);
     border-radius: 50%;
+    color: black;
     padding: 10px;
     cursor: pointer;
 `
