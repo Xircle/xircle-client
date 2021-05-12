@@ -19,8 +19,6 @@ interface Props {
 }
 
 export default function ChattingMain ({ type, users }: Props) {
-
-    console.log(type);
     if(type === '단체') return (
         <XircleChatContainer>
             <p className="icon">👨🏻‍💻</p>
@@ -28,7 +26,7 @@ export default function ChattingMain ({ type, users }: Props) {
             <p className="desc">써클은 미팅/소모임/스터디/소개팅등 <br/> 네트워킹을 더 쉽게 해주는 기능이에요. <br/> 곧 만나요</p>
         </XircleChatContainer>
     )
-    return (
+    else return (
         <ChattingList>
             {users.map(user => (
                 <Link 
