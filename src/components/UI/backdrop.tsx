@@ -1,20 +1,28 @@
+/** @jsxImportSource @emotion/react */
 import React, { MouseEvent } from 'react';
+import { css } from '@emotion/react';
 
 type BackdropProps = {
     show: boolean;
-    clicked: (e: MouseEvent<HTMLDivElement>) => void;
+    clicked?: (e: MouseEvent<HTMLDivElement>) => void;
 }
 
 function Backdrop({ show, clicked }: BackdropProps) {
     return (
         show ? ( 
             <div 
-                style={{backgroundColor: 'rgba(0, 0, 0, .7', zIndex: 998}}
-                className="w-full h-full fixed left-0 top-0" 
+                css={css`
+                    position: fixed;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 998;
+                    background-color: rgba(0, 0, 0, .6);
+                `}
                 onClick={clicked}
             /> 
-        )
-        : null
+        ) : null
     )
 }
 
