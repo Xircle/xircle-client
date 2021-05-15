@@ -1,4 +1,4 @@
-function universitySwitcher(universityEng: string): string | null{
+function universitySwitcher(universityEng: string): string {
     switch(universityEng) {
         case 'korea.ac.kr':
             return "고려대학교"
@@ -15,7 +15,7 @@ function universitySwitcher(universityEng: string): string | null{
         case 'hanyang.ac.kr':
             return "한양대학교"
         default:
-            return null
+            throw new Error('Unhandled university');
     }
 }
 
