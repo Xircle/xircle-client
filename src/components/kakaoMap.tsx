@@ -1,8 +1,10 @@
+/** @jsxImportSource @emotion/react */
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { RouteComponentProps } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks/useSelector';
+import { css } from '@emotion/react';
+import { useAppDispatch } from '../hooks/useSelector';
 import Spinner from 'react-spinner-material';
 import { addLocation } from '../store/modules/profile';
+import Button from './UI/Button';
 
 declare global {
   interface Window {
@@ -10,9 +12,13 @@ declare global {
   }
 }
 
+interface Props {
+  onNext: () => void;
+}
+
 const kakao = window.kakao;
 
-const KakaoMap = ({ history }: RouteComponentProps) => {
+export default function KakaoMap({ onNext }: Props) {
   const [isMapSupported, setIsMapSupported] = useState(true);
   const [location, setLocation] = useState('');
   const [addr, setAddr] = useState('');
@@ -24,26 +30,11 @@ const KakaoMap = ({ history }: RouteComponentProps) => {
 
   useEffect(() => {
     mapScript();
-    
-    return () => {
-      setIsMapSupported(true);
-      setLocation('');
-      setAddr('');
-      setLongitude(null);
-      setLatitude(null);
-    }
   }, [isLoading])
 
   // 콜백 함수
   const locationBtnHandler = useCallback((event) => {
     event.preventDefault();
-    // set 하기전에, 잘 적었는지 위치 필터링 한번 해야함.
-    const locationRegex = /^(서울|경기도|강원도|충청북도|충청남도|전라북도|전라남도|경상북도|경상남도|부산|제주|세종|대구|인천|광주|대전|울산)/;
-
-    if(!addr) {
-      if(!location.match(locationRegex))
-        return alert('올바른 지역을 입력해주세요.');
-    }
 
     const finalLocation = addr || location;
     dispatch(addLocation({ 
@@ -52,7 +43,7 @@ const KakaoMap = ({ history }: RouteComponentProps) => {
       latitude 
     }));
     
-    history.push('/setting/2'); 
+    onNext();
   }, [addr, location, longitude, latitude]);
 
   const locationTextChangeHandler = useCallback((event) => {
@@ -124,8 +115,7 @@ const KakaoMap = ({ history }: RouteComponentProps) => {
 
       // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
       kakao.maps.event.addListener(map, 'click', function(mouseEvent: any) {
-        if(isLoading)
-          return null;
+        if(isLoading) return null;
         searchDetailAddrFromCoords(mouseEvent.latLng, function(result: any, status: boolean) {
             if (status === kakao.maps.services.Status.OK) {
                 let detailAddr = !!result[0].road_address ? result[0].road_address.address_name : '';
@@ -162,45 +152,103 @@ const KakaoMap = ({ history }: RouteComponentProps) => {
   }, [isLoading]);
 
   return (
-    <div style={{opacity: isLoading ? 0.5 : 1, zIndex: 900}} className="flex flex-col items-center h-full relative">
-      
-      <div onClick={(e) => e.preventDefault()} id="map" style={{ width: '80%', height: isMapSupported ? 300 : 0}}>
-        {isLoading ? (
-            <div style={{position: 'absolute', zIndex: 100, left: '50%', top: '50%', transform: 'translate(-50%, 0)'}}>
+    <div 
+      css={css`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        position: relative;
+        opacity: ${isLoading ? 0.5 : 1};
+      `}
+    >      
+      <div 
+        id="map"
+        css={css`
+          width: 80%;
+          height: ${isMapSupported ? '300px' : '0px'};
+        `}
+        onClick={(e) => e.preventDefault()}  
+      >
+        {isLoading && (
+            <div 
+              css={css`
+                position: absolute;
+                z-index: 100;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+              `}
+            >
                 <Spinner
-                    color="gray"
+                    color="#aaa"
+                    radius={30}
+                    stroke={5}
                     visible
-                    stroke="5"
-                    radius={5}
                 />
             </div>
-        ) : null}
+        )}
       </div>
 
-      <div style={{marginTop: 20}} className="h-full flex flex-row justify-center items-center pt-5">
-        <p style={{marginBottom: 0, fontSize: 13}} className="mr-5">나는</p>
+      <div 
+        css={css`
+          margin: 0 0 30px;
+          height: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 1.5rem;
+        `}
+      >
+        <p
+          css={css`
+            font-size: 13px;
+          `} 
+        >
+          나는
+        </p>
         {isMapSupported ? (
           <input 
+            css={css`
+              width: 190px;
+              padding: 0.75rem 1.25rem;
+              border: none;
+              &:focus {
+                outline: none;
+              }
+            `}
             type="text"
             placeholder="거주지"
-            className="bg-gray-100 px-5 py-3"
             value={addr}
             onChange={(e) => locationTextChangeHandler(e)}
-            style={{width: 190}}
           />
         ) : (
           <input 
-              type="text"
-              placeholder="거주지"
-              className="bg-gray-100 px-5 py-3"
-              onChange={(e) => locationTextChangeHandler(e)}
-              style={{width: 190}}
+            placeholder="거주지"
+            css={css`
+              width: 190px;
+              padding: 0.75rem 1.25rem;
+              border: none;
+              &:focus {
+                outline: none;
+              }
+            `}
+            type="text"
+            onChange={(e) => locationTextChangeHandler(e)}
           />
         )}
-        <p style={{fontSize: 13}} className="text-lg ml-5">에 있어요.</p>
+        <p css={css` font-size: 13px;`}>
+            에 있어요.
+        </p>
       </div>
-      <button onClick={(e) => locationBtnHandler(e)} disabled={!addr && !location} className="w-full rounded-lg px-5 py-3 my-20 bg-gray-400 text-white focus:outline-none">맞습니다.</button>
+
+      <Button 
+        onClick={locationBtnHandler}
+        disabled={!addr && !location}
+        fullWidth={false}
+      >
+        확인
+      </Button>
     </div>
   )
 }
-export default KakaoMap
