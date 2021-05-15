@@ -12,7 +12,6 @@ const Axios: AxiosInstance = axios.create({
 
 const AxiosForTest: AxiosInstance = axios.create({
     baseURL: 'https://api.xircle.org',
-    withCredentials: true
 })
 
 export default Axios;
