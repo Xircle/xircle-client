@@ -8,19 +8,17 @@ export default function AuthProgress ({ step }: Props) {
     let ProgressPercent: string = '0%'; //인자로 들어온 Question Num을 Progress percent로 나타내기.
 
     if(step === 4) {
-        ProgressPercent = '30%';
+        ProgressPercent = '40%';
     } else if (step === 5) {
-        ProgressPercent = '18%';
+        ProgressPercent = '60%';
     } else if (step === 6) {
-        ProgressPercent = '30%';
+        ProgressPercent = '70%';
     } else if (step === 7) {
-        ProgressPercent = '57%';
+        ProgressPercent = '80%';
     } else if (step === 8) {
-        ProgressPercent = '72%';
-    } else if (step === 9) {
-        ProgressPercent = '90%';
+        ProgressPercent = '93%';
     }else {
-        ProgressPercent = '0%';
+        ProgressPercent = '100%';
     }
 
     return (
