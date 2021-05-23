@@ -16,7 +16,7 @@ const ErrorContainer = styled.section`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 80vh;
+    margin: 30px 0;
     p {
         font-size: 24px;
         font-weight: 500;
