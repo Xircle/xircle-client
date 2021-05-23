@@ -3,11 +3,7 @@ import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { css } from '@emotion/react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import Footer_nav from './footer_nav';
-import Modal from './UI/modal';
 import { useAppDispatch } from '../hooks/useSelector';
-import * as actions from '../store/index';
-
-
 
 interface LayoutProps extends RouteComponentProps {
     children: React.ReactNode;
@@ -27,7 +23,7 @@ function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
 
     useEffect(() => {
         const currPath = window.location.pathname;
-        let NavInterval: NodeJS.Timeout;
+        let NavInterval: any;
         if(currPath === '/' || currPath === '/search' || currPath === '/my-profile' || currPath === '/friend-profile' || currPath.includes('/my/article') || currPath.includes('/friend/article')) {
             NavInterval = setInterval(() => {
                 window.addEventListener('scroll', handleScroll)
@@ -79,11 +75,13 @@ function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
             id="layout" 
             css={css`
                 background-color: ${isIntro ? "#F7F7FA" : '#fff'};
+                margin: 0 auto;
+                position: relative;
+                overflow: hidden;
+                min-height: 100vh;
                 @media (min-width: 700px) {
                     width: 400px;
                 };
-                margin: 0 auto;
-                position: relative;
             `} 
         >
             {num === '3' || num === '4' ? (
@@ -96,33 +94,6 @@ function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
                     />
                 </aside>
             ) : null}
-            <Modal show={isWriteClicked} clicked={() => setIsWriteClicked(false)} type="directInput">
-                <img 
-                    onClick={() => setIsWriteClicked(false)}
-                    style={{width: 25, height: 25, margin: '0 0 0 auto'}}
-                    src="/close-outline.svg"
-                    alt="x"
-                />
-                <form 
-                    // onSubmit={(e) => jobAdjSubmitHandler(e)}
-                >
-                    <textarea 
-                        name="directInput"
-                        id="directInput"
-                        ref={directRef}
-                        autoFocus
-                        placeholder="회원님은 어떤 사람인가요? 직접입력해보세요."
-                        style={{height: '100px', backgroundColor: "#F7F7FA", textAlign: 'center'}}
-                        className="my-10 px-3 py-5 w-full text-base placeholder-gray-300">
-                    </textarea>
-                    <button 
-                        // onClick={(e) => jobAdjSubmitHandler(e)} 
-                        style={{backgroundColor: "#979B9F", color: '#fff', padding: "10px 60px", borderRadius: 2}}
-                    >
-                        확인
-                    </button>
-                </form>
-            </Modal>
             {isIntro ? (
                 <>
                     <header>
@@ -168,7 +139,14 @@ function Layout({ children, history, isIntro, num, footerNone }: LayoutProps) {
                 </>
             ) : isIntro ?  <header style={{height: 73, backgroundColor: 'black'}}></header> : null}
 
-            <main className="min-h-screen w-full relative">
+            <main 
+                css={css`
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 100vh;
+                    position: relative;
+                `} 
+            >
                 {children}
                 <footer style={{position: 'fixed', zIndex: 200, left: '50%', bottom: -20, transition: '.5s ease', transform: shouldNavHide ? 'translate(-50%, 50px)' : 'translate(-50%, -50px)'}}>
                     <Footer_nav footerNone/>
