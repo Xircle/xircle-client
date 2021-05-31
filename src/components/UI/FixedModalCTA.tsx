@@ -5,16 +5,22 @@ import Backdrop from './Backdrop';
 import Modal from './Modal';
 
 interface Props {
-    children: React.ReactNode;
+  children: React.ReactNode;
+  mandatory?: boolean;
+  show: boolean;
+  clicked?: () => void;
 }
 
-export default function FixedModalCTA({ children }: Props) {
-    return (
-        <PortalConsumer>
-            <Backdrop show={true}/>
-            <Modal show={true}>
-                {children}
-            </Modal>
-        </PortalConsumer>
-    );
+export default function FixedModalCTA({
+  show,
+  clicked,
+  mandatory = true,
+  children,
+}: Props) {
+  return (
+    <PortalConsumer>
+      <Backdrop clicked={!mandatory ? clicked : undefined} show={show} />
+      <Modal show={show}>{children}</Modal>
+    </PortalConsumer>
+  );
 }

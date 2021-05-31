@@ -20,7 +20,7 @@ const FixedBottomCTA = forwardRef(function FixedBottomCTA(
 			>
 				<div
 					css={css`
-						padding: 0 20px 18px;
+						padding: 0 20px 28px;
 						text-align: center;
 					`}
 				>

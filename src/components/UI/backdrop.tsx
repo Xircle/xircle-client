@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 
 type BackdropProps = {
     show: boolean;
-    clicked?: (e: MouseEvent<HTMLDivElement>) => void;
+    clicked?: () => void;
 }
 
 function Backdrop({ show, clicked }: BackdropProps) {
@@ -20,7 +20,7 @@ function Backdrop({ show, clicked }: BackdropProps) {
                     z-index: 998;
                     background-color: rgba(0, 0, 0, .6);
                 `}
-                onClick={clicked}
+                onClick={() => clicked?.()}
             /> 
         ) : null
     )
