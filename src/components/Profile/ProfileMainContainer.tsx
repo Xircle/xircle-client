@@ -4,51 +4,46 @@ import NavigationScroller from '../Navigation/NavigationScroller';
 import ProfileArticleContainer from './ProfileArticleContainer';
 import { useAppSelector, useAppDispatch } from '../../hooks/useSelector';
 import type { Interest, InterestInfo } from '../../store/modules/articles';
+import type { ActiveOptionProps } from '../Navigation/NavigationScroller';
 
-type options = {
-    name: Interest | '전체'
-    count: number
-}
-export type ActiveOptions = options[]
 
-function optionGenerator(interests: InterestInfo[]) {
-    let cnt = 0;
-    const optionArr: ActiveOptions = interests.map(el => {
-        cnt += el.activity;
-        return {
-            name: el.interest,
-            count: el.activity
-        }
-    });
-    optionArr.unshift({ name: '전체', count: cnt });
-    return optionArr;
+interface Props {
+  interestArr: ActiveOptionProps[];
+  isFriendProfile?: boolean 
 }
 
-function ProfileMainContainer() {
-    const { interests } = useAppSelector(store => store.articles);
-    const [active, setActive] = useState<'전체' | Interest>("전체");
-    const [activeOptions, setActiveOptions] = useState<ActiveOptions>(() => optionGenerator(interests));
+function ProfileMainContainer({ interestArr, isFriendProfile }: Props) {
+  const [activeOption, setActiveOption] = useState<ActiveOptionProps>({
+    name: '전체',
+    count: undefined,
+  });
+  const [activeOptionArr, setActiveOptionArr] = useState<ActiveOptionProps[]>(interestArr);
 
-    const NaviClickHandler = (activeOption: '전체' | Interest) => {
-        setActive(activeOption);
-    }
+  const handleClickedOption = (clickedOption: string) => {
+      const activeOption = activeOptionArr.filter(option => option.name === clickedOption)[0];
+      setActiveOption({
+          name: activeOption.name,
+          count: activeOption.count
+      });
+  };
 
-    return (
-        <>
-            <Container>
-                <NavigationScroller 
-                    active={active}
-                    activeOptions={activeOptions} 
-                    onClick={NaviClickHandler}
-                />
-            </Container>
-            <ProfileArticleContainer active={active} />
-        </>
-    )
+
+  return (
+    <>
+      <Container>
+        <NavigationScroller
+          onClickOption={handleClickedOption}
+          activeOptionArr={activeOptionArr}
+          activeOption={activeOption}
+        />
+      </Container>
+      <ProfileArticleContainer activeInterest={activeOption.name} />
+    </>
+  );
 }
 
 const Container = styled.div`
-    margin: 30px 0 0;
+  margin: 30px 0 0;
 `;
 
 export default ProfileMainContainer;
