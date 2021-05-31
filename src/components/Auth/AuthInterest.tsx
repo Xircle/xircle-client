@@ -4,6 +4,10 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import AuthLayout from './AuthLayout';
 import { useAppDispatch } from '../../hooks/useSelector';
+import FixedBottomCTA from '../UI/FixedBottomCTA';
+import { addInterestOnlyArr } from '../../store/modules/profile';
+import type { Interest } from '../../store/modules/articles';
+import Button from '../UI/Button';
 
 interface Props extends ComponentProps<typeof AuthLayout> {
   onNext: () => void;
@@ -26,7 +30,7 @@ type InterestState = {
   travel_clicked: boolean;
   portfolio_clicked: boolean;
   investment_clicked: boolean;
-  interestArr: string[];
+  interestArr: Interest[];
 };
 
 type InterestAction =
@@ -48,7 +52,7 @@ type InterestAction =
   | { type: 'INVESTMENT_CLICKED' };
 
 function reducer(state: InterestState, action: InterestAction) {
-  let newArr: string[] = [];
+  let newArr: Interest[] = [];
   switch (action.type) {
     case 'STARTUP_CLICKED':
       newArr = state.interestArr.slice(); // swallow copy
@@ -68,10 +72,10 @@ function reducer(state: InterestState, action: InterestAction) {
     case 'MUKBANG_CLICKED':
       newArr = state.interestArr.slice();
       if (state.mukBang_clicked) {
-        const index = newArr.findIndex((el) => el === '술/맛집탐방');
+        const index = newArr.findIndex((el) => el === '맛집/카페');
         newArr.splice(index, 1);
       } else {
-        newArr.push('술/맛집탐방');
+        newArr.push('맛집/카페');
       }
       return {
         ...state,
@@ -81,10 +85,10 @@ function reducer(state: InterestState, action: InterestAction) {
     case 'DOGLOVER_CLICKED':
       newArr = state.interestArr.slice();
       if (state.dogLover_clicked) {
-        const index = newArr.findIndex((el) => el === '애견인');
+        const index = newArr.findIndex((el) => el === '반려동물');
         newArr.splice(index, 1);
       } else {
-        newArr.push('애견인');
+        newArr.push('반려동물');
       }
       return {
         ...state,
@@ -135,10 +139,10 @@ function reducer(state: InterestState, action: InterestAction) {
     case 'HEALTH_CLICKED':
       newArr = state.interestArr.slice();
       if (state.health_clicked) {
-        const index = newArr.findIndex((el) => el === '헬스');
+        const index = newArr.findIndex((el) => el === '운동/엑티비티');
         newArr.splice(index, 1);
       } else {
-        newArr.push('헬스');
+        newArr.push('운동/엑티비티');
       }
       return {
         ...state,
@@ -174,10 +178,10 @@ function reducer(state: InterestState, action: InterestAction) {
     case 'PREPARE_CLICKED':
       newArr = state.interestArr.slice();
       if (state.prepare_clicked) {
-        const index = newArr.findIndex((el) => el === '취업준비');
+        const index = newArr.findIndex((el) => el === '취업');
         newArr.splice(index, 1);
       } else {
-        newArr.push('취업준비');
+        newArr.push('취업');
       }
       return {
         ...state,
@@ -226,10 +230,10 @@ function reducer(state: InterestState, action: InterestAction) {
     case 'TRAVEL_CLICKED':
       newArr = state.interestArr.slice();
       if (state.travel_clicked) {
-        const index = newArr.findIndex((el) => el === '여행');
+        const index = newArr.findIndex((el) => el === '여행');
         newArr.splice(index, 1);
       } else {
-        newArr.push('여행');
+        newArr.push('여행');
       }
       return {
         ...state,
@@ -239,10 +243,10 @@ function reducer(state: InterestState, action: InterestAction) {
     case 'PORTFOLIO_CLICKED':
       newArr = state.interestArr.slice();
       if (state.portfolio_clicked) {
-        const index = newArr.findIndex((el) => el === '커리어/포트폴리오');
+        const index = newArr.findIndex((el) => el === '커리어/포트폴리오');
         newArr.splice(index, 1);
       } else {
-        newArr.push('커리어/포트폴리오');
+        newArr.push('커리어/포트폴리오');
       }
       return {
         ...state,
@@ -379,20 +383,32 @@ export default function AuthInterest({ onNext, ...props }: Props) {
 
   const dispatchRedux = useAppDispatch();
 
+  const btnClickHandler = () => {
+    if (state.interestArr.length < 2)
+      return alert('관심사를 2개 이상 골라주세요!');
+    onNext();
+    dispatchRedux(addInterestOnlyArr(state.interestArr));
+  };
+
   return (
-    <AuthLayout {...props}>
-      <CircleCotnainer>
-        {options.map(({ value, clickedType, clicked }) => (
-          <CircleInterest
-            key={value}
-            clicked={clicked}
-            onClick={() => dispatch({ type: clickedType })}
-          >
-            {value}
-          </CircleInterest>
-        ))}
-      </CircleCotnainer>
-    </AuthLayout>
+    <>
+      <AuthLayout {...props}>
+        <CircleCotnainer>
+          {options.map(({ value, clickedType, clicked }) => (
+            <CircleInterest
+              key={value}
+              clicked={clicked}
+              onClick={() => dispatch({ type: clickedType })}
+            >
+              {value}
+            </CircleInterest>
+          ))}
+            <Fixed>
+                <Button fullWidth={false} onClick={btnClickHandler}> 확인 </Button>
+            </Fixed>
+        </CircleCotnainer>
+      </AuthLayout>
+    </>
   );
 }
 
@@ -403,8 +419,16 @@ const CircleCotnainer = styled.div`
   margin: 30px 0;
 `;
 
+const Fixed = styled.div`
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0);
+`;
+
 const CircleInterest = styled.div<{ clicked: boolean }>`
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
   margin: 5px;
@@ -417,7 +441,7 @@ const CircleInterest = styled.div<{ clicked: boolean }>`
   font-weight: 700;
   border: 1px solid #18a0fb;
   -webkit-transition: background-color 0.1s ease-in-out;
-  transition: background-color .1s, border .1s;
+  transition: background-color 0.1s, border 0.1s;
   cursor: pointer;
   ${(props) =>
     props.clicked &&

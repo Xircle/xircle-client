@@ -16,7 +16,7 @@ export default function AuthAge({ prevStep, onConfirm }: Props) {
   const [age, setAge] = useState<number | undefined>(undefined);
 
   return (
-    <FixedModalCTA>
+    <FixedModalCTA show={true} mandatory>
       <nav
         css={css`
           display: flex;

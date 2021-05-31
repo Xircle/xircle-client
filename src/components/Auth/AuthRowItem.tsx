@@ -23,6 +23,12 @@ export default function AuthRowItem({ clicked, onClick, value }: Props) {
                 border-radius: 30px;
                 margin: 15px 0;
                 cursor: pointer;
+                &:hover {
+                    background-color: ${colors.blue100};
+                }
+                &:active {
+                    background-color: ${colors.blue200};
+                }
             `}
             onClick={() => onClick(value)}
         >

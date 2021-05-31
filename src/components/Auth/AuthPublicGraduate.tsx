@@ -36,14 +36,11 @@ const options = [
 ];
 
 export default function AuthPublicGraduate({ clicked }: Props) {
-  const dispatch = useAppDispatch();
-  const { univ } = useAppSelector(store => store.profile.data);
+  const { univ } = useAppSelector((store) => store.profile.data);
   const [step, setStep] = React.useState<number>(0);
   const [checkedValueArr, setCheckedValueArr] = React.useState(['', '']);
 
-
-  
-
+  const dispatch = useAppDispatch();
   const finalClickHandler = () => {
     const isGraduate = checkedValueArr[0] === '재학중' ? false : true;
     const isPublic = checkedValueArr[1] === '공개' ? true : false;
@@ -53,8 +50,14 @@ export default function AuthPublicGraduate({ clicked }: Props) {
   };
 
   const components = [
-    <div css={css`margin: 30px 0;`}>
-      <Question>회원님은 {univ} <br/> 학생이시군요!</Question>
+    <div
+      css={css`
+        margin: 30px 0;
+      `}
+    >
+      <Question>
+        회원님은 {univ} <br /> 학생이시군요!
+      </Question>
       <Description>재학 중이신가요? 졸업을 하셨나요?</Description>
       <CheckBoxList>
         {options[0].map(({ title, value }) => (
@@ -64,7 +67,7 @@ export default function AuthPublicGraduate({ clicked }: Props) {
             checked={checkedValueArr[0] === title}
             onClick={(label) => {
               setCheckedValueArr([label, checkedValueArr[1]]);
-              setStep(step => step + 1);
+              setStep((step) => step + 1);
             }}
           />
         ))}
@@ -79,7 +82,7 @@ export default function AuthPublicGraduate({ clicked }: Props) {
           margin: 0 0 10px;
         `}
       >
-        <StyledButton onClick={() => setStep(step => step - 1)}>
+        <StyledButton onClick={() => setStep((step) => step - 1)}>
           <ArrowBackOutline
             color={'#00000'}
             title={'뒤로가기'}
@@ -103,7 +106,7 @@ export default function AuthPublicGraduate({ clicked }: Props) {
 
       {/* Checkbox */}
       <CheckBoxList>
-        {options[1].map(({ title, value }) => 
+        {options[1].map(({ title, value }) => (
           <AuthCheckboxRow
             key={value}
             label={title}
@@ -112,7 +115,7 @@ export default function AuthPublicGraduate({ clicked }: Props) {
               setCheckedValueArr([checkedValueArr[0], label]);
             }}
           />
-        )}
+        ))}
       </CheckBoxList>
 
       <Description
@@ -128,7 +131,7 @@ export default function AuthPublicGraduate({ clicked }: Props) {
   ];
 
   return (
-    <FixedModalCTA>
+    <FixedModalCTA show={true} mandatory>
       {components.map((component, index) => {
         if (step === index)
           return <React.Fragment key={index}>{component}</React.Fragment>;

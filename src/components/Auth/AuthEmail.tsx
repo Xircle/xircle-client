@@ -51,7 +51,7 @@ export default function AuthEmail({ onNext, ...props }: Props) {
 
 	useEffect(() => {
 		if (data.email !== '' && value !== '' && error === false) onNext();
-	}, [data.email]);
+	}, [data.email, error, value, onNext]);
 
 	return (
 		<AuthLayout {...props}>

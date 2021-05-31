@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { ChangeEvent, ComponentProps, useState } from 'react';
+import React, { ChangeEvent, useEffect, ComponentProps, useState } from 'react';
 import { css } from '@emotion/react';
 import AuthLayout from './AuthLayout';
 import styled from '@emotion/styled';
@@ -16,6 +16,7 @@ interface Props extends ComponentProps<typeof AuthLayout> {
 }
 
 export default function AuthProfileImage({ onNext, ...props }: Props) {
+  const [show, setShow] = useState(true);
   const [profileImgSrc, setProfileImgSrc] = useState<string | null>('');
   const [profileFile, setProfileFile] = useState<File>();
   const dispatch = useAppDispatch();
@@ -23,19 +24,24 @@ export default function AuthProfileImage({ onNext, ...props }: Props) {
   const { displayName, email, password, phoneNumber } = useAppSelector(
     (store) => store.auth.data,
   );
-  const { status, error } = useAppSelector((store) => store.auth);
+  const { data, status, error } = useAppSelector((store) => store.auth);
   const {
-    isPublic,
+    gender,
     adj,
+    isPublic,
     job,
     isGraduate,
-    gender,
     location,
     latitude,
     longitude,
     age,
     interestArr,
   } = useAppSelector((store) => store.profile.data);
+
+  useEffect(() => {
+    if(data.token)
+      onNext();
+  }, [data.token, onNext]);
 
   const uploadProfileImg = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return null;
@@ -54,7 +60,6 @@ export default function AuthProfileImage({ onNext, ...props }: Props) {
     const fileReader = new FileReader();
     fileReader.readAsDataURL(__file);
     fileReader.onload = (e) => {
-      // async하게 다 읽었으면 실행
       setProfileImgSrc(e.target!.result as string);
     };
 
@@ -79,6 +84,7 @@ export default function AuthProfileImage({ onNext, ...props }: Props) {
       password,
       phoneNumber,
       gender,
+      introText: '',
       interestArr,
     };
     formData.append('profileImgSrc', profileFile);
@@ -123,7 +129,7 @@ export default function AuthProfileImage({ onNext, ...props }: Props) {
           />
         </Container>
       </AuthLayout>
-      
+
       {status === 'pending' && (
         <div
           css={css`
@@ -149,8 +155,12 @@ export default function AuthProfileImage({ onNext, ...props }: Props) {
       </Button>
 
       {error && (
-        <FixedBottomModal>
-            <Error />
+        <FixedBottomModal
+          show={show}
+          clicked={() => setShow(!show)}
+          mandatory={false}
+        >
+          <Error />
         </FixedBottomModal>
       )}
     </>

@@ -48,7 +48,7 @@ export default function AuthJoinStart ({ onNext, ...props}: Props) {
             if(data.phoneNumber && phoneNum !== '')
                 onNext();
         }
-    }, [error_message, data]);
+    }, [error_message, data, onNext, phoneNum]);
 
     const displayNameChangeHandler = useCallback((value) => {
         setDisplayName(value);
@@ -62,8 +62,8 @@ export default function AuthJoinStart ({ onNext, ...props}: Props) {
                 setDisplayNameDescription('영어 대소문자, 숫자, 밑줄 및 마침표만 가능합니다!');
                 setIsBtnDisabled(true);
             }else {
-                if(value.length < 4 || value.length > 14) {
-                    setDisplayNameDescription('닉네임은 3자리 이상 14자리 이하로 해주세요.');
+                if(value.length < 4 || value.length > 18) {
+                    setDisplayNameDescription('닉네임은 3자리 이상 18자리 이하로 해주세요.');
                     setIsBtnDisabled(true);
                 }else {
                     setDisplayNameDescription(undefined);
@@ -72,7 +72,7 @@ export default function AuthJoinStart ({ onNext, ...props}: Props) {
                 }
             }
         }
-    }, [displayName, displayNameDescription, pwd, passwordDescription, phoneNum, phoneNumberDescription]);
+    }, [pwd, passwordDescription, phoneNum, phoneNumberDescription]);
 
     const passwordChangeHandler = useCallback((passwordText) => {
         const passwordRegex = /^[a-zA-Z0-9]+$/;
@@ -90,7 +90,7 @@ export default function AuthJoinStart ({ onNext, ...props}: Props) {
                     setIsBtnDisabled(false);
             }
         }
-    }, [displayName, displayNameDescription, pwd, passwordDescription, phoneNum, phoneNumberDescription]);
+    }, [displayName, displayNameDescription, phoneNum, phoneNumberDescription]);
 
     const phoneNumberChangeHandler = useCallback(phoneText => {
         const phoneRegex = /^[0-9]+$/;
@@ -108,13 +108,13 @@ export default function AuthJoinStart ({ onNext, ...props}: Props) {
                         setIsBtnDisabled(false);
             }
         }
-    }, [displayName, displayNameDescription, pwd, passwordDescription, phoneNum, phoneNumberDescription]);
+    }, [displayName, displayNameDescription, pwd, passwordDescription]);
 
     const joinSubmitHandler = useCallback((e: any) => {
         e.preventDefault();
         
         dispatch(checkNameThunk({ displayName, pwd, phoneNumber: phoneNum }));
-    }, [displayName, pwd, phoneNum]);
+    }, [displayName, pwd, phoneNum, dispatch]);
 
     return (
         <>

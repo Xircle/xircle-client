@@ -5,7 +5,7 @@ import AuthProgress from './AuthProgress';
 
 interface Props {
   onBackClick?: () => void;
-  step: number;
+  step?: number;
 }
 
 const AuthHeader = ({ step, onBackClick }: Props) => {
@@ -53,7 +53,7 @@ const AuthHeader = ({ step, onBackClick }: Props) => {
           </p>
         )}
       </div>
-      {step >= 4 && step < 9 ? <AuthProgress step={step} /> : null}
+      {step && step >= 4 && step < 9 ? <AuthProgress step={step} /> : null}
     </header>
   );
 };

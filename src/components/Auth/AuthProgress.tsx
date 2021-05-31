@@ -17,6 +17,8 @@ export default function AuthProgress ({ step }: Props) {
         ProgressPercent = '80%';
     } else if (step === 8) {
         ProgressPercent = '93%';
+    }else if(step === 9) {
+        ProgressPercent = '100%';
     }else {
         ProgressPercent = '100%';
     }
