@@ -21,7 +21,7 @@ function ProfileHeader({ displayName, isFriendProfile }: Props) {
     );
   return (
     <ProfileHeaderBlock>
-      <IconBlock href="https://www.notion.so/XIRCLE-1ac1183aa4804e8e9b6bdef420842155">
+      <IconBlock onClick={() => window.location.href = "https://www.notion.so/XIRCLE-1ac1183aa4804e8e9b6bdef420842155"}>
         <Notifications
           color={'#00000'}
           title="notification"
@@ -33,11 +33,11 @@ function ProfileHeader({ displayName, isFriendProfile }: Props) {
       <Link to="/setting/profile">
         <IconBlock>
             <Menu
-            onClick={() => console.log('hi')}
-            color={'#00000'}
-            title={'hamburger'}
-            height="40px"
-            width="40px"
+              onClick={() => console.log('hi')}
+              color={'#00000'}
+              title={'hamburger'}
+              height="40px"
+              width="40px"
             />
         </IconBlock>
       </Link>
@@ -65,7 +65,7 @@ const NameBlock = styled.div`
   cursor: pointer;
 `;
 
-const IconBlock = styled.a`
+const IconBlock = styled.div`
   background-color: #f9f9f9;
   box-shadow: -10px -10px 30px #ffffff, 10px 10px 20px rgba(174, 174, 192, 0.3);
   border-radius: 50%;
