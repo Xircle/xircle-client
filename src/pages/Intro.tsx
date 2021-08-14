@@ -27,6 +27,8 @@ const Intro = ({ history }: RouteComponentProps) => {
         <section css={css`min-height: 100vh;`}>
           <section css={css`position: relative;`}>
             <div css={css`height: 100vh;`}>
+
+              
               <video 
                 css={css`
                   object-fit: cover; 
@@ -35,6 +37,8 @@ const Intro = ({ history }: RouteComponentProps) => {
               >
                 Your browser doesn't support video.
               </video>
+
+
               <div css={css`position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5);`}></div>
             </div>
 
@@ -143,9 +147,9 @@ const Intro = ({ history }: RouteComponentProps) => {
                 display: flex;
                 align-items: center;
                 position: absolute;
-                bottom: 150px;
+                bottom: 250px;
                 left: 50%;
-                transform: translate(-50%, 0);
+                transform: translate(-50%, -50%);
               `}
             >
               <img 
@@ -158,7 +162,6 @@ const Intro = ({ history }: RouteComponentProps) => {
                 css={css`
                   color: #fff;
                   margin: 0 10px;
-                  font-weight: lighter;
                 `}
               >
                 Xircle 소개
@@ -185,7 +188,7 @@ const Intro = ({ history }: RouteComponentProps) => {
 
                   `}
                 >
-                  대학생친구들과 <br /> 새로운 <span style={{color: "#2F51F0"}}>네트워킹!</span><br/> XIRCLE</h1> 
+                  대학친구들과 <br /> 새로운 <span style={{color: "#007FFF"}}>네트워킹!</span><br/> XIRCLE</h1> 
               </div>
             </div>
 
@@ -256,6 +259,7 @@ const Intro = ({ history }: RouteComponentProps) => {
           css={css`
             height: 100%;
             padding: 30px 0;
+            margin: 30px 0;
             background-color: #F7F7FA;
             border-style: hidden;
           `}
@@ -284,7 +288,7 @@ const Intro = ({ history }: RouteComponentProps) => {
                 </div>
 
                 <div css={css`margin-top: 100px;`}>
-                  <div className="my-20 text-center">
+                  <div css={css`margin: 5rem 0; text-align: center;`}>
                     <p 
                       id="user_number" 
                       css={css`
@@ -323,20 +327,20 @@ const Intro = ({ history }: RouteComponentProps) => {
 
         {/* 후기 Slide  */}
         <section style={{ height: '100%', backgroundColor: '#F7F7FA', border: 'none'}}>
-          <section  className="relative">
+          <section css={css`position: relative;`}>
           <div style={{padding: '60px 20px'}}>
               {/* 작은 원 */}
-              <div style={{width: "72px", height: '72px', boxShadow: "-10px 10px 10px rgba(0, 0, 0, 0.25)", borderRadius: 300, backgroundColor: "#1F1F1F", position: 'absolute', top: -36, left: '50%', transform: 'translate(-50%, 0%)'}}>
-                <div className="relative w-full h-full">
+              <div style={{width: "72px", height: '72px', boxShadow: "-10px 10px 10px rgba(0, 0, 0, 0.25)", borderRadius: 300, backgroundColor: "#1F1F1F", position: 'absolute', top: -56, left: '50%', transform: 'translate(-50%, 0%)'}}>
+                <div css={css`position: relative; height: 100%;`}>
                   <img 
-                    style={{position: 'absolute', top: '50%', left: "50%", transform: 'translate(-50%, -50%)'}}
+                    css={css`position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);`}
                     src="/Intro/prefix_keyboard_arrow_left_24px.svg"
                     alt="arrow"
                   />
                 </div>
               </div>
 
-              <div className=" mt-20">
+              <div css={css`margin-top: 5rem;`}>
                 <p style={{color: "#12121D", fontSize: 25, marginBottom: 10, fontWeight: 'bold'}}>XIRCLE 친구들 리얼 후기</p>
                 <p 
                   css={css`color: #8C94A4; font-size: 12px; word-break: keep-all; font-weight: bold;`}
@@ -349,14 +353,14 @@ const Intro = ({ history }: RouteComponentProps) => {
                   <img
                     css={css`
                       object-fit: cover;
-                      transform: scale(1.7);
+                      transform: scale(1.3);
                       margin-bottom: 10px;
                     `} 
-                    src="/Intro/User1.png"
+                    src="/Intro/User1.svg"
                     alt="유저1"
                   />
                   <ReviewerInfo>
-                    서울대 2**님
+                    서울대 2**님
                   </ReviewerInfo>
                 </ImageContainer>
 
@@ -374,17 +378,15 @@ const Intro = ({ history }: RouteComponentProps) => {
                   <img
                     css={css`
                       object-fit: cover;
-                      transform: scale(1.7);
-                      position: relative;
-                      left: -7px;
+                      transform: scale(1.3);
                       margin-bottom: 10px;
                     `} 
                     
-                    src="/Intro/User2.png"
+                    src="/Intro/User2.svg"
                     alt="유저2"
                   />
                   <ReviewerInfo>
-                    연세대 연**님
+                    연세대 연**님
                   </ReviewerInfo>
                 </ImageContainer>
 
@@ -398,17 +400,16 @@ const Intro = ({ history }: RouteComponentProps) => {
                   <img
                     css={css`
                       object-fit: cover;
-                      transform: scale(1.7);
+                      transform: scale(1.3);
                       position: relative;
-                      left: -10px;
                       bottom: 5px;
                       margin-bottom: 20px;
                     `} 
-                    src="/Intro/User3.png"
+                    src="/Intro/User3.svg"
                     alt="유저3"
                   />
                   <ReviewerInfo>
-                    고려대 루**님
+                    고려대 루**님
                   </ReviewerInfo>
                 </ImageContainer>
 
@@ -419,13 +420,12 @@ const Intro = ({ history }: RouteComponentProps) => {
                   <img
                     css={css`
                       object-fit: cover;
-                      transform: scale(1.7);
+                      transform: scale(1.3);
                       position: relative;
-                      right: -15px;
-                      margin-bottom: 10px;
+                      right: -5px;
+                      margin-bottom: 5px;
                     `} 
-                    
-                    src="/Intro/User4.png"
+                    src="/Intro/User4.svg"
                     alt="유저4"
                   />
                   <ReviewerInfo>
@@ -451,7 +451,7 @@ const Intro = ({ history }: RouteComponentProps) => {
               <p>나를 가장 잘 표현 할 수 있는 프로필</p>
             </PreviewText>
             <PreviewImg
-              src="/Intro/preview_1.png"
+              src="/Intro/preview_1.svg"
               alt="preview_1"
             />
           </PreviewContainer>
@@ -464,7 +464,7 @@ const Intro = ({ history }: RouteComponentProps) => {
               <p>관심사, 학교, 위치, 나이, 성별로 필터링</p>
             </PreviewText>
             <PreviewImg
-              src="/Intro/preview_2.png"
+              src="/Intro/preview_2.svg"
               alt="preview_2"
             />
           </PreviewContainer>
@@ -477,7 +477,7 @@ const Intro = ({ history }: RouteComponentProps) => {
               <p>프로필을 보고 친해지고 싶은 친구와</p>
             </PreviewText>
             <PreviewImg
-              src="/Intro/preview_3.png"
+              src="/Intro/preview_3.svg"
               alt="preview_3"
             />
           </PreviewContainer>
@@ -490,7 +490,7 @@ const Intro = ({ history }: RouteComponentProps) => {
               <p>소모임/스터디/번개/미팅 등등</p>
             </PreviewText>
             <PreviewImg
-              src="/Intro/preview_4.png"
+              src="/Intro/preview_4.svg"
               alt="preview_4"
             />
           </PreviewContainer>
@@ -520,7 +520,7 @@ const Intro = ({ history }: RouteComponentProps) => {
                     font-weight: bold;
                     line-height: 3.5rem;
                   `}
-                >-5/15 <br/> 지금 가입하면 <br/> 에어팟 프로 0원</h1> 
+                >지금 가입하면 <br/> 에어팟 프로 0원</h1> 
                 <button
                   onClick={() => window.location.href = 'https://www.instagram.com/xircle_official/'}
                   css={css`
@@ -532,6 +532,8 @@ const Intro = ({ history }: RouteComponentProps) => {
                     font-weight: 700;
                     font-size: 16px;
                     margin-top: 20px;
+                    border: none;
+                    cursor: pointer;
                     &:hover {
                       background-color: #4593fc;
                     }
@@ -543,7 +545,7 @@ const Intro = ({ history }: RouteComponentProps) => {
                     }
                   `}
                 >
-                  이벤트 자세히 보기 &gt;
+                  이벤트 자세히 보기&nbsp;&nbsp;&gt;
                 </button>
                 <div 
                   css={css`
@@ -571,7 +573,7 @@ const Intro = ({ history }: RouteComponentProps) => {
               css={css`padding: 60px 20px;`}
             >
               {/* 내용 */}
-              <div className="px-4">
+              <div>
                 <h1 
                   css={css`
                     color: #007FFF;
@@ -622,13 +624,17 @@ const Intro = ({ history }: RouteComponentProps) => {
                 <button 
                   onClick={() => history.push('/select')} 
                   css={css`
+                    display: block;
                     width: 315px;
                     height: 56px;
+                    margin: 0 auto;
                     border-radius: 30px;
                     background-color: #000;
                     color: #fff;
                     font-weight: 700;
                     font-size: 18px;
+                    border: none;
+                    cursor: pointer;
                     &:hover {
                       background-color: #333d4b;
                     }
@@ -664,6 +670,7 @@ const ReviewComment = styled.div`
   border: 1px solid #007FFF;
   white-space: pre-line;
   box-shadow: 3px 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
   border-radius: 24px;
   box-sizing: border-box;
   color: #007FFF;
@@ -711,8 +718,7 @@ const PreviewText = styled.div`
 
 const PreviewImg = styled.img`
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: 120%;
   margin: 50px 0;
 `;
 
